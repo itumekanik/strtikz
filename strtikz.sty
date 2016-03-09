@@ -16,9 +16,9 @@ coordinate \c;
 \ns = {#1}; %number of storys
 \nb = {#2}; %number of bays
 \ncol = \nb+1; %number of columns
-\ncolmo = \ncol-1; %\ncol-1
 \nlev = \ns+1; %number of levels
-\nlevmo = \nlev-1; %\nlev - 1
+if \ns>1 then {\nlevmo = \nlev-1;} else {\nlevmo=2;};
+if \nb>1 then {\ncolmo = \ncol-1;} else {\ncolmo=2;};
 \sh = {#3}; %story height
 \bw = {#4}; % bay width
 \starty = {#5}; %starting coordinate y
@@ -31,18 +31,13 @@ for \j in {1,...,{\ncol}}{
 \x{\j} = \startx + (\j-1)*\bw;
 };
 };
+print{\nlevmo};
 }
 
 %\draw [line width=0pt, color = white] (0, \y{\nlev}+2);
 \draw [line width = 1pt] (\x{1},\y{1}) -- (\x{1}, \y{\nlev}) -- (\x{\ncol}, \y{\nlev}) -- (\x{\ncol}, \y{1});
-\foreach \i in {2,...,{\nlevmo}}
-{
-\draw [line width = 1pt] (\x{1},\y{\i}) -- (\x{\ncol},\y{\i});
-}
-\foreach \j in {2,...,{\ncolmo}}
-{
-\draw [line width = 1pt] (\x{\j},\y{1}) -- (\x{\j},\y{\nlev});
-}
+\foreach \i in {2,...,{\nlevmo}} {\draw [line width = 1pt] (\x{1},\y{\i}) -- (\x{\ncol},\y{\i}); };
+\foreach \j in {2,...,{\ncolmo}} {\draw [line width = 1pt] (\x{\j},\y{1}) -- (\x{\j},\y{\nlev}); };
 \draw [{->}] (\x{\ncol}+\supw,\y{1}) -- +(1,0) node[anchor=west]{$X$};
 \draw [{->}] (\x{1},\y{\nlev}+0.5) -- +(0,1) node[anchor=east]{$Y$};
 \foreach \j in {1,...,{\ncol}}
@@ -200,9 +195,9 @@ real \hsel, \vpel, \rpel;
 real \hssl, \vpsl, \rpsl;
 real \vstu;
 real \segl;
-\strl = 2; %start rigid length
+\strl = 2.5; %start rigid length
 \rbl = 1.0;  %rigid bar length
-\enrl = \strl; %end rigid length
+\enrl = 1.5; %end rigid length
 \splen = 2;   %spring length
 \segl = 4; % spring zigzag segment length (pt)
 \reor = 0.05; %rigid end offset ratio
@@ -235,22 +230,26 @@ real \segl;
 \tikzset{hspring/.style={thick,decorate,decoration={zigzag,pre length=\hspl cm,post length=\hsel cm,segment length=\hssl pt}}}
 \tikzset{vspring/.style={thick,decorate,decoration={zigzag,pre length=\vspl cm,post length=\vsel cm,segment length=\vssl pt}}}
 \tikzset{rspring/.style={thick,decorate,decoration={zigzag,pre length=\rspl cm,post length=\rsel cm,segment length=\rssl pt}}}
-\draw [line width=4pt] (\c1) -- node[anchor=south] {$l_1$}(\c2) ;
+\draw [line width=4pt] (\c1) -- node[anchor=south] {\small $l_1$}(\c2) ;
 \draw [line width=4pt] (\c3) -- (\c4);
-\draw [line width=4pt] (\c5) -- node[anchor=south] {$l_2$}(\c6);
+\draw [line width=4pt] (\c5) -- node[anchor=south] {\small $l_2$}(\c6);
 \draw [line width=4pt] (\c7) -- (\c8);
-\draw [hspring] (\c3) ++(0,-\rbl*\reor) -- node[anchor=south] {$k_x$}++(\splen,0);
+\draw [hspring] (\c3) ++(0,-\rbl*\reor) -- node[anchor=south] {\small $k_x$}++(\splen,0);
 \draw [thick] (\c2) -- ++(\splen/4,0) -- ++(0,\vstu) -- ++(\splen/4,0);
-\draw [vspring] (\c2) ++(\splen/4,0) ++(0,\vstu) ++(\splen/4,0) -- node[very near end, left] {$k_y$}++(0,-\vstu*2);
+\draw [vspring] (\c2) ++(\splen/4,0) ++(0,\vstu) ++(\splen/4,0) -- node[very near end, left] {\small $k_y$}++(0,-\vstu*2);
 \draw [thick] (\c2) ++(\splen/2,-\vstu) -- ++(\splen/4,0) -- ++(0,\vstu) -- ++(\splen/4,0);
 \draw [thick,domain=0:\rscn*2*pi,variable=\t,smooth,samples=75,xshift=\rssx cm,yshift=-\rbl*0.95 cm] plot ({\t r}: {\rsdi*\t*\t});
-\draw [thick](\c4) ++(0,\rbl*\reor) -- node[near end, below] {$k_\theta$}++(\splen/2,0);
+\draw [thick](\c4) ++(0,\rbl*\reor) -- node[near end, below] {\small $k_\theta$}++(\splen/2,0);
 \draw [thick](\rssxx,-\rbl*(1-\reor) -- ++(\rstrd,0);
-
+\dofs{0}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{1'}{2'}{3'}{above}{right}{below};
+\dofs{\strl+\splen+\enrl}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{4'}{5'}{6'}{below}{right}{below};
+\draw [->](\strl+\splen+\enrl+1.0,0) -- +(0.8,0) node[near end, above]{\small $x$};
+\draw [->](0,1.2) -- +(0,0.8) node[near end, left]{\small $y$};
 }
 
 % end springs
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Newcommand: dofs
@@ -268,16 +267,19 @@ real \segl;
     \dofcontd
 }
 
-\newcommand\dofcontd[2]{%
+\newcommand\dofcontd[5]{%
 \def\dofy{#1}; %string for Y-DOF
-\def\dofz{#2}; %string for Rot-DOF    
+\def\dofz{#2}; %string for Rot-DOF
+\def\xloc{#3};
+\def\yloc{#4};
+\def\rloc{#5};
 \tikzmath{
 coordinate \cjoint; % coordinate of the joint
 \cjoint = (\xx,\yy);
 }
-\draw [->] (\cjoint) ++(\tdof cm,0) -- node[near end, above]{\tiny $\dofx$} ++(\dx cm,0);
-\draw [->] (\cjoint) ++(0, \tdof cm) -- node[near end, right]{\tiny $\dofy$}++(0,\dy cm);
-\draw [->] (\sa:\radi cm) ++(\cjoint) arc [start angle=\sa, end angle=\ea, radius=\radi cm] node[very near end, right]{\tiny $\dofz$};
+\draw [->] (\cjoint) ++(\tdof cm,0) -- node[near end, \xloc]{\tiny $\dofx$} ++(\dx cm,0);
+\draw [->] (\cjoint) ++(0, \tdof cm) -- node[near end, \yloc]{\tiny $\dofy$}++(0,\dy cm);
+\draw [->] (\sa:\radi cm) ++(\cjoint) arc [start angle=\sa, end angle=\ea, radius=\radi cm] node[very near end, \rloc]{\tiny $\dofz$};
 }
 
 
