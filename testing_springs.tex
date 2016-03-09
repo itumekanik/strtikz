@@ -52,10 +52,27 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Newcommand: springs
 
-\newcommand{\springs}
-%
+\newcommand{\springs}[9]
 {
+    \def\strl{#1};    %start rigid length
+    \def\rbl{#2};     %rigid bar length
+    \def\enrl{#3};    %end rigid length
+    \def\splen{#4};   %spring length
+    \def\segl{#5};    %spring zigzag segment length (pt)
+    \def\reor{#6};    %rigid end offset ratio
+    \def\vsplr{#7};  %rotational spring diameter
+    \def\rsdi{#8};    %rotational spring cycle number
+    \def\rscn{#9};    %rotational spring cycle number
+    \springsctd
+}
 
+\newcommand\springsctd[6]{
+    \def\vstr{#1};   %vertical spring tick ratio
+    \def\hspl{#2};   %horizontal spring pre length
+    \def\hsel{#3};   %horizontal spring end length
+    \def\rspl{#4};   %rotational spring pre length
+    \def\rsel{#5};   %rotational spring end length
+    \def\rssl{#6};   %rotational spring segment length
 \tikzmath{
 coordinate \c;
 real \strl, \enrl, \rbl, \splen;
@@ -64,26 +81,26 @@ real \hsel, \vpel, \rpel;
 real \hssl, \vpsl, \rpsl;
 real \vstu;
 real \segl;
-\strl = 2.5; %start rigid length
-\rbl = 1.0;  %rigid bar length
-\enrl = 1.5; %end rigid length
-\splen = 2;   %spring length
-\segl = 4; % spring zigzag segment length (pt)
-\reor = 0.05; %rigid end offset ratio
-\vsplr = 0.25; % vertical spring pre length ratio
-\rsdi = 0.0005; %rotational spring diameter
-\rscn = 4; %rotational spring cycle number
-\vstr = 0.4; %vertical spring tick ratio
-\hspl = 0.5;  %horizontal spring pre length
-\hsel = 0.5;  %horizontal spring end length
+%\strl = 2.5; %start rigid length
+%\rbl = 1.0;  %rigid bar length
+%\enrl = 1.5; %end rigid length
+%\splen = 2;   %spring length
+%\segl = 4;     %spring zigzag segment length (pt)
+%\reor = 0.05;   %rigid end offset ratio
+%\vsplr = 0.25;  % vertical spring pre length ratio
+%\rsdi = 0.0005; %rotational spring diameter
+%\rscn = 4;     %rotational spring cycle number
+%\vstr = 0.4;  %vertical spring tick ratio
+%\hspl = 0.5;  %horizontal spring pre length
+%\hsel = 0.5;  %horizontal spring end length
+%\rspl = 0.2;  %rotational spring pre length
+%\rsel = 0.2;  %rotational spring end length
+%\rssl = 4;    %rotational spring segment length
 \hssl = \segl;    %horizontal spring segment length
 \vstu = \vstr*\rbl;  %vertical spring tikc up
 \vspl = \vsplr*\vstu;  %vertical spring pre length
 \vsel = \vspl;  %vertical spring end length
 \vssl = \segl;    %vertical spring segment length (pt)
-\rspl = 0.2;  %rotational spring pre length
-\rsel = 0.2;  %rotational spring end length
-\rssl = 4;    %rotational spring segment length
 \rssx = \strl+\splen/2; 
 \rssxx = \rssx + \rscn*2*pi*\rscn*2*pi*\rsdi;
 \rstrd = \strl+\splen-\rssxx; %rotational spring to right rigid bar distance
@@ -110,10 +127,10 @@ real \segl;
 \draw [thick,domain=0:\rscn*2*pi,variable=\t,smooth,samples=75,xshift=\rssx cm,yshift=-\rbl*0.95 cm] plot ({\t r}: {\rsdi*\t*\t});
 \draw [thick](\c4) ++(0,\rbl*\reor) -- node[near end, below] {\small $k_\theta$}++(\splen/2,0);
 \draw [thick](\rssxx,-\rbl*(1-\reor) -- ++(\rstrd,0);
-\dofs{0}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{1'}{2'}{3'}{above}{right}{below};
-\dofs{\strl+\splen+\enrl}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{4'}{5'}{6'}{below}{right}{below};
 \draw [->](\strl+\splen+\enrl+1.0,0) -- +(0.8,0) node[near end, above]{\small $x$};
 \draw [->](0,1.2) -- +(0,0.8) node[near end, left]{\small $y$};
+%\dofs{0}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{1'}{2'}{3'}{above}{right}{below};
+%\dofs{\strl+\splen+\enrl}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{4'}{5'}{6'}{above}{right}{below};
 }
 
 % end springs
@@ -170,7 +187,9 @@ coordinate \cjoint; % coordinate of the joint
 \section{Testing}
 
 \begin{tikzpicture}
-\springs;
+\springs{2}{1.5}{1.5}{2}{4}{0.05}{0.25}{0.0005}{4}{0.4}{0.5}{0.5}{0.2}{0.2}{4};
+\dofs{0}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{1'}{2'}{3'}{above}{right}{below};
+\dofs{\strl+\splen+\enrl}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{4'}{5'}{6'}{above}{right}{below};
 \end{tikzpicture}
 
 \end{document}
