@@ -1,0 +1,129 @@
+% Preview source code
+
+%% LyX 2.1.4 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[12pt,english]{article}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=25mm,bmargin=25mm,lmargin=25mm,rmargin=25mm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{color}
+\usepackage{amstext}
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{titling, graphicx}
+\usepackage{tikz}
+%\usepackage{strtikz}
+
+\usetikzlibrary{shapes,arrows.meta, intersections, graphs, graphs.standard}
+\usetikzlibrary{math}
+
+\date{}
+%\setlength\parindent{0pt}
+
+\pretitle{\begin{center} \Large \bf \vspace{-2em}}
+\posttitle{\par\end{center}\vspace{-1.5em}}
+\preauthor{\begin{center} \large \lineskip 1em \begin{tabular}[t]{c}}
+\postauthor{\end{tabular}\par\end{center}\vspace{-5em}}
+
+\rhead{Test}
+\lhead{\thetitle}
+
+\fancypagestyle{firststyle}
+{
+\lhead{None}
+\chead{\includegraphics[width=0.75cm, keepaspectratio=true]{logo.pdf}}
+\rhead{None}
+}
+
+\makeatother
+
+\usepackage{babel}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Newcommand: framerigid
+
+\newcommand{\framerigid}[8]
+{
+\tikzmath{
+int \i;
+real \startx, \starty, \endx, \endy;
+real \len, \dxx, \dyy;
+real \dx1, \dx2, \dx3, \dx4, \dx5, \dx6;
+real \dy1, \dy2, \dy3, \dy4, \dy5, \dy6;
+real \x1, \x2, \x3, \x4, \x5, \x6;
+real \y1, \y2, \y3, \y4, \y5, \y6;
+real \r1, \r2, \r3, \r4, \r5, \r6
+real \rgds, \rgde, \radi;
+real \ang;
+real \tic, \tickdx, \tickdy, \ticklw;
+\startx = {#1};  %start x-coordinate
+\starty = {#2};  %start y-coordinate
+\endx = {#3};   %end x-coordinate
+\endy = {#4};   %end y-coordinate
+\rgds = {#5};    %rigid end distance start of frame
+\rgde = {#6};    %rigid end distance end of frame
+\tic = {#7};    %tick length
+\ticklw = {#8}; %tick line width
+\dxx = \endx-\startx;
+\dyy = \endy-\starty;
+\len = ((\dxx)^2+(\dyy)^2)^0.5;
+\r1 = \rgds/\len;
+\r2 = 1-(\rgde/\len);
+\dx1 = \r1*\dxx;
+\dx2 = \r2*\dxx;
+\dy1 = \r1*\dyy;
+\dy2 = \r2*\dyy;
+\x1 = \startx+\dx1;
+\x2 = \startx+\dx2;
+\y1 = \starty+\dy1;
+\y2 = \starty+\dy2;
+\ang = atan2(\dyy,\dxx);
+\tickdx = \tic*sin(\ang);
+\tickdy = \tic*cos(\ang);
+}
+\draw [line width = 2pt] (\startx,\starty) -- (\x1,\y1);
+\draw [line width = 1pt] (\x1,\y1) -- (\x2,\y2);
+\draw [line width = 2pt] (\x2,\y2) -- (\endx,\endy);
+
+\draw [line width = {\ticklw}] (\startx-\tickdx,\starty+\tickdy) -- (\startx+\tickdx,\starty-\tickdy);
+\draw [line width = {\ticklw}] (\endx-\tickdx,\endy+\tickdy) -- (\endx+\tickdx,\endy-\tickdy);
+\foreach \i in {1,2}{
+\draw [line width = {\ticklw}] (\x{\i}-\tickdx,\y{\i}+\tickdy) -- (\x{\i}+\tickdx,\y{\i}-\tickdy);}
+}
+
+% end framerigid
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+\title{Testing}
+
+
+\author{Test Test}
+
+\maketitle
+\thispagestyle{firststyle}
+
+
+\section{Testing}
+
+
+\begin{center}
+\begin{tikzpicture}
+\framerigid{0}{0}{0}{3}{0.5}{1}{0.1}{0.5}
+\framerigid{0}{3}{4}{3}{0}{1.5}{0.1}{0.5}
+\framerigid{4}{3}{4}{0}{1.25}{0}{0.1}{0.5}
+\end{tikzpicture}
+\end{center}
+
+\end{document}
+
+

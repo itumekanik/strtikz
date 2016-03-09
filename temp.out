@@ -1,0 +1,15 @@
+\BOOKMARK [1][]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][]{section.2}{Usage}{}% 2
+\BOOKMARK [2][]{subsection.2.1}{Required arguments}{section.2}% 3
+\BOOKMARK [2][]{subsection.2.2}{Optional arguments}{section.2}% 4
+\BOOKMARK [2][]{subsection.2.3}{Literal text}{section.2}% 5
+\BOOKMARK [2][]{subsection.2.4}{Starred macros}{section.2}% 6
+\BOOKMARK [2][]{subsection.2.5}{More than nine arguments}{section.2}% 7
+\BOOKMARK [2][]{subsection.2.6}{Summary}{section.2}% 8
+\BOOKMARK [1][]{section.3}{Further examples}{}% 9
+\BOOKMARK [2][]{subsection.3.1}{Mimicking LaTeX's picture environment}{section.3}% 10
+\BOOKMARK [2][]{subsection.3.2}{Mimicking LaTeX's \parbox macro}{section.3}% 11
+\BOOKMARK [2][]{subsection.3.3}{Dynamically changing argument formats}{section.3}% 12
+\BOOKMARK [1][]{section.4}{Grammar}{}% 13
+\BOOKMARK [1][]{section.5}{Acknowledgements}{}% 14
+\BOOKMARK [1][]{section.6}{Copyright and license}{}% 15
