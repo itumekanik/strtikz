@@ -1,0 +1,424 @@
+%
+% strtikz: Tikz Macros for Structural Engineering
+% by Baris Erkus
+%
+% Please read the license before use.
+%
+% ver 0.01
+%    * \dframe added
+% ver 0.02
+%    * \dframe renamed to \framestructure
+%    * \framespring added
+%    * \framerigid added
+%    * \springs added
+%    * \dofs added
+% ver 0.03
+%    * various corrections
+% ver 0.03a
+%    * \springs converted to command with arguments
+%
+
+\ProvidesPackage{strtikz}[2016/03/05 v0.03a Structural-Tikz Macros]
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Newcommand: framestructure
+
+\newcommand{\framestructure}[8]
+{
+\tikzmath{
+int \ns, \nb, \ncol, \nlev, \nlevmo, \ncolmo, \i, \j;
+real \sh, \bw, \startx, \starty, \xx, \y;
+real \supw, \suph;
+coordinate \c;
+\ns = {#1}; %number of storys
+\nb = {#2}; %number of bays
+\ncol = \nb+1; %number of columns
+\nlev = \ns+1; %number of levels
+if \ns>1 then {\nlevmo = \nlev-1;} else {\nlevmo=2;};
+if \nb>1 then {\ncolmo = \ncol-1;} else {\ncolmo=2;};
+\sh = {#3}; %story height
+\bw = {#4}; % bay width
+\starty = {#5}; %starting coordinate y
+\startx = {#6}; %starting coordinate x
+\supw = {#7}; %support width
+\suph = {#8}; %support height
+for \i in {1,...,{\nlev}}{
+\y{\i} = \starty + (\i-1)*\sh;
+for \j in {1,...,{\ncol}}{
+\x{\j} = \startx + (\j-1)*\bw;
+};
+};
+print{\nlevmo};
+}
+
+%\draw [line width=0pt, color = white] (0, \y{\nlev}+2);
+\draw [line width = 1pt] (\x{1},\y{1}) -- (\x{1}, \y{\nlev}) -- (\x{\ncol}, \y{\nlev}) -- (\x{\ncol}, \y{1});
+\foreach \i in {2,...,{\nlevmo}} {\draw [line width = 1pt] (\x{1},\y{\i}) -- (\x{\ncol},\y{\i}); };
+\foreach \j in {2,...,{\ncolmo}} {\draw [line width = 1pt] (\x{\j},\y{1}) -- (\x{\j},\y{\nlev}); };
+\draw [{->}] (\x{\ncol}+\supw,\y{1}) -- +(1,0) node[anchor=west]{$X$};
+\draw [{->}] (\x{1},\y{\nlev}+0.5) -- +(0,1) node[anchor=east]{$Y$};
+\foreach \j in {1,...,{\ncol}}
+{
+\filldraw [gray] (\x{\j},\y{1}) +({-\supw/2},-\suph) rectangle +({\supw/2},\y{1});
+\draw [line width = 2pt] (\x{\j},\y{1}) +({-\supw/2},\y{1}) -- +({\supw/2},\y{1});
+}
+
+}
+% end framestructure
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Newcommand: framespring
+
+\newcommand{\framespring}[7]
+{
+\tikzmath{
+int \i;
+real \startx, \starty, \endx, \endy;
+real \len, \dxx, \dyy;
+real \dx1, \dx2, \dx3, \dx4, \dx5, \dx6;
+real \dy1, \dy2, \dy3, \dy4, \dy5, \dy6;
+real \x1, \x2, \x3, \x4, \x5, \x6;
+real \y1, \y2, \y3, \y4, \y5, \y6;
+real \r1, \r2, \r3, \r4, \r5, \r6
+real \rgd, \radi;
+real \ang;
+real \tickdx, \tickdy, \ticklw;
+\startx = {#1};
+\starty = {#2};
+\endx = {#3};
+\endy = {#4};
+\rgd = {#5};
+\radi = {#6};
+\tic = {#7};
+\ticklw = 0.75pt;
+\dxx = \endx-\startx;
+\dyy = \endy-\starty;
+\len = ((\dxx)^2+(\dyy)^2)^0.5;
+\r1 = \rgd/\len;
+\r2 = 2*\r1;
+\r3 = 1-\r2;
+\r4 = 1-\r1;
+\dx1 = \r1*\dxx;
+\dx2 = \r2*\dxx;
+\dx3 = \r3*\dxx;
+\dx4 = \r4*\dxx;
+\dy1 = \r1*\dyy;
+\dy2 = \r2*\dyy;
+\dy3 = \r3*\dyy;
+\dy4 = \r4*\dyy;
+\x1 = \startx+\dx1;
+\x2 = \startx+\dx2;
+\x3 = \startx+\dx3;
+\x4 = \startx+\dx4;
+\y1 = \starty+\dy1;
+\y2 = \starty+\dy2;
+\y3 = \starty+\dy3;
+\y4 = \starty+\dy4;
+\ang = atan2(\dyy,\dxx);
+\tickdx = \tic*sin(\ang);
+\tickdy = \tic*cos(\ang);
+}
+\draw [line width = 2pt] (\startx,\starty) -- (\x1,\y1) -- (\x2,\y2);
+\draw [line width = 1pt] (\x2,\y2) -- (\x3,\y3);
+\draw [line width = 2pt] (\x3,\y3) -- (\x4,\y4) -- (\endx,\endy);
+\draw (\x1,\y1) circle [radius=\radi];
+\draw (\x1,\y1) circle [radius=\radi/2];
+\draw (\x4,\y4) circle [radius=\radi];
+\draw (\x4,\y4) circle [radius=\radi/2];
+
+\draw [line width = {\ticklw}] (\startx-\tickdx,\starty+\tickdy) -- (\startx+\tickdx,\starty-\tickdy);
+\draw [line width = {\ticklw}] (\endx-\tickdx,\endy+\tickdy) -- (\endx+\tickdx,\endy-\tickdy);
+\foreach \i in {1,2,3,4}{
+\draw [line width = {\ticklw}] (\x{\i}-\tickdx,\y{\i}+\tickdy) -- (\x{\i}+\tickdx,\y{\i}-\tickdy);}
+}
+
+% end framespring
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Newcommand: framerigid
+
+\newcommand{\framerigid}[8]
+{
+\tikzmath{
+int \i;
+real \startx, \starty, \endx, \endy;
+real \len, \dxx, \dyy;
+real \dx1, \dx2, \dx3, \dx4, \dx5, \dx6;
+real \dy1, \dy2, \dy3, \dy4, \dy5, \dy6;
+real \x1, \x2, \x3, \x4, \x5, \x6;
+real \y1, \y2, \y3, \y4, \y5, \y6;
+real \r1, \r2, \r3, \r4, \r5, \r6
+real \rgds, \rgde, \radi;
+real \ang;
+real \tic, \tickdx, \tickdy, \ticklw;
+\startx = {#1};  %start x-coordinate
+\starty = {#2};  %start y-coordinate
+\endx = {#3};   %end x-coordinate
+\endy = {#4};   %end y-coordinate
+\rgds = {#5};    %rigid end distance start of frame
+\rgde = {#6};    %rigid end distance end of frame
+\tic = {#7};    %tick length
+\ticklw = {#8}; %tick line width
+\dxx = \endx-\startx;
+\dyy = \endy-\starty;
+\len = ((\dxx)^2+(\dyy)^2)^0.5;
+\r1 = \rgds/\len;
+\r2 = 1-(\rgde/\len);
+\dx1 = \r1*\dxx;
+\dx2 = \r2*\dxx;
+\dy1 = \r1*\dyy;
+\dy2 = \r2*\dyy;
+\x1 = \startx+\dx1;
+\x2 = \startx+\dx2;
+\y1 = \starty+\dy1;
+\y2 = \starty+\dy2;
+\ang = atan2(\dyy,\dxx);
+\tickdx = \tic*sin(\ang);
+\tickdy = \tic*cos(\ang);
+}
+\draw [line width = 2pt] (\startx,\starty) -- (\x1,\y1);
+\draw [line width = 1pt] (\x1,\y1) -- (\x2,\y2);
+\draw [line width = 2pt] (\x2,\y2) -- (\endx,\endy);
+
+\draw [line width = {\ticklw}] (\startx-\tickdx,\starty+\tickdy) -- (\startx+\tickdx,\starty-\tickdy);
+\draw [line width = {\ticklw}] (\endx-\tickdx,\endy+\tickdy) -- (\endx+\tickdx,\endy-\tickdy);
+\foreach \i in {1,2}{
+\draw [line width = {\ticklw}] (\x{\i}-\tickdx,\y{\i}+\tickdy) -- (\x{\i}+\tickdx,\y{\i}-\tickdy);}
+}
+
+% end framerigid
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Newcommand: springs
+
+\newcommand{\springs}[9]
+{
+    \def\strl{#1};    %start rigid length
+    \def\rbl{#2};     %rigid bar length
+    \def\enrl{#3};    %end rigid length
+    \def\splen{#4};   %spring length
+    \def\segl{#5};    %spring zigzag segment length (pt)
+    \def\reor{#6};    %rigid end offset ratio
+    \def\vsplr{#7};  %rotational spring diameter
+    \def\rsdi{#8};    %rotational spring cycle number
+    \def\rscn{#9};    %rotational spring cycle number
+    \springsctd
+}
+
+\newcommand\springsctd[6]{
+    \def\vstr{#1};   %vertical spring tick ratio
+    \def\hspl{#2};   %horizontal spring pre length
+    \def\hsel{#3};   %horizontal spring end length
+    \def\rspl{#4};   %rotational spring pre length
+    \def\rsel{#5};   %rotational spring end length
+    \def\rssl{#6};   %rotational spring segment length
+\tikzmath{
+coordinate \c;
+real \strl, \enrl, \rbl, \splen;
+real \hspl, \vppl, \rppl;
+real \hsel, \vpel, \rpel;
+real \hssl, \vpsl, \rpsl;
+real \vstu;
+real \segl;
+%\strl = 2.5; %start rigid length
+%\rbl = 1.0;  %rigid bar length
+%\enrl = 1.5; %end rigid length
+%\splen = 2;   %spring length
+%\segl = 4;     %spring zigzag segment length (pt)
+%\reor = 0.05;   %rigid end offset ratio
+%\vsplr = 0.25;  % vertical spring pre length ratio
+%\rsdi = 0.0005; %rotational spring diameter
+%\rscn = 4;     %rotational spring cycle number
+%\vstr = 0.4;  %vertical spring tick ratio
+%\hspl = 0.5;  %horizontal spring pre length
+%\hsel = 0.5;  %horizontal spring end length
+%\rspl = 0.2;  %rotational spring pre length
+%\rsel = 0.2;  %rotational spring end length
+%\rssl = 4;    %rotational spring segment length
+\hssl = \segl;    %horizontal spring segment length
+\vstu = \vstr*\rbl;  %vertical spring tikc up
+\vspl = \vsplr*\vstu;  %vertical spring pre length
+\vsel = \vspl;  %vertical spring end length
+\vssl = \segl;    %vertical spring segment length (pt)
+\rssx = \strl+\splen/2;
+\rssxx = \rssx + \rscn*2*pi*\rscn*2*pi*\rsdi;
+\rstrd = \strl+\splen-\rssxx; %rotational spring to right rigid bar distance
+\c1 = (0,0);
+\c2 = (\strl,0);
+\c3 = (\strl,\rbl);
+\c4 = (\strl,-\rbl);
+\c5 = (\strl+\splen,0);
+\c6 = (\strl+\splen+\enrl,0);
+\c7 = (\strl+\splen,\rbl);
+\c8 = (\strl+\splen,-\rbl);
+}
+\tikzset{hspring/.style={thick,decorate,decoration={zigzag,pre length=\hspl cm,post length=\hsel cm,segment length=\hssl pt}}}
+\tikzset{vspring/.style={thick,decorate,decoration={zigzag,pre length=\vspl cm,post length=\vsel cm,segment length=\vssl pt}}}
+\tikzset{rspring/.style={thick,decorate,decoration={zigzag,pre length=\rspl cm,post length=\rsel cm,segment length=\rssl pt}}}
+\draw [line width=4pt] (\c1) -- node[anchor=south] {\small $l_1$}(\c2) ;
+\draw [line width=4pt] (\c3) -- (\c4);
+\draw [line width=4pt] (\c5) -- node[anchor=south] {\small $l_2$}(\c6);
+\draw [line width=4pt] (\c7) -- (\c8);
+\draw [hspring] (\c3) ++(0,-\rbl*\reor) -- node[anchor=south] {\small $k_x$}++(\splen,0);
+\draw [thick] (\c2) -- ++(\splen/4,0) -- ++(0,\vstu) -- ++(\splen/4,0);
+\draw [vspring] (\c2) ++(\splen/4,0) ++(0,\vstu) ++(\splen/4,0) -- node[very near end, left] {\small $k_y$}++(0,-\vstu*2);
+\draw [thick] (\c2) ++(\splen/2,-\vstu) -- ++(\splen/4,0) -- ++(0,\vstu) -- ++(\splen/4,0);
+\draw [thick,domain=0:\rscn*2*pi,variable=\t,smooth,samples=75,xshift=\rssx cm,yshift=-\rbl*0.95 cm] plot ({\t r}: {\rsdi*\t*\t});
+\draw [thick](\c4) ++(0,\rbl*\reor) -- node[near end, below] {\small $k_\theta$}++(\splen/2,0);
+\draw [thick](\rssxx,-\rbl*(1-\reor) -- ++(\rstrd,0);
+\draw [->](\strl+\splen+\enrl+1.0,0) -- +(0.8,0) node[near end, above]{\small $x$};
+\draw [->](0,1.2) -- +(0,0.8) node[near end, left]{\small $y$};
+\dofs{0}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{1'}{2'}{3'}{above}{right}{below};
+\dofs{\strl+\splen+\enrl}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{4'}{5'}{6'}{above}{right}{below};
+}
+
+% end springs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Newcommand: dofs
+
+\newcommand\dofs[9]{%
+    \def\xx{#1}   % start point x-coordinate
+    \def\yy{#2}   % start point y-coordinate
+    \def\dx{#3}   %dx for X-DOF
+    \def\dy{#4}   %dy for Y-DOF
+    \def\tdof{#5} %translational DOF offset
+    \def\sa{#6}   %start angle of the rotational DOF
+    \def\ea{#7}   %end angle of the rotational DOF
+    \def\radi{#8} %radius of the rotational DOF
+    \def\dofx{#9} %string for X-DOF
+    \dofcontd;
+}
+
+\newcommand\dofcontd[5]{%
+\def\dofy{#1}; %string for Y-DOF
+\def\dofz{#2}; %string for Rot-DOF
+\def\xloc{#3};
+\def\yloc{#4};
+\def\rloc{#5};
+\tikzmath{
+coordinate \cjoint; % coordinate of the joint
+\cjoint = (\xx,\yy);
+}
+\draw [->] (\cjoint) ++(\tdof cm,0) -- node[near end, \xloc]{\tiny $\dofx$} ++(\dx cm,0);
+\draw [->] (\cjoint) ++(0, \tdof cm) -- node[near end, \yloc]{\tiny $\dofy$}++(0,\dy cm);
+\draw [->] (\sa:\radi cm) ++(\cjoint) arc [start angle=\sa, end angle=\ea, radius=\radi cm] node[very near end, \rloc]{\tiny $\dofz$};
+}
+
+
+% end dofs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Newcommand: framedistributedload
+
+\newcommand{\framedistributedload}[9]
+{
+\def\startx{#1} %starting coordinate x
+\def\starty{#2} %starting coordinate y
+\def\endx{#3} %end coordinate x
+\def\endy{#4} %end coordinate y
+\def\narr{#5} %number of arrows
+\def\harr{#6} %height of arrows
+\def\darr{#7} %distance of arrows from the frame
+\def\sarr{#8} %start(first) arrow start ratio
+\def\earr{#9} %end (last) arrow start ratio
+\fdlctd
+}
+
+\newcommand{\fdlctd}[1]
+{
+\def\aload{#1}
+\tikzmath{
+real \startx, \starty, \endx, \endy;
+real \ang, \unx, \uny;
+real \wx, \wy, \harr, \sarr, \earr;
+int \narr, \i, \j;
+real \rnarr;
+%\startx = {#1}; %starting coordinate x
+%\starty = {#2}; %starting coordinate y
+%\endx = {#3}; %end coordinate x
+%\endy = {#4}; %end coordinate y
+%\narr = {#5}; %number of arrows
+%\harr = {#6}; %height of arrows
+%\darr = {#7}; %distance of arrows from the frame
+%\sarr = {#8}; %start(first) arrow start ratio
+%\earr = {#9}; %end (last) arrow start ratio
+\dxf = (\endx-\startx); %dx for the whole frame
+\dyf = (\endy-\starty); %dy for the whole frame
+\aaa = (\dxf)^2 + (\dyf)^2; \lenf = sqrt(\aaa);   %length of frame element
+\ang = atan2(\dyf,\dxf);
+\dxa = \dxf*(1-(\sarr+\earr)); %dx for the start and end of arrow
+\dya = \dyf*(1-(\sarr+\earr)); %dy for the start and end of arrow
+\bbb = (\dxa)^2 + (\dya)^2; \lena = sqrt(\bbb);  %length of arrows
+\rnarr = \narr;
+\wx = (\dxa)/(\rnarr-1); %dx for the single arrow
+\wy = (\dya)/(\rnarr-1); %dx for the single arrow
+\x{1} = \startx + \dxf*(\sarr);
+\y{1} = \starty + \dyf*(\sarr);
+\x{\narr} = \endx - \dxf*(\earr);
+\y{\narr} = \endy - \dyf*(\earr);
+for \i in {2,...,{\narr-1}}{
+\x{\i} = \x{1} + (\i-1)*\wx;
+\y{\i} = \y{1} + (\i-1)*\wy;
+};
+\narrmo = \narr-1;
+\loc = ifthenelse(\harr>0,"above","below");
+}
+
+\foreach \i in {2,...,\narrmo}{
+\draw [<-, line width=0.5] (\x{\i} cm,\y{\i} cm) ++(90+\ang:\darr cm) -- ++(90+\ang:\harr cm);}
+\draw [<->, line width=0.5] (\x{1} cm,\y{1} cm) ++(90+\ang:\darr cm)-- ++(90+\ang:\harr cm) -- node[\loc,midway,sloped]{\aload} ++(\ang:\lena cm)-- ++(-90+\ang:\harr cm);
+}
+
+% end framedistributedload
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Newcommand: pinsupport\
+
+\newcommand{\rollersupport}[4]
+{
+\draw [line width=#4pt] (#1,#2) -- (#1+#3,#2-2*#3) -- (#1-#3,#2-2*#3) -- cycle;
+\draw [line width=#4pt] (#1+2*#3,#2-2*#3) -- (#1-2*#3,#2-2*#3);
+\draw [line width=#4pt] (#1+2*#3,#2-3*#3) -- (#1-2*#3,#2-3*#3);
+}
+
+% end framedistributedload
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Newcommand: pinsupport\
+
+\newcommand{\pinsupport}[4]
+{
+\draw [line width=#4pt] (#1,#2) -- (#1+#3,#2-2*#3) -- (#1-#3,#2-2*#3) -- cycle;
+\filldraw [fill=gray, draw=gray] (#1+2*#3,#2-3*#3) rectangle (#1-2*#3,#2-2*#3);
+\draw [line width=#4pt] (#1+2*#3,#2-2*#3) -- (#1-2*#3,#2-2*#3);
+}
+
+% end framedistributedload
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
