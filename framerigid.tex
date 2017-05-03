@@ -1,0 +1,63 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Newcommand: framerigid
+
+\newcommand{\framerigid}[8]
+{
+\tikzmath{
+int \i;
+real \startx, \starty, \endx, \endy;
+real \len, \dxx, \dyy;
+real \dx1, \dx2, \dx3, \dx4, \dx5, \dx6;
+real \dy1, \dy2, \dy3, \dy4, \dy5, \dy6;
+real \x1, \x2, \x3, \x4, \x5, \x6;
+real \y1, \y2, \y3, \y4, \y5, \y6;
+real \r1, \r2, \r3, \r4, \r5, \r6
+real \rgds, \rgde, \radi;
+real \ang;
+real \tic, \tickdx, \tickdy, \ticklw;
+\startx = {#1};  %start x-coordinate
+\starty = {#2};  %start y-coordinate
+\endx = {#3};   %end x-coordinate
+\endy = {#4};   %end y-coordinate
+\rgds = {#5};    %rigid end distance start of frame
+\rgde = {#6};    %rigid end distance end of frame
+\tic = {#7};    %tick length
+\ticklw = {#8}; %tick line width
+\dxx = \endx-\startx;
+\dyy = \endy-\starty;
+\len = ((\dxx)^2+(\dyy)^2)^0.5;
+\r1 = \rgds/\len;
+\r2 = 1-(\rgde/\len);
+\dx1 = \r1*\dxx;
+\dx2 = \r2*\dxx;
+\dy1 = \r1*\dyy;
+\dy2 = \r2*\dyy;
+\x1 = \startx+\dx1;
+\x2 = \startx+\dx2;
+\y1 = \starty+\dy1;
+\y2 = \starty+\dy2;
+\ang = atan2(\dyy,\dxx);
+\tickdx = \tic*sin(\ang);
+\tickdy = \tic*cos(\ang);
+}
+\draw [line width = 2pt] (\startx,\starty) -- (\x1,\y1);
+\draw [line width = 1pt] (\x1,\y1) -- (\x2,\y2);
+\draw [line width = 2pt] (\x2,\y2) -- (\endx,\endy);
+
+\draw [line width = {\ticklw}] (\startx-\tickdx,\starty+\tickdy) -- (\startx+\tickdx,\starty-\tickdy);
+\draw [line width = {\ticklw}] (\endx-\tickdx,\endy+\tickdy) -- (\endx+\tickdx,\endy-\tickdy);
+\foreach \i in {1,2}{
+\draw [line width = {\ticklw}] (\x{\i}-\tickdx,\y{\i}+\tickdy) -- (\x{\i}+\tickdx,\y{\i}-\tickdy);}
+}
+
+% end framerigid
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\begin{tikzpicture}
+%\framerigid{0}{0}{0}{3}{0.7}{0.7}{0.1}{0.5}
+%\framerigid{0}{3}{4}{3}{0.5}{1}{0.1}{0.5}
+%\framerigid{4}{3}{4}{0}{1.25}{0}{0.1}{0.5}
+%\end{tikzpicture}
+
+

@@ -1,0 +1,197 @@
+% Preview source code
+
+%% LyX 2.1.4 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[12pt,english]{article}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=25mm,bmargin=25mm,lmargin=25mm,rmargin=25mm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\usepackage{color}
+\usepackage{amstext}
+\PassOptionsToPackage{normalem}{ulem}
+\usepackage{ulem}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{titling, graphicx}
+\usepackage{tikz}
+%\usepackage{strtikz}
+
+\usetikzlibrary{shapes,arrows.meta, intersections, graphs, graphs.standard}
+\usetikzlibrary{math}
+\usetikzlibrary{calc,patterns,decorations.pathmorphing,decorations.markings}
+
+\date{}
+%\setlength\parindent{0pt}
+
+\pretitle{\begin{center} \Large \bf \vspace{-2em}}
+\posttitle{\par\end{center}\vspace{-1.5em}}
+\preauthor{\begin{center} \large \lineskip 1em \begin{tabular}[t]{c}}
+\postauthor{\end{tabular}\par\end{center}\vspace{-5em}}
+
+\rhead{Test}
+\lhead{\thetitle}
+
+\fancypagestyle{firststyle}
+{
+\lhead{None}
+\chead{\includegraphics[width=0.75cm, keepaspectratio=true]{logo.pdf}}
+\rhead{None}
+}
+
+\makeatother
+
+\usepackage{babel}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Newcommand: springs
+
+\newcommand{\springs}[9]
+{
+    \def\strl{#1};    %start rigid length
+    \def\rbl{#2};     %rigid bar length
+    \def\enrl{#3};    %end rigid length
+    \def\splen{#4};   %spring length
+    \def\segl{#5};    %spring zigzag segment length (pt)
+    \def\reor{#6};    %rigid end offset ratio
+    \def\vsplr{#7};  %rotational spring diameter
+    \def\rsdi{#8};    %rotational spring cycle number
+    \def\rscn{#9};    %rotational spring cycle number
+    \springsctd
+}
+
+\newcommand\springsctd[6]{
+    \def\vstr{#1};   %vertical spring tick ratio
+    \def\hspl{#2};   %horizontal spring pre length
+    \def\hsel{#3};   %horizontal spring end length
+    \def\rspl{#4};   %rotational spring pre length
+    \def\rsel{#5};   %rotational spring end length
+    \def\rssl{#6};   %rotational spring segment length
+\tikzmath{
+coordinate \c;
+real \strl, \enrl, \rbl, \splen;
+real \hspl, \vppl, \rppl;
+real \hsel, \vpel, \rpel;
+real \hssl, \vpsl, \rpsl;
+real \vstu;
+real \segl;
+%\strl = 2.5; %start rigid length
+%\rbl = 1.0;  %rigid bar length
+%\enrl = 1.5; %end rigid length
+%\splen = 2;   %spring length
+%\segl = 4;     %spring zigzag segment length (pt)
+%\reor = 0.05;   %rigid end offset ratio
+%\vsplr = 0.25;  % vertical spring pre length ratio
+%\rsdi = 0.0005; %rotational spring diameter
+%\rscn = 4;     %rotational spring cycle number
+%\vstr = 0.4;  %vertical spring tick ratio
+%\hspl = 0.5;  %horizontal spring pre length
+%\hsel = 0.5;  %horizontal spring end length
+%\rspl = 0.2;  %rotational spring pre length
+%\rsel = 0.2;  %rotational spring end length
+%\rssl = 4;    %rotational spring segment length
+\hssl = \segl;    %horizontal spring segment length
+\vstu = \vstr*\rbl;  %vertical spring tikc up
+\vspl = \vsplr*\vstu;  %vertical spring pre length
+\vsel = \vspl;  %vertical spring end length
+\vssl = \segl;    %vertical spring segment length (pt)
+\rssx = \strl+\splen/2; 
+\rssxx = \rssx + \rscn*2*pi*\rscn*2*pi*\rsdi;
+\rstrd = \strl+\splen-\rssxx; %rotational spring to right rigid bar distance
+\c1 = (0,0);
+\c2 = (\strl,0);
+\c3 = (\strl,\rbl);
+\c4 = (\strl,-\rbl);
+\c5 = (\strl+\splen,0);
+\c6 = (\strl+\splen+\enrl,0);
+\c7 = (\strl+\splen,\rbl);
+\c8 = (\strl+\splen,-\rbl);
+}
+\tikzset{hspring/.style={thick,decorate,decoration={zigzag,pre length=\hspl cm,post length=\hsel cm,segment length=\hssl pt}}}
+\tikzset{vspring/.style={thick,decorate,decoration={zigzag,pre length=\vspl cm,post length=\vsel cm,segment length=\vssl pt}}}
+\tikzset{rspring/.style={thick,decorate,decoration={zigzag,pre length=\rspl cm,post length=\rsel cm,segment length=\rssl pt}}}
+\draw [line width=4pt] (\c1) -- node[anchor=south] {\small $l_1$}(\c2) ;
+\draw [line width=4pt] (\c3) -- (\c4);
+\draw [line width=4pt] (\c5) -- node[anchor=south] {\small $l_2$}(\c6);
+\draw [line width=4pt] (\c7) -- (\c8);
+\draw [hspring] (\c3) ++(0,-\rbl*\reor) -- node[anchor=south] {\small $k_x$}++(\splen,0);
+\draw [thick] (\c2) -- ++(\splen/4,0) -- ++(0,\vstu) -- ++(\splen/4,0);
+\draw [vspring] (\c2) ++(\splen/4,0) ++(0,\vstu) ++(\splen/4,0) -- node[very near end, left] {\small $k_y$}++(0,-\vstu*2);
+\draw [thick] (\c2) ++(\splen/2,-\vstu) -- ++(\splen/4,0) -- ++(0,\vstu) -- ++(\splen/4,0);
+\draw [thick,domain=0:\rscn*2*pi,variable=\t,smooth,samples=75,xshift=\rssx cm,yshift=-\rbl*0.95 cm] plot ({\t r}: {\rsdi*\t*\t});
+\draw [thick](\c4) ++(0,\rbl*\reor) -- node[near end, below] {\small $k_\theta$}++(\splen/2,0);
+\draw [thick](\rssxx,-\rbl*(1-\reor) -- ++(\rstrd,0);
+\draw [->](\strl+\splen+\enrl+1.0,0) -- +(0.8,0) node[near end, above]{\small $x$};
+\draw [->](0,1.2) -- +(0,0.8) node[near end, left]{\small $y$};
+%\dofs{0}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{1'}{2'}{3'}{above}{right}{below};
+%\dofs{\strl+\splen+\enrl}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{4'}{5'}{6'}{above}{right}{below};
+}
+
+% end springs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Newcommand: dofs
+
+\newcommand\dofs[9]{%
+    \def\xx{#1}   % start point x-coordinate
+    \def\yy{#2}   % start point y-coordinate
+    \def\dx{#3}   %dx for X-DOF
+    \def\dy{#4}   %dy for Y-DOF
+    \def\tdof{#5} %translational DOF offset
+    \def\sa{#6}   %start angle of the rotational DOF
+    \def\ea{#7}   %end angle of the rotational DOF
+    \def\radi{#8} %radius of the rotational DOF
+    \def\dofx{#9} %string for X-DOF
+    \dofcontd
+}
+
+\newcommand\dofcontd[5]{%
+\def\dofy{#1}; %string for Y-DOF
+\def\dofz{#2}; %string for Rot-DOF
+\def\xloc{#3};
+\def\yloc{#4};
+\def\rloc{#5};
+\tikzmath{
+coordinate \cjoint; % coordinate of the joint
+\cjoint = (\xx,\yy);
+}
+\draw [->] (\cjoint) ++(\tdof cm,0) -- node[near end, \xloc]{\tiny $\dofx$} ++(\dx cm,0);
+\draw [->] (\cjoint) ++(0, \tdof cm) -- node[near end, \yloc]{\tiny $\dofy$}++(0,\dy cm);
+\draw [->] (\sa:\radi cm) ++(\cjoint) arc [start angle=\sa, end angle=\ea, radius=\radi cm] node[very near end, \rloc]{\tiny $\dofz$};
+}
+
+
+% end dofs
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+\title{Testing}
+
+
+\author{Test Test}
+
+\maketitle
+\thispagestyle{firststyle}
+
+
+\section{Testing}
+
+\begin{tikzpicture}
+\springs{2}{3}{4}{2}{4}{0.05}{0.25}{0.0005}{4}{0.4}{0.5}{0.5}{0.2}{0.2}{4};
+\dofs{0}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{1'}{2'}{3'}{above}{right}{below};
+\dofs{\strl+\splen+\enrl}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{4'}{5'}{6'}{above}{right}{below};
+\end{tikzpicture}
+
+\end{document}
+
+
