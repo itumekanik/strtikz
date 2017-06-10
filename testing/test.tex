@@ -1,0 +1,45 @@
+\documentclass[]{article}
+    \usepackage{tikz}
+    \usepackage{amsmath,amsthm}
+    \usetikzlibrary{math, calc}
+
+    \pgfkeys{
+     /testfam/.is family, /testfam,
+      default/.style={x = 1cm, y = 1},
+      x/.estore in = \x, y/.estore in = \y}
+
+    \newcommand{\testfam}[1][]{
+    \pgfkeys{/testfam, default, #1}
+    \tikzmath{
+      real \x, \y, \newx, \newy; 
+      coordinate \cd;
+      \newx1 = \x;
+      \newx2 = \x/28.45274;
+      \newy = \y;
+      \cd1 = (\newx1 pt,1 cm);
+      \cd2 = (2 cm,1 cm);
+      \cd3 = (\newx2 cm,2 cm);
+      \cd4 = (2 cm,2 cm);    
+      \cd5 = (4 cm,0 cm);
+      \cd6 = (4 cm,\y cm);
+      print {$x=\x $};
+      print {$newx1=\newx1 $};  
+      print {$newx2=\newx2 $};
+      print {$y=\y $}
+      print {$newy=\newy $};
+    }
+
+    \draw [line width = 1pt] (\cd1) -- (\cd2);
+
+    \draw [line width = 1pt, color=blue] (\cd3) -- (\cd4);
+
+    \draw [line width = 1pt, color=red] (\cd5) -- (\cd6);
+    }
+
+    \begin{document}
+
+        \begin{tikzpicture}
+            \testfam[x = 1cm, y=1] %Two cases: with and without units, 
+        \end{tikzpicture}
+
+    \end{document}

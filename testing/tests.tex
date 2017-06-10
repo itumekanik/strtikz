@@ -1,9 +1,14 @@
-\documentclass[]{standalone}
-%\usepackage{mathptmx}
-%\renewcommand{\familydefault}{\rmdefault}
+% Preview source code
+
+%% LyX 2.2.3 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
 \usepackage[T1]{fontenc}
 \usepackage[latin9]{inputenc}
-\usepackage{siunitx}
+\usepackage{units}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 \usepackage{array}
 \usepackage{amsmath}
 \usepackage{ifthen}
@@ -18,14 +23,13 @@
 \usetikzlibrary{math,fit}
 \usetikzlibrary{calc,intersections,through,backgrounds,decorations.pathmorphing}
 
+\makeatother
 
+\usepackage{babel}
 \begin{document}
-
+$\unitfrac[10]{kN}{m}$
 
 \begin{tikzpicture}
-\draw [line width=1](0 cm, 0 cm) -- (5 cm, 5 cm);
-\framedistributedload[startx = 0cm, starty = 0cm, endx = 5cm, endy = 5cm, number of arrows = 10, height of arrows = 0.5cm, space = 0.1cm, start ratio = 0.02, end ratio = 0.02, load text =$\SI{10}{\kilo\newton/\meter}$]
+node{$\unitfrac[10]{kN}{m}$};
 \end{tikzpicture}
-
-
 \end{document}

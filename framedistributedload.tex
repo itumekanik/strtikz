@@ -1,78 +1,86 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Newcommand: framedistributedload
-
-\newcommand{\framedistributedload}[9]
-{
-\def\startx{#1} %starting coordinate x
-\def\starty{#2} %starting coordinate y
-\def\endx{#3} %end coordinate x
-\def\endy{#4} %end coordinate y
-\def\narr{#5} %number of arrows
-\def\harr{#6} %height of arrows
-\def\darr{#7} %distance of arrows from the frame
-\def\sarr{#8} %start(first) arrow start ratio
-\def\earr{#9} %end (last) arrow start ratio
-\fdlctd
+\pgfkeys{
+ /framedistributedload/.is family, /framedistributedload,
+  default/.style={
+  startx = 0cm,
+  starty = 0cm,
+  endx = 5cm,
+  endy = 5cm,
+  number of arrows = 10,
+  height of arrows = 0.5cm,
+  space = 0.1cm,
+  start ratio = 0.02,
+  end ratio = 0.02,
+  load text = $\SI{10}{\kilo\newton/\meter}$},
+  startx/.estore in = \startx,
+  starty/.estore in = \starty,
+  endx/.estore in = \endx,
+  endy/.estore in = \endy,
+  number of arrows/.estore in = \narr,
+  height of arrows/.estore in = \harr,
+  space/.estore in = \darr,
+  start ratio/.estore in = \sarr,
+  end ratio/.estore in = \earr,
+  load text/.estore in = \aload,
 }
 
-\newcommand{\fdlctd}[1]
-{
-\def\aload{#1}
+%\startx: starting coordinate x
+%\starty: starting coordinate y
+%\endx: end coordinate x
+%\endy: end coordinate y
+%\narr: number of arrows
+%\harr: height of arrows
+%\darr: distance of arrows from the frame
+%\sarr: start(first) arrow start ratio
+%\earr: end (last) arrow start ratio
+
+\newcommand{\framedistributedload}[1][]{
+\pgfkeys{/framedistributedload, default, #1}
 \tikzmath{
 real \startx, \starty, \endx, \endy;
-real \ang, \unx, \uny;
-real \wx, \wy, \harr, \sarr, \earr;
-int \narr, \i, \j;
+real \angl, \unx, \uny, \dxf, \dyf, \dxa, \dya, \aaa, \bbb;
+real \x, \y;
+real \wx, \wy, \harr, \sarr, \earr, \lenf;
+int \narr, \narrmo, \i, \j;
 real \rnarr;
-%\startx = {#1}; %starting coordinate x
-%\starty = {#2}; %starting coordinate y
-%\endx = {#3}; %end coordinate x
-%\endy = {#4}; %end coordinate y
-%\narr = {#5}; %number of arrows
-%\harr = {#6}; %height of arrows
-%\darr = {#7}; %distance of arrows from the frame
-%\sarr = {#8}; %start(first) arrow start ratio
-%\earr = {#9}; %end (last) arrow start ratio
-\dxf = (\endx-\startx); %dx for the whole frame
-\dyf = (\endy-\starty); %dy for the whole frame
-\aaa = (\dxf)^2 + (\dyf)^2; \lenf = sqrt(\aaa);   %length of frame element
-\ang = atan2(\dyf,\dxf);
-\dxa = \dxf*(1-(\sarr+\earr)); %dx for the start and end of arrow
-\dya = \dyf*(1-(\sarr+\earr)); %dy for the start and end of arrow
-\bbb = (\dxa)^2 + (\dya)^2; \lena = sqrt(\bbb);  %length of arrows
-\rnarr = \narr;
-\wx = (\dxa)/(\rnarr-1); %dx for the single arrow
-\wy = (\dya)/(\rnarr-1); %dx for the single arrow
-\x{1} = \startx + \dxf*(\sarr);
-\y{1} = \starty + \dyf*(\sarr);
-\x{\narr} = \endx - \dxf*(\earr);
-\y{\narr} = \endy - \dyf*(\earr);
-for \i in {2,...,{\narr-1}}{
-\x{\i} = \x{1} + (\i-1)*\wx;
-\y{\i} = \y{1} + (\i-1)*\wy;
-};
-\narrmo = \narr-1;
-\loc = ifthenelse(\harr>0,"above","below");
+ \dxf = (\endx-\startx)/28.45274; %dx for the whole frame
+ \dyf = (\endy-\starty)/28.45274; %dy for the whole frame
+ \aaa = \dxf^2 + \dyf^2; \lenf = sqrt(\aaa);   %length of frame element
+ \angl = atan2(\dyf,\dxf);
+ \dxa = \dxf*(1-(\sarr+\earr)); %dx for the start and end of arrow
+ \dya = \dyf*(1-(\sarr+\earr)); %dy for the start and end of arrow
+ \bbb = (\dxa)^2 + (\dya)^2; \lena = sqrt(\bbb);  %length of arrows
+ \rnarr = \narr;
+ \wx = (\dxa)/(\rnarr-1); %dx for the single arrow
+ \wy = (\dya)/(\rnarr-1); %dx for the single arrow
+ \x{1} = \startx/28.45274 + \dxf*(\sarr);
+ \y{1} = \starty/28.45274 + \dyf*(\sarr);
+ \x{\narr} = \endx/28.45274 - \dxf*(\earr);
+ \y{\narr} = \endy/28.45274 - \dyf*(\earr);
+ for \i in {2,...,{\narr-1}}{
+ \x{\i} = \x{1} + (\i-1)*\wx;
+ \y{\i} = \y{1} + (\i-1)*\wy;
+ };
+ \narrmo = \narr-1;
+ \loc = ifthenelse(\harr>0,"above","below");
+%print {$aaa=\dxa$};
 }
 
 \foreach \i in {2,...,\narrmo}{
-\draw (0,0) -- (2,2);
-\draw [<-, line width=0.5] (\x{\i} cm,\y{\i} cm) ++(90+\ang:\darr cm) -- ++(90+\ang:\harr cm);}
-\draw [<->, line width=0.5] (\x{1} cm,\y{1} cm) ++(90+\ang:\darr cm)-- ++(90+\ang:\harr cm) -- node[\loc,midway,sloped]{\aload} ++(\ang:\lena cm)-- ++(-90+\ang:\harr cm);
+\draw [<-, line width=0.5] (\x{\i}, \y{\i}) ++(90+\angl:\darr) -- ++(90+\angl:\harr);}
+\draw [<->, line width=0.5] (\x{1},\y{1}) ++(90+\angl:\darr)--
+++(90+\angl:\harr) -- node[\loc,midway,sloped]{\aload}
+++(\angl:\lena)-- ++(-90+\angl:\harr);
 }
 
-% end framedistributedload
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 %\begin{tikzpicture}
-%\def\sx{0}
-%\def\sy{0}
-%\def\ex{5}
-%\def\ey{5}
-%\draw [line width=1](\sx cm, \sy cm) -- (\ex cm,\ey cm);
-%\framedistributedload{\sx}{\sy}{\ex}{\ey}{10}{-0.6}{-0.05}{0.2}{0.1}{5 kN/m};
-%\draw [line width=1](2cm+\sx cm, \sy cm) -- (2cm+\ex cm,\ey cm);
-%\framedistributedload{2+\sx}{\sy}{2+\ex}{\ey}{20}{-0.6}{-0.05}{0.01}{0.04}{{\small $\sqrt{w} \times 10$}};
+%\draw [line width=1](0 cm, 0 cm) -- (5 cm, 5 cm);
+%\framedistributedload[startx = 0cm, starty = 0cm,
+%endx = 5cm, endy = 5cm,
+%number of arrows = 10,
+%height of arrows = 0.5cm,
+%space = 0.1cm,
+%start ratio = 0.02,
+%end ratio = 0.02,
+%load text = $\SI{10}{\kilo\newton/\meter}$]
 %\end{tikzpicture}
 

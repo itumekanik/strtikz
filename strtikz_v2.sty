@@ -16,49 +16,69 @@
 %    * various corrections
 % ver 0.03a
 %    * \springs converted to command with arguments
-%
+% ver 0.04
+%    * \framestructure is uğdated with pgf keys
 
-\ProvidesPackage{strtikz}[2016/03/05 v0.03a Structural-Tikz Macros]
+\ProvidesPackage{strtikz}[2017/04/24 v0.04 Structural-Tikz Macros]
 
 
+\pgfkeys{
+ /framestructure/.is family, /framestructure,
+  default/.style = {number of storys = 5,
+  number of bays = 3,
+  story height = 1cm,
+  bay width = 2cm,
+  startX = 0cm,
+  startY = 0cm,
+  support width = 0.3cm,
+  support height = 0.15cm},
+  number of storys/.estore in = \ns,
+  number of bays/.estore in = \nb,
+  story height/.estore in = \sh,
+  bay width/.estore in = \bw,
+  startX/.estore in = \startx,
+  startY/.estore in = \starty,
+  support width/.estore in = \supw,
+  support height/.estore in = \suph
+ }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Newcommand: framestructure
 
-\newcommand{\framestructure}[8]
-{
+\newcommand{\framestructure}[1][]{
+\pgfkeys{/framestructure, default, #1}
 \tikzmath{
 int \ns, \nb, \ncol, \nlev, \nlevmo, \ncolmo, \i, \j;
 real \sh, \bw, \startx, \starty, \xx, \y;
 real \supw, \suph;
 coordinate \c;
-\ns = {#1}; %number of storys
-\nb = {#2}; %number of bays
 \ncol = \nb+1; %number of columns
 \nlev = \ns+1; %number of levels
 if \ns>1 then {\nlevmo = \nlev-1;} else {\nlevmo=2;};
 if \nb>1 then {\ncolmo = \ncol-1;} else {\ncolmo=2;};
-\sh = {#3}; %story height
-\bw = {#4}; % bay width
-\starty = {#5}; %starting coordinate y
-\startx = {#6}; %starting coordinate x
-\supw = {#7}; %support width
-\suph = {#8}; %support height
 for \i in {1,...,{\nlev}}{
 \y{\i} = \starty + (\i-1)*\sh;
 for \j in {1,...,{\ncol}}{
 \x{\j} = \startx + (\j-1)*\bw;
 };
 };
-print{\nlevmo};
+%print{\nlevmo};
+}
+\draw [line width=0pt, color = white] (0, \y{\nlev}+2);
+\draw [line width = 1pt] (\x{1},\y{1}) -- (\x{1}, \y{\nlev}) -- (\x{\ncol}, \y{\nlev}) -- (\x{\ncol}, \y{1});
+\foreach \i in {2,...,{\nlevmo}}
+{
+\draw [line width = 1pt] (\x{1},\y{\i}) -- (\x{\ncol},\y{\i});
 }
 
-%\draw [line width=0pt, color = white] (0, \y{\nlev}+2);
-\draw [line width = 1pt] (\x{1},\y{1}) -- (\x{1}, \y{\nlev}) -- (\x{\ncol}, \y{\nlev}) -- (\x{\ncol}, \y{1});
-\foreach \i in {2,...,{\nlevmo}} {\draw [line width = 1pt] (\x{1},\y{\i}) -- (\x{\ncol},\y{\i}); };
-\foreach \j in {2,...,{\ncolmo}} {\draw [line width = 1pt] (\x{\j},\y{1}) -- (\x{\j},\y{\nlev}); };
+\foreach \j in {2,...,{\ncolmo}}
+{
+\draw [line width = 1pt] (\x{\j},\y{1}) -- (\x{\j},\y{\nlev});
+}
+
 \draw [{->}] (\x{\ncol}+\supw,\y{1}) -- +(1,0) node[anchor=west]{$X$};
 \draw [{->}] (\x{1},\y{\nlev}+0.5) -- +(0,1) node[anchor=east]{$Y$};
+
 \foreach \j in {1,...,{\ncol}}
 {
 \filldraw [gray] (\x{\j},\y{1}) +({-\supw/2},-\suph) rectangle +({\supw/2},\y{1});
@@ -302,7 +322,7 @@ real \segl;
     \def\ea{#7}   %end angle of the rotational DOF
     \def\radi{#8} %radius of the rotational DOF
     \def\dofx{#9} %string for X-DOF
-    \dofcontd;
+    \dofcontd
 }
 
 \newcommand\dofcontd[5]{%
@@ -333,27 +353,26 @@ coordinate \cjoint; % coordinate of the joint
 
 \newcommand{\framedistributedload}[9]
 {
-\def\startx{#1} %starting coordinate x
-\def\starty{#2} %starting coordinate y
-\def\endx{#3} %end coordinate x
-\def\endy{#4} %end coordinate y
-\def\narr{#5} %number of arrows
-\def\harr{#6} %height of arrows
-\def\darr{#7} %distance of arrows from the frame
-\def\sarr{#8} %start(first) arrow start ratio
-\def\earr{#9} %end (last) arrow start ratio
+\def\startx{#1}; %starting coordinate x
+\def\starty{#2}; %starting coordinate y
+\def\endx{#3}; %end coordinate x
+\def\endy{#4}; %end coordinate y
+\def\narr{#5}; %number of arrows
+\def\harr{#6}; %height of arrows
+\def\darr{#7}; %distance of arrows from the frame
+\def\sarr{#8}; %start(first) arrow start ratio
+\def\earr{#9}; %end (last) arrow start ratio
 \fdlctd
 }
 
 \newcommand{\fdlctd}[1]
 {
-\def\aload{#1}
+\def\load{#1};
 \tikzmath{
 real \startx, \starty, \endx, \endy;
 real \ang, \unx, \uny;
 real \wx, \wy, \harr, \sarr, \earr;
 int \narr, \i, \j;
-real \rnarr;
 %\startx = {#1}; %starting coordinate x
 %\starty = {#2}; %starting coordinate y
 %\endx = {#3}; %end coordinate x
@@ -370,55 +389,25 @@ real \rnarr;
 \dxa = \dxf*(1-(\sarr+\earr)); %dx for the start and end of arrow
 \dya = \dyf*(1-(\sarr+\earr)); %dy for the start and end of arrow
 \bbb = (\dxa)^2 + (\dya)^2; \lena = sqrt(\bbb);  %length of arrows
-\rnarr = \narr;
-\wx = (\dxa)/(\rnarr-1); %dx for the single arrow
-\wy = (\dya)/(\rnarr-1); %dx for the single arrow
+\wx = (\dxa)/(\narr-1); %dx for the single arrow
+\wy = (\dya)/(\narr-1); %dx for the single arrow
 \x{1} = \startx + \dxf*(\sarr);
 \y{1} = \starty + \dyf*(\sarr);
 \x{\narr} = \endx - \dxf*(\earr);
 \y{\narr} = \endy - \dyf*(\earr);
 for \i in {2,...,{\narr-1}}{
-\x{\i} = \x{1} + (\i-1)*\wx;
-\y{\i} = \y{1} + (\i-1)*\wy;
+\x{\i} = \x1 + (\i-1)*\wx;
+\y{\i} = \y1 + (\i-1)*\wy;
 };
 \narrmo = \narr-1;
 \loc = ifthenelse(\harr>0,"above","below");
 }
 
+%\draw [line width=0pt, color = white] (0, \y{\nlev}+2);
 \foreach \i in {2,...,\narrmo}{
-\draw [<-, line width=0.5] (\x{\i} cm,\y{\i} cm) ++(90+\ang:\darr cm) -- ++(90+\ang:\harr cm);}
-\draw [<->, line width=0.5] (\x{1} cm,\y{1} cm) ++(90+\ang:\darr cm)-- ++(90+\ang:\harr cm) -- node[\loc,midway,sloped]{\aload} ++(\ang:\lena cm)-- ++(-90+\ang:\harr cm);
+\draw [<-, line width=0.5] (\x{\i} cm,\y{\i} cm) ++(90+\ang:\darr cm) -- ++(90+\ang:\harr cm);};
+\draw [<->, line width=0.5] (\x{1} cm,\y{1} cm) ++(90+\ang:\darr cm)-- ++(90+\ang:\harr cm) -- node[\loc,midway,sloped]{\load} ++(\ang:\lena cm)-- ++(-90+\ang:\harr cm);
+
 }
-
-% end framedistributedload
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Newcommand: pinsupport\
-
-\newcommand{\rollersupport}[4]
-{
-\draw [line width=#4pt] (#1,#2) -- (#1+#3,#2-2*#3) -- (#1-#3,#2-2*#3) -- cycle;
-\draw [line width=#4pt] (#1+2*#3,#2-2*#3) -- (#1-2*#3,#2-2*#3);
-\draw [line width=#4pt] (#1+2*#3,#2-3*#3) -- (#1-2*#3,#2-3*#3);
-}
-
-% end framedistributedload
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Newcommand: pinsupport\
-
-\newcommand{\pinsupport}[4]
-{
-\draw [line width=#4pt] (#1,#2) -- (#1+#3,#2-2*#3) -- (#1-#3,#2-2*#3) -- cycle;
-\filldraw [fill=gray, draw=gray] (#1+2*#3,#2-3*#3) rectangle (#1-2*#3,#2-2*#3);
-\draw [line width=#4pt] (#1+2*#3,#2-2*#3) -- (#1-2*#3,#2-2*#3);
-}
-
 % end framedistributedload
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
