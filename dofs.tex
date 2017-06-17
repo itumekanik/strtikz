@@ -1,37 +1,61 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Newcommand: dofs
+\pgfkeys{
+ /dofs/.is family, /dofs,
+  default/.style={
+  startx = 0cm,
+  starty = 0cm,
+  dx = 1cm,
+  dy = 1cm,
+  offset = 0.1cm,
+  start angle = 110,
+  end angle = 340,  
+  radius = 0.5cm,
+  xstring = $x$,
+  ystring = $y$,  
+  rstring = $z$,
+  font size = \normalsize,
+  x location = below,
+  y location = right,  
+  r location = right,
+  rotation = 0},
+  startx/.store in = \xx,
+  starty/.store in = \yy,
+  dx/.store in = \dx,
+  dy/.store in = \dy,
+  offset/.store in = \tdof,
+  start angle/.store in = \sa,
+  end angle/.store in = \ea,
+  radius/.store in = \radi,
+  xstring/.store in = \dofx,
+  ystring/.store in = \dofy,
+  rstring/.store in = \dofr,
+  font size/.store in = \fsize,
+  x location/.store in = \xloc,
+  y location/.store in = \yloc,
+  r location/.store in = \rloc,
+  rotation/.store in = \rot}
 
-\newcommand\dofs[9]{%
-    \def\xx{#1}   % start point x-coordinate
-    \def\yy{#2}   % start point y-coordinate
-    \def\dx{#3}   %dx for X-DOF
-    \def\dy{#4}   %dy for Y-DOF
-    \def\tdof{#5} %translational DOF offset
-    \def\sa{#6}   %start angle of the rotational DOF
-    \def\ea{#7}   %end angle of the rotational DOF
-    \def\radi{#8} %radius of the rotational DOF
-    \def\dofx{#9} %string for X-DOF
-    \dofcontd
-}
+\newcommand{\dofs}[1][]{
+\pgfkeys{/dofs, default, #1}
 
-\newcommand\dofcontd[5]{%
-\def\dofy{#1}; %string for Y-DOF
-\def\dofz{#2}; %string for Rot-DOF
-\def\xloc{#3};
-\def\yloc{#4};
-\def\rloc{#5};
 \tikzmath{
+real \xx, \yy, \dx, \dy;
+real \tdof, \radi;
 coordinate \cjoint; % coordinate of the joint
+%Conversion all units to the unit pt
+\xx = \xx;
+\yy = \yy;
+\dx = \dx;
+\dy = \dy;
+\tdof = \tdof;
+\radi = \radi;
+%End conversion, All values are now in pt units.
 \cjoint = (\xx,\yy);
+%print {$\dx -$};
+%print {$\dy -$};
 }
-\draw [->] (\cjoint) ++(\tdof cm,0) -- node[near end, \xloc]{\tiny $\dofx$} ++(\dx cm,0);
-\draw [->] (\cjoint) ++(0, \tdof cm) -- node[near end, \yloc]{\tiny $\dofy$}++(0,\dy cm);
-\draw [->] (\sa:\radi cm) ++(\cjoint) arc [start angle=\sa, end angle=\ea, radius=\radi cm] node[very near end, \rloc]{\tiny $\dofz$};
+\begin{scope}[x=1pt, y=1pt, rotate=\rot]; % Drawing everything in pt units
+\draw [->] (\cjoint) ++(\tdof,0) -- node[at end, \xloc]{\fsize \dofx} ++(\dx,0);
+\draw [->] (\cjoint) ++(0, \tdof) -- node[at end, \yloc]{\fsize \dofy}++(0,\dy);
+\draw [->] (\sa:\radi) ++(\cjoint) arc [start angle=\sa, end angle=\ea, radius=\radi] node[very near end, \rloc]{\fsize \dofr};
+\end{scope}
 }
-% end dofs
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%\begin{tikzpicture}
-%\dofs{0}{0}{2}{3}{0.2}{110}{340}{0.5}{a}{2'}{3'}{right}{right}{right};
-%\end{tikzpicture}
