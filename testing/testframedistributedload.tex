@@ -17,6 +17,8 @@
 \usetikzlibrary{shapes,arrows.meta,intersections,graphs,graphs.standard}
 \usetikzlibrary{math,fit}
 \usetikzlibrary{calc,intersections,through,backgrounds,decorations.pathmorphing}
+%\usetikzlibrary{fpu}
+%\usepackage{pgfmath}
 
 
 \begin{document}
@@ -24,7 +26,17 @@
 
 \begin{tikzpicture}
 \draw [line width=1](0 cm, 0 cm) -- (5 cm, 5 cm);
-\framedistributedload[startx = 0cm, starty = 0cm, endx = 5cm, endy = 5cm, number of arrows = 10, height of arrows = 0.5cm, space = 0.1cm, start ratio = 0.02, end ratio = 0.02, load text =$\SI{10}{\kilo\newton/\meter}$]
+\framedistributedload[startx = 0cm,
+starty = 0cm,
+endx = 2.5in,
+endy = 5cm,
+number of arrows = 10,
+height of arrows = -0.5cm,
+space = 0.1cm,
+start ratio = 0.02,
+end ratio = 0.02,
+load text = $\SI{10}{\kilo\newton/\meter}$]
+%$\SI{10}{\kilo\newton/\meter}$
 \end{tikzpicture}
 
 

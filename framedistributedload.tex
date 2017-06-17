@@ -32,7 +32,6 @@
 %\darr: distance of arrows from the frame
 %\sarr: start(first) arrow start ratio
 %\earr: end (last) arrow start ratio
-
 \newcommand{\framedistributedload}[1][]{
 \pgfkeys{/framedistributedload, default, #1}
 \tikzmath{
@@ -42,34 +41,43 @@ real \x, \y;
 real \wx, \wy, \harr, \sarr, \earr, \lenf;
 int \narr, \narrmo, \i, \j;
 real \rnarr;
- \dxf = (\endx-\startx)/28.45274; %dx for the whole frame
- \dyf = (\endy-\starty)/28.45274; %dy for the whole frame
- \aaa = \dxf^2 + \dyf^2; \lenf = sqrt(\aaa);   %length of frame element
+%Conversion all units to the unit pt
+\startx = \startx;
+\starty = \starty;
+\endx = \endx;
+\endy = \endy;
+\harr = \harr;
+\darr = \darr;
+%End conversion, All values are now in pt units.
+ \dxf = (\endx-\startx); %dx for the whole frame
+ \dyf = (\endy-\starty); %dy for the whole frame
+ \lenf = veclen(\dxf, \dyf);
  \angl = atan2(\dyf,\dxf);
  \dxa = \dxf*(1-(\sarr+\earr)); %dx for the start and end of arrow
  \dya = \dyf*(1-(\sarr+\earr)); %dy for the start and end of arrow
- \bbb = (\dxa)^2 + (\dya)^2; \lena = sqrt(\bbb);  %length of arrows
+ \lena = veclen(\dxa, \dya);
  \rnarr = \narr;
  \wx = (\dxa)/(\rnarr-1); %dx for the single arrow
  \wy = (\dya)/(\rnarr-1); %dx for the single arrow
- \x{1} = \startx/28.45274 + \dxf*(\sarr);
- \y{1} = \starty/28.45274 + \dyf*(\sarr);
- \x{\narr} = \endx/28.45274 - \dxf*(\earr);
- \y{\narr} = \endy/28.45274 - \dyf*(\earr);
+ \x{1} = \startx + \dxf*(\sarr);
+ \y{1} = \starty + \dyf*(\sarr);
+ \x{\narr} = \endx - \dxf*(\earr);
+ \y{\narr} = \endy - \dyf*(\earr);
  for \i in {2,...,{\narr-1}}{
  \x{\i} = \x{1} + (\i-1)*\wx;
  \y{\i} = \y{1} + (\i-1)*\wy;
  };
  \narrmo = \narr-1;
  \loc = ifthenelse(\harr>0,"above","below");
-%print {$aaa=\dxa$};
+% print {$\dxf$};
 }
-
+\begin{scope}[x=1pt, y=1pt]; % Drawing everything in pt units
 \foreach \i in {2,...,\narrmo}{
 \draw [<-, line width=0.5] (\x{\i}, \y{\i}) ++(90+\angl:\darr) -- ++(90+\angl:\harr);}
 \draw [<->, line width=0.5] (\x{1},\y{1}) ++(90+\angl:\darr)--
 ++(90+\angl:\harr) -- node[\loc,midway,sloped]{\aload}
 ++(\angl:\lena)-- ++(-90+\angl:\harr);
+\end{scope}
 }
 
 %\begin{tikzpicture}
