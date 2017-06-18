@@ -1,0 +1,11 @@
+\pgfkeys{
+ /framedistributedload/.is family, /lumpedmass,
+  default/.style={}
+
+\newcommand{\lumpedmass}[1][]{
+\pgfkeys{/lumpedmass, default, #1}
+\tikzmath{
+\baris = 100
+\ccc = 10
+\ddd = 1000}
+}
