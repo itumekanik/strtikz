@@ -1,0 +1,54 @@
+\pgfkeys{
+/rotspring/.is family, /rotspring,
+default/.style={
+startx = 0cm,
+starty = 0cm,
+rotation = 0,
+start rigid length = 2cm,
+end rigid length = 1.5cm,
+rotational spring diameter = 0.0005cm,
+rotational spring cycle number = 4,
+text = $k_\theta$},
+startx/.store in = \startx,
+starty/.store in = \starty,
+rotation/.store in = \rotn,
+start rigid length/.store in = \strl,
+end rigid length/.store in = \enrl,
+rotational spring diameter/.store in = \rsdi,
+rotational spring cycle number/.store in = \rscn,
+text/.store in = \sptext}
+\newcommand{\rotspring}[1][]{
+\pgfkeys{/rotspring, default, #1}
+\tikzmath{
+real \startx, \starty;
+real \strl, \enrl, \rotn;
+real \rsdi, \rscn;
+real \rssx, \rssxx, \rstrd;
+real \rsed;
+%Conversion all units to the unit pt
+\startx = \startx;
+\starty = \starty;
+\strl=\strl;
+\enrl=\enrl;
+\rsdi=\rsdi;
+\rscn=\rscn;
+%End conversion, All values are now in pt units
+\rsed = \rscn*2*pi*\rscn*2*pi*\rsdi;
+}
+\begin{scope}[x=1pt, y=1pt, xshift = \startx, yshift=\starty, rotate=\rotn]; % Draw everything in pt units
+\draw [thick](0,0) -- node[near end, below] {\small \sptext}++(\strl,0);
+\draw [thick,domain=0:\rscn*2*pi,variable=\t,smooth,samples=75,xshift=\strl] plot ({\t r}: {\rsdi*\t*\t}) -- ++(\enrl-\rsed,0);;
+\end{scope}
+}
+
+%\begin{tikzpicture}
+%\rotspring[startx = 2cm,
+%starty = 3cm,
+%rotation = 30,
+%start rigid length = 0.5cm,
+%end rigid length = 0.5cm,
+%rotational spring diameter = 0.0004cm,
+%rotational spring cycle number = 3,
+%text = $k_\theta$]
+%\draw (0,0) -- (1cm,1cm);
+%\end{tikzpicture}
