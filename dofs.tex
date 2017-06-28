@@ -49,13 +49,31 @@ coordinate \cjoint; % coordinate of the joint
 \tdof = \tdof;
 \radi = \radi;
 %End conversion, All values are now in pt units.
-\cjoint = (\xx,\yy);
 %print {$\dx -$};
 %print {$\dy -$};
 }
-\begin{scope}[x=1pt, y=1pt, rotate=\rot]; % Drawing everything in pt units
-\draw [->] (\cjoint) ++(\tdof,0) -- node[at end, \xloc]{\fsize \dofx} ++(\dx,0);
-\draw [->] (\cjoint) ++(0, \tdof) -- node[at end, \yloc]{\fsize \dofy}++(0,\dy);
-\draw [->] (\sa:\radi) ++(\cjoint) arc [start angle=\sa, end angle=\ea, radius=\radi] node[very near end, \rloc]{\fsize \dofr};
+\begin{scope}[x=1pt, y=1pt, xshift=\xx, yshift=\yy, rotate=\rot]; % Drawing everything in pt units
+\draw [->] (\tdof,0) -- node[at end, \xloc]{\fsize \dofx} ++(\dx,0);
+\draw [->] (0, \tdof) -- node[at end, \yloc]{\fsize \dofy}++(0,\dy);
+\draw [->] (\sa:\radi) ++(0,0) arc [start angle=\sa, end angle=\ea, radius=\radi] node[very near end, \rloc]{\fsize \dofr};
 \end{scope}
 }
+
+%\begin{tikzpicture}
+%\dofs[startx = 0cm,
+%  starty = 0cm,
+%  dx = 1in,
+%  dy = 1cm,
+%  offset = 0.0cm,
+%  start angle = 110,
+%  end angle = 340,  
+%  radius = 1cm,
+%  xstring = $x$,
+%  ystring = $y$,  
+%  rstring = $\theta$,
+%  font size = \scriptsize,
+%  x location = left,
+%  y location = right,  
+%  r location = right,
+%  rotation=45]
+%\end{tikzpicture}

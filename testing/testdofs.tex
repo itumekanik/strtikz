@@ -21,14 +21,14 @@
 
 \begin{document}
 \begin{tikzpicture}
-\dofs[startx = 0cm,
-  starty = 0cm,
-  dx = 1in,
-  dy = 1cm,
+\dofs[startx = 2cm,
+  starty = 2cm,
+  dx = 0.5cm,
+  dy = 0.5cm,
   offset = 0.0cm,
   start angle = 110,
   end angle = 340,  
-  radius = 1cm,
+  radius = 0.5cm,
   xstring = $x$,
   ystring = $y$,  
   rstring = $\theta$,
@@ -37,5 +37,6 @@
   y location = right,  
   r location = right,
   rotation=45]
+\draw(0,0) -- (2,2);
 \end{tikzpicture}
 \end{document}
