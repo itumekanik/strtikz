@@ -23,8 +23,8 @@
 \begin{tikzpicture}
 \dofs[startx = 2cm,
   starty = 2cm,
-  dx = 0.5cm,
-  dy = 0.5cm,
+  length x = 0.5cm,
+  length y = 0.5cm,
   offset = 0.0cm,
   start angle = 110,
   end angle = 340,  
@@ -33,9 +33,12 @@
   ystring = $y$,  
   rstring = $\theta$,
   font size = \scriptsize,
-  x location = left,
+  x location = above,
   y location = right,  
   r location = right,
+  x location offset = -0.1cm,
+  y location offset = 1cm,
+  r location offset = 1in,
   rotation=45]
 \draw(0,0) -- (2,2);
 \end{tikzpicture}

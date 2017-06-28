@@ -1,6 +1,3 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Newcommand: framestructure
-
 \pgfkeys{
  /framestructure/.is family, /framestructure,
   default/.style = {number of storys = 5,
@@ -9,61 +6,147 @@
   bay width = 2cm,
   startX = 0cm,
   startY = 0cm,
+  frame line thickness = 1pt,
   support width = 0.3cm,
-  support height = 0.15cm},
-  number of storys/.estore in = \ns,
-  number of bays/.estore in = \nb,
-  story height/.estore in = \sh,
-  bay width/.estore in = \bw,
-  startX/.estore in = \startx,
-  startY/.estore in = \starty,
-  support width/.estore in = \supw,
-  support height/.estore in = \suph
- }
+  support height = 0.15cm,
+  support line thickness = 1.5pt,
+  show supports = 1,
+  isolator width = 0.3cm,
+  isolator thickness = 0.2cm,
+  isolator line thickness = 1.5pt,
+  foundation thickness = 0.5cm},
+  number of storys/.store in = \ns,
+  number of bays/.store in = \nb,
+  story height/.store in = \sh,
+  bay width/.store in = \bw,
+  startX/.store in = \startx,
+  startY/.store in = \starty,
+  frame line thickness/.store in = \framelinet,
+  support width/.store in = \supw,
+  support height/.store in = \suph,
+  support line thickness/.store in = \baselinet,
+  show supports/.store in = \showss,
+  isolator width/.store in = \isow,
+  isolator thickness/.store in = \isot,
+  isolator line thickness/.store in = \isolinet,
+  foundation thickness/.store in = \foundt}
 
 \newcommand{\framestructure}[1][]{
 \pgfkeys{/framestructure, default, #1}
 \tikzmath{
-int \ns, \nb, \ncol, \nlev, \nlevmo, \ncolmo, \i, \j;
+int \ns, \nb, \ncol, \nlev, \nlevmo, \ncolmo, \i, \j, \showss;
 real \sh, \bw, \startx, \starty, \xx, \y;
-real \supw, \suph;
-coordinate \c;
+real \supw, \suph, \isow, \isot, \foundt;
+real \axissp, \framelinet, \baselinet, \isolinet;
+real \rigbasestartx, \rigbaseendx, \isoboty, \isotopy;
+real \foundboty, \foundtopy, \foundstartx, \foundendx;
+%Conversion all units to the unit pt
+\sh = \sh;
+\bw = \bw;
+\startx = \startx;
+\starty = \starty;
+\supw = \supw;
+\suph = \suph;
+\isow = \isow;
+\isot = \isot;
+\foundt = \foundt;
+\framelinet = \framelinet;
+\baselinet = \baselinet;
+\isolinet = \isolinet;
+%End conversion, All values are now in pt units.
+\axissp = 0.2cm;
+%\framelinet = 1.0pt;
+%\baselinet = 1.5pt;
+%\isolinet = 3pt;
+%\foundt =1cm;
 \ncol = \nb+1; %number of columns
 \nlev = \ns+1; %number of levels
 if \ns>1 then {\nlevmo = \nlev-1;} else {\nlevmo=2;};
 if \nb>1 then {\ncolmo = \ncol-1;} else {\ncolmo=2;};
 for \i in {1,...,{\nlev}}{
-\y{\i} = \starty + (\i-1)*\sh;
+\y{\i} = (\i-1)*\sh;
 for \j in {1,...,{\ncol}}{
-\x{\j} = \startx + (\j-1)*\bw;
+\x{\j} = (\j-1)*\bw;
 };
 };
-%print{\nlevmo};
+\rigbasestartx = \x1-\supw;
+\rigbaseendx = \x{\ncol}+\supw;
+\isoboty = -\suph-\baselinet/2-\isot;
+\isotopy = -\suph-\baselinet/2;
+\foundboty = -\suph-\baselinet-\isot-\foundt;
+\foundtopy = -\suph-\baselinet-\isot;
+\foundstartx = \x1-2*\supw;
+\foundendx = \x{\ncol}+2*\supw;
 }
-\draw [line width=0pt, color = white] (0, \y{\nlev}+2);
-\draw [line width = 1pt] (\x{1},\y{1}) -- (\x{1}, \y{\nlev}) -- (\x{\ncol}, \y{\nlev}) -- (\x{\ncol}, \y{1});
+\begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=0]; % Drawing everything in pt units
+%\draw [line width = 0pt, color = white] (0, \y{\nlev}+2);
+\draw [line width = \framelinet] (\x{1},\y{1}) -- (\x{1}, \y{\nlev}) -- (\x{\ncol}, \y{\nlev}) -- (\x{\ncol}, \y{1});
 \foreach \i in {2,...,{\nlevmo}}
 {
-\draw [line width = 1pt] (\x{1},\y{\i}) -- (\x{\ncol},\y{\i});
+\draw [line width = \framelinet] (\x{1},\y{\i}) -- (\x{\ncol},\y{\i});
 }
 
 \foreach \j in {2,...,{\ncolmo}}
 {
-\draw [line width = 1pt] (\x{\j},\y{1}) -- (\x{\j},\y{\nlev});
+\draw [line width = \framelinet] (\x{\j},\y{1}) -- (\x{\j},\y{\nlev});
 }
 
-\draw [{->}] (\x{\ncol}+\supw,\y{1}) -- +(1,0) node[anchor=west]{$X$};
-\draw [{->}] (\x{1},\y{\nlev}+0.5) -- +(0,1) node[anchor=east]{$Y$};
+\ifthenelse{\showss=0}{
+%\draw [{->}] (\x{\ncol}+\axissp,\y{1}) -- +(0.5cm,0) node[above]{$X$};
+%\draw [{->}] (\x{1},\y{\nlev}+\axissp) -- +(0,0.5cm) node[right]{$Y$};
+}{}
+
+\ifthenelse{\showss=1}{
+%\draw [{->}] (\x{\ncol}+\supw/2+\axissp,\y{1}) -- +(0.5cm,0) node[above]{$X$};
+%\draw [{->}] (\x{1},\y{\nlev}+\axissp) -- +(0,0.5cm) node[right]{$Y$};
 
 \foreach \j in {1,...,{\ncol}}
 {
-\filldraw [gray] (\x{\j},\y{1}) +({-\supw/2},-\suph) rectangle +({\supw/2},\y{1});
-\draw [line width = 2pt] (\x{\j},\y{1}) +({-\supw/2},\y{1}) -- +({\supw/2},\y{1});
+\fill [gray] (\x{\j},\y{1}) +({-\supw/2},-\suph) rectangle +({\supw/2},\y{1});
+\draw [line width = \baselinet] (\x{\j},\y{1}) +({-\supw/2},\y{1}) -- +({\supw/2},\y{1});
+}
+}{}
+
+\ifthenelse{\showss=2}{
+%\draw [{->}] (\x{\ncol}+\supw/2+\axissp,\y{1}) -- +(0.5cm,0) node[above]{$X$};
+%\draw [{->}] (\x{1},\y{\nlev}+\axissp) -- +(0,0.5cm) node[right]{$Y$};
+
+\foreach \j in {1,...,{\ncol}}
+{
+\fill [gray] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);
+\draw [line width = \baselinet] (\rigbasestartx, 0) -- (\rigbaseendx,0);
+}
+}{}
+
+\ifthenelse{\showss=3}{
+\foreach \j in {1,...,{\ncol}}
+{
+\fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);
+}
+}{}
+
+\ifthenelse{\showss=4}{
+%\draw [{->}] (\x{\ncol}+\supw/2+\axissp,\y{1}) -- +(0.5cm,0) node[above]{$X$};
+%\draw [{->}] (\x{1},\y{\nlev}+\axissp) -- +(0,0.5cm) node[right]{$Y$};
+\fill [fill=gray, draw=black, line width = \baselinet]
+(\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);
+
+\foreach \j in {1,...,{\ncol}}
+{
+\filldraw [fill = white!20!black, draw=black, line width=\isolinet]
+(\x{\j},\y{1}) +(-\isow/2,\isoboty) rectangle +(\isow/2,\isotopy);
 }
 
+\fill [fill=gray]
+(\foundstartx, \foundboty) rectangle (\foundendx,\foundtopy);
+\draw [line width = \baselinet] (\foundstartx, \foundtopy) -- (\foundendx, \foundtopy);
+
+}{}
+
+
+\end{scope}
 }
-% end framestructure
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 %\begin{tikzpicture}
 %\framestructure[number of storys=4, number of bays=2, story height=1, bay width=4, startX=0, startY=0, support width=0.7, support height=0.2]

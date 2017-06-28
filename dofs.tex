@@ -3,8 +3,8 @@
   default/.style={
   startx = 0cm,
   starty = 0cm,
-  dx = 1cm,
-  dy = 1cm,
+  length x = 1cm,
+  length y = 1cm,
   offset = 0.1cm,
   start angle = 110,
   end angle = 340,  
@@ -16,11 +16,14 @@
   x location = below,
   y location = right,  
   r location = right,
+  x location offset = 0pt,
+  y location offset = 0pt,
+  r location offset = 0pt,
   rotation = 0},
   startx/.store in = \xx,
   starty/.store in = \yy,
-  dx/.store in = \dx,
-  dy/.store in = \dy,
+  length x/.store in = \lx,
+  length y/.store in = \ly,
   offset/.store in = \tdof,
   start angle/.store in = \sa,
   end angle/.store in = \ea,
@@ -32,30 +35,38 @@
   x location/.store in = \xloc,
   y location/.store in = \yloc,
   r location/.store in = \rloc,
+  x location offset/.store in = \xlocoff,
+  y location offset/.store in = \ylocoff,
+  r location offset/.store in = \rlocoff,
   rotation/.store in = \rot}
 
 \newcommand{\dofs}[1][]{
 \pgfkeys{/dofs, default, #1}
 
 \tikzmath{
-real \xx, \yy, \dx, \dy;
+real \xx, \yy, \lx, \ly;
 real \tdof, \radi;
 coordinate \cjoint; % coordinate of the joint
 %Conversion all units to the unit pt
 \xx = \xx;
+print {\xx};
 \yy = \yy;
-\dx = \dx;
-\dy = \dy;
+\lx = \lx;
+\ly = \ly;
 \tdof = \tdof;
 \radi = \radi;
+\xlocoff = \xlocoff;
+\ylocoff = \ylocoff;
+\rlocoff = \rlocoff;
 %End conversion, All values are now in pt units.
-%print {$\dx -$};
-%print {$\dy -$};
+%print {$\xx -$};
+%print {$\yy -$};
 }
 \begin{scope}[x=1pt, y=1pt, xshift=\xx, yshift=\yy, rotate=\rot]; % Drawing everything in pt units
-\draw [->] (\tdof,0) -- node[at end, \xloc]{\fsize \dofx} ++(\dx,0);
-\draw [->] (0, \tdof) -- node[at end, \yloc]{\fsize \dofy}++(0,\dy);
-\draw [->] (\sa:\radi) ++(0,0) arc [start angle=\sa, end angle=\ea, radius=\radi] node[very near end, \rloc]{\fsize \dofr};
+\draw [arrows={->[scale=0.5]}] (\tdof,0) -- node[at end, \xloc=\xlocoff]{\fsize \dofx} ++(\lx,0);
+\draw [arrows={->[scale=0.5]}] (0, \tdof) -- node[at end, \yloc=\ylocoff]{\fsize \dofy}++(0,\ly);
+\draw [arrows={->[scale=0.5]}] (\sa:\radi) ++(0,0) arc [start angle=\sa, end angle=\ea, radius=\radi]
+node[very near end, \rloc=\rlocoff]{\fsize \dofr};
 \end{scope}
 }
 

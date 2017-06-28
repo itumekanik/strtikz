@@ -1,0 +1,57 @@
+	\documentclass[]{standalone}
+	\usepackage{tikz}
+	\usetikzlibrary{math}
+
+    %Pgfkeys and \newcommand definition for firstcommand, two keys: a and b
+	\pgfkeys{
+	 /firstcommand/.is family,
+	 /firstcommand,
+	  b/.store in =\b,  
+	  a/.store in =\a}
+	
+	\newcommand{\firstcommand}[1][]{\pgfkeys{/firstcommand, #1}
+	\tikzmath{
+	real \a, \b;
+	\b = 1;
+	print ($Out:$);
+	print ($a = \a,$);
+	print ($b = \b |$);
+	}}
+
+    %Pgfkeys and \newcommand definition for secondcommand, one key: c
+	\pgfkeys{
+	 /secondcommand/.is family,
+	 /secondcommand,
+	 c/.store in =\c,
+	 d/.store in =\d,}
+	
+	\newcommand{\secondcommand}[1][]{\pgfkeys{/secondcommand, #1}
+	\tikzmath{
+	real \c, \d;  % Note that \b also exist in the firstcommand
+	}
+    \firstcommand[a = \c, b = 3]
+	}
+
+    %Pgfkeys and \newcommand definition for thirdcommand, one key: c
+	\pgfkeys{
+	 /thirdcommand/.is family,
+	 /thirdcommand,
+	 e/.store in =\e,
+	 f/.store in =\f,}
+	
+	\newcommand{\thirdcommand}[1][]{\pgfkeys{/thirdcommand, #1}
+	\tikzmath{
+	real \e, \f;  % Note that \b also exist in the firstcommand
+	}
+    \firstcommand[a = \e, b = 2]
+	}
+
+
+
+	\begin{document}
+	\begin{tikzpicture}
+	\tikzmath{\b = 3;}
+	\path(0,-0.5) -- (8,0.5);
+	\secondcommand[c = \b, d = 4]    %Result: a = 1, b = 2. What I wanted was a = 3, b = 2
+	\end{tikzpicture}	
+	\end{document}

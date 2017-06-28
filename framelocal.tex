@@ -1,0 +1,80 @@
+\pgfkeys{
+ /framelocal/.is family, /framelocal,
+  default/.style={
+  startx = 0cm,
+  starty = 0cm,
+  dx = 3cm,
+  dy = 3cm,
+  dof offset = 0.1cm
+  dof arrow ratio = 0.15,
+  fontsize = \normalsize,
+  line thickness = 1.5pt},
+  startx/.store in =\startx,
+  starty/.store in =\starty,
+  dx/.store in =\dx,
+  dy/.store in =\dy,
+  dof offset/.store in = \offs,
+  dof arrow ratio/.store in = \arr,
+  fontsize/.store in = \ffsize,
+  line thickness/.store in = \linet}
+
+\newcommand{\framelocal}[1][]{
+\pgfkeys{/framelocal, default, #1}
+
+\tikzmath{
+real \startx, \starty, \dx, \dy, \offs, \arr;
+real \angl, \leng, \lengdof, \offsx, \offsy, \jdofx, \jdofy;
+%Conversion all units to the unit pt
+\startx = \startx;
+\starty = \starty;
+\dx = \dx;
+\dy = \dy;
+\offs=\offs;
+%End conversion, All values are now in pt units
+\angl = atan2(\dy, \dx);
+\leng = veclen(\dx, \dy);
+\lengdof = \arr * \leng;
+\offsx = -\offs * sin(\angl);
+\offsy = \offs * cos(\angl);
+%\jdofx = \dx + \offsy;
+%\jdofy = \dy - \offsx;
+\jdofx = \dx + \offsx;
+\jdofy = \dy + \offsy;
+\rotrad = 0.8*\lengdof;
+\localxx = (1+\arr)*\dx;
+\localxy = (1+\arr)*\dy;
+\localxdx = \lengdof*cos(\angl);
+\localxdy = \lengdof*sin(\angl);
+\tempdistadd = 0.5cm;
+\localystart = \offs + \lengdof + \tempdistadd;
+\localyleng = \lengdof;
+\localystart = \offs + \lengdof + \tempdistadd;
+\localyangl = \angl+90;
+\anglx = 1.5*\lengdof;
+\dotrad = 0.75*\linet;
+}
+\begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=0];    % Draw everything in pt units
+
+\path [line width = \linet, draw=black, postaction={on each segment={mid arrow=black}}]
+(0,0)node[left=-0.05cm]{\small $i$} -- (\dx,\dy)node[right=-0.1cm]{\small $j$};
+%\draw [line width = \linet](0,0)node[left=-0.05cm]{\small $i$} -- (\dx,\dy)node[right=-0.1cm]{\small $j$};
+\draw [->] (\lengdof,0) -- node[at end, above]{$X$}++(\dx,0);
+\draw [->] (0,\lengdof) -- node[at end, right]{$Y$}++(0,\dy);
+\draw [->] (\localxx,\localxy) -- node[at end, above]{$x$}++(\localxdx,\localxdy);
+\draw [->] (\localyangl:\localystart)-- node[at end, right]{$y$}++(\localyangl:\localyleng);
+\draw [arrows={->[]}](\anglx,0) arc [start angle=0, end angle=\angl, radius=\anglx] node[midway, right=-0.05cm]{$\theta$};
+\fill [black](0,0) circle[radius=\dotrad];
+\fill [black](\dx,\dy) circle[radius=\dotrad];
+
+\dofs[startx = \offsx, starty = \offsy, length x = \lengdof,  length y = \lengdof, offset = 0.05cm, start angle = 110, end angle = 270,   
+  radius = \rotrad, xstring = $1'$, ystring = $2'$, rstring = $3'$, font size = \ffsize,
+  x location = above, y location = right,  r location = {right},
+  x location offset = -0.05cm, y location offset = 0cm,  r location offset = 0.1cm,
+  rotation=\angl]
+\dofs[startx = \jdofx, starty = \jdofy, length x = \lengdof,  length y = \lengdof, offset = 0.05cm, start angle = 110, end angle = 270,   
+  radius = \rotrad, xstring = $4'$, ystring = $5'$, rstring = $6'$, font size = \ffsize,
+  x location = above, y location = right,  r location = {right},
+  x location offset = -0.05cm, y location offset = 0cm, r location offset = 0.1cm,
+  rotation=\angl]
+\end{scope}
+}
