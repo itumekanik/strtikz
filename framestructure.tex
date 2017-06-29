@@ -14,7 +14,15 @@
   isolator width = 0.3cm,
   isolator thickness = 0.2cm,
   isolator line thickness = 1.5pt,
-  foundation thickness = 0.5cm},
+  foundation thickness = 0.5cm,
+  mass radius = 2pt,
+  show mass = 1,
+  dof floor = 1,
+  dof column = 2,
+  arrow length ratio = 0.4,
+  dof offset ratio = 0.075,
+  show dof = 1,
+  show axes = 1},
   number of storys/.store in = \ns,
   number of bays/.store in = \nb,
   story height/.store in = \sh,
@@ -29,17 +37,27 @@
   isolator width/.store in = \isow,
   isolator thickness/.store in = \isot,
   isolator line thickness/.store in = \isolinet,
-  foundation thickness/.store in = \foundt}
+  foundation thickness/.store in = \foundt,
+  mass radius/.store in = \massrad,
+  show mass/.store in = \showmass,
+  dof floor/.store in = \doflocfloor,
+  dof column/.store in = \dofloccolumn,
+  arrow length ratio/.store in = \arrowlenratio,
+  dof offset ratio/.store in = \dofoffsetratio,
+  show dof/.store in = \showdof,
+  show axes/.store in = \showaxes}
 
 \newcommand{\framestructure}[1][]{
 \pgfkeys{/framestructure, default, #1}
 \tikzmath{
 int \ns, \nb, \ncol, \nlev, \nlevmo, \ncolmo, \i, \j, \showss;
 real \sh, \bw, \startx, \starty, \xx, \y;
-real \supw, \suph, \isow, \isot, \foundt;
+real \supw, \suph, \isow, \isot, \foundt, \massrad;
 real \axissp, \framelinet, \baselinet, \isolinet;
 real \rigbasestartx, \rigbaseendx, \isoboty, \isotopy;
 real \foundboty, \foundtopy, \foundstartx, \foundendx;
+int \doflocfloor, \dofloch, \dofloccolumn, \showaxes, \showdof, \showmass, \showss;
+real \arrowlenratio, \minlen, \dofxx, \dofyy, \arrlen, \arrrad;
 %Conversion all units to the unit pt
 \sh = \sh;
 \bw = \bw;
@@ -53,6 +71,7 @@ real \foundboty, \foundtopy, \foundstartx, \foundendx;
 \framelinet = \framelinet;
 \baselinet = \baselinet;
 \isolinet = \isolinet;
+\massrad = \massrad;
 %End conversion, All values are now in pt units.
 \axissp = 0.2cm;
 %\framelinet = 1.0pt;
@@ -77,19 +96,45 @@ for \j in {1,...,{\ncol}}{
 \foundtopy = -\suph-\baselinet-\isot;
 \foundstartx = \x1-2*\supw;
 \foundendx = \x{\ncol}+2*\supw;
+%%%DOFs%%%%
+if greater(\doflocfloor,\ns) then {\doflocfloor=0;} else{};
+if greater(\dofloccolumn,\ncol) then {\dofloccolumn=1;} else{};
+%\doflocfloor = 2;
+%\dofloccolumn = 2;
+%\arrowlenratio = 0.4;
+%\dofoffsetratio = 0.075;
+\dofloch = 1+\doflocfloor;
+\minlen = min(\sh,\bw);
+\dofxx = \x{\dofloccolumn}+\dofoffsetratio*\minlen;
+\dofyy = \y{\dofloch}+\dofoffsetratio*\minlen;
+\arrlen = \arrowlenratio*\minlen;
+\arrrad = \arrlen*0.8;
+%%%%%Axes%%%%%
+\axeslenX = 0.5cm;
+\axeslenY = 0.5cm;
+\Xaxesstarty = \y{1};
+\Yaxesstartx = \x{1};
+\Yaxesstarty = \y{\nlev}+\axissp;
+if equal(\showss,0) then {\Xaxesstartx = \x{\ncol}+\axissp;}         else {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;};
+if equal(\showss,1) then {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;} else {\Xaxesstartx = \x{\ncol}+\axissp+\supw;};
+%%%%%%%%%%%%%%%%%%%%%%%%
 }
 \begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=0]; % Drawing everything in pt units
-%\draw [line width = 0pt, color = white] (0, \y{\nlev}+2);
+%\draw (0,0)-- (2cm,2cm);
 \draw [line width = \framelinet] (\x{1},\y{1}) -- (\x{1}, \y{\nlev}) -- (\x{\ncol}, \y{\nlev}) -- (\x{\ncol}, \y{1});
 \foreach \i in {2,...,{\nlevmo}}
-{
-\draw [line width = \framelinet] (\x{1},\y{\i}) -- (\x{\ncol},\y{\i});
-}
+{\draw [line width = \framelinet] (\x{1},\y{\i}) -- (\x{\ncol},\y{\i});}
 
 \foreach \j in {2,...,{\ncolmo}}
-{
-\draw [line width = \framelinet] (\x{\j},\y{1}) -- (\x{\j},\y{\nlev});
-}
+{\draw [line width = \framelinet] (\x{\j},\y{1}) -- (\x{\j},\y{\nlev});}
+
+
+\ifthenelse{\showmass=1}{
+\foreach \i in {2,...,{\nlev}}
+{\foreach \j in {1,...,{\ncol}}{
+\fill [black] (\x{\j},\y{\i}) circle (\massrad);
+}}
+}{}
 
 \ifthenelse{\showss=0}{
 %\draw [{->}] (\x{\ncol}+\axissp,\y{1}) -- +(0.5cm,0) node[above]{$X$};
@@ -120,33 +165,38 @@ for \j in {1,...,{\ncol}}{
 
 \ifthenelse{\showss=3}{
 \foreach \j in {1,...,{\ncol}}
-{
-\fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);
-}
+{\fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);}
 }{}
 
 \ifthenelse{\showss=4}{
 %\draw [{->}] (\x{\ncol}+\supw/2+\axissp,\y{1}) -- +(0.5cm,0) node[above]{$X$};
 %\draw [{->}] (\x{1},\y{\nlev}+\axissp) -- +(0,0.5cm) node[right]{$Y$};
-\fill [fill=gray, draw=black, line width = \baselinet]
-(\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);
+\fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);
 
 \foreach \j in {1,...,{\ncol}}
-{
-\filldraw [fill = white!20!black, draw=black, line width=\isolinet]
-(\x{\j},\y{1}) +(-\isow/2,\isoboty) rectangle +(\isow/2,\isotopy);
-}
+{\filldraw [fill = white!20!black, draw=black, line width=\isolinet]
+(\x{\j},\y{1}) +(-\isow/2,\isoboty) rectangle +(\isow/2,\isotopy);}
 
 \fill [fill=gray]
 (\foundstartx, \foundboty) rectangle (\foundendx,\foundtopy);
 \draw [line width = \baselinet] (\foundstartx, \foundtopy) -- (\foundendx, \foundtopy);
-
 }{}
 
+\ifthenelse{\showaxes=1}{
+\draw [{->}] (\Xaxesstartx,\Xaxesstarty) -- +(\axeslenX,0) node[above]{$X$};
+\draw [{->}] (\Yaxesstartx,\Yaxesstarty) -- +(0,\axeslenY) node[right]{$Y$};
+}{}
+
+\ifthenelse{\showdof=1}{
+\dofs[startx = \dofxx, starty = \dofyy, length x = \arrlen,  length y = \arrlen, offset = 0cm, start angle = 120, end angle = 330,   
+  radius = \arrrad, xstring = $i$, ystring = $i+1$, rstring = $i+2$, font size = \tiny,
+  x location = above, y location = right,  r location = {right},
+  x location offset = -0.05cm, y location offset = -0.05cm,  r location offset = 0.03cm,
+  rotation=0]
+}{}
 
 \end{scope}
 }
-
 
 %\framestructure[number of storys=5,
 %number of bays=4,
