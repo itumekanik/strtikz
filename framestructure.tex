@@ -50,7 +50,7 @@
 \newcommand{\framestructure}[1][]{
 \pgfkeys{/framestructure, default, #1}
 \tikzmath{
-int \ns, \nb, \ncol, \nlev, \nlevmo, \ncolmo, \i, \j, \showss;
+int \ns, \nb, \ncol, \nlev, \nlevmo, \ncolmo, \iii, \j, \showss;
 real \sh, \bw, \startx, \starty, \xx, \y;
 real \supw, \suph, \isow, \isot, \foundt, \massrad;
 real \axissp, \framelinet, \baselinet, \isolinet;
@@ -82,8 +82,8 @@ real \arrowlenratio, \minlen, \dofxx, \dofyy, \arrlen, \arrrad;
 \nlev = \ns+1; %number of levels
 if \ns>1 then {\nlevmo = \nlev-1;} else {\nlevmo=2;};
 if \nb>1 then {\ncolmo = \ncol-1;} else {\ncolmo=2;};
-for \i in {1,...,{\nlev}}{
-\y{\i} = (\i-1)*\sh;
+for \iii in {1,...,{\nlev}}{
+\y{\iii} = (\iii-1)*\sh;
 for \j in {1,...,{\ncol}}{
 \x{\j} = (\j-1)*\bw;
 };
@@ -120,31 +120,26 @@ if equal(\showss,1) then {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;} else {\Xaxe
 %%%%%%%%%%%%%%%%%%%%%%%%
 }
 \begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=0]; % Drawing everything in pt units
-%\draw (0,0)-- (2cm,2cm);
+%\draw (0,0)-- (0.5cm,2cm);
 \draw [line width = \framelinet] (\x{1},\y{1}) -- (\x{1}, \y{\nlev}) -- (\x{\ncol}, \y{\nlev}) -- (\x{\ncol}, \y{1});
-\foreach \i in {2,...,{\nlevmo}}
-{\draw [line width = \framelinet] (\x{1},\y{\i}) -- (\x{\ncol},\y{\i});}
+\foreach \iii in {2,...,{\nlevmo}}
+{\draw [line width = \framelinet] (\x{1},\y{\iii}) -- (\x{\ncol},\y{\iii});}
 
 \foreach \j in {2,...,{\ncolmo}}
 {\draw [line width = \framelinet] (\x{\j},\y{1}) -- (\x{\j},\y{\nlev});}
 
 
 \ifthenelse{\showmass=1}{
-\foreach \i in {2,...,{\nlev}}
+\foreach \iii in {2,...,{\nlev}}
 {\foreach \j in {1,...,{\ncol}}{
-\fill [black] (\x{\j},\y{\i}) circle (\massrad);
+\fill [black] (\x{\j},\y{\iii}) circle (\massrad);
 }}
 }{}
 
 \ifthenelse{\showss=0}{
-%\draw [{->}] (\x{\ncol}+\axissp,\y{1}) -- +(0.5cm,0) node[above]{$X$};
-%\draw [{->}] (\x{1},\y{\nlev}+\axissp) -- +(0,0.5cm) node[right]{$Y$};
 }{}
 
 \ifthenelse{\showss=1}{
-%\draw [{->}] (\x{\ncol}+\supw/2+\axissp,\y{1}) -- +(0.5cm,0) node[above]{$X$};
-%\draw [{->}] (\x{1},\y{\nlev}+\axissp) -- +(0,0.5cm) node[right]{$Y$};
-
 \foreach \j in {1,...,{\ncol}}
 {
 \fill [gray] (\x{\j},\y{1}) +({-\supw/2},-\suph) rectangle +({\supw/2},\y{1});
@@ -153,9 +148,6 @@ if equal(\showss,1) then {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;} else {\Xaxe
 }{}
 
 \ifthenelse{\showss=2}{
-%\draw [{->}] (\x{\ncol}+\supw/2+\axissp,\y{1}) -- +(0.5cm,0) node[above]{$X$};
-%\draw [{->}] (\x{1},\y{\nlev}+\axissp) -- +(0,0.5cm) node[right]{$Y$};
-
 \foreach \j in {1,...,{\ncol}}
 {
 \fill [gray] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);
@@ -169,8 +161,6 @@ if equal(\showss,1) then {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;} else {\Xaxe
 }{}
 
 \ifthenelse{\showss=4}{
-%\draw [{->}] (\x{\ncol}+\supw/2+\axissp,\y{1}) -- +(0.5cm,0) node[above]{$X$};
-%\draw [{->}] (\x{1},\y{\nlev}+\axissp) -- +(0,0.5cm) node[right]{$Y$};
 \fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);
 
 \foreach \j in {1,...,{\ncol}}
