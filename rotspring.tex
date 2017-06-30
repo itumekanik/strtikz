@@ -1,43 +1,56 @@
 \pgfkeys{
 /rotspring/.is family, /rotspring,
 default/.style={
-startx = 0cm,
-starty = 0cm,
-rotation = 0,
-start rigid length = 2cm,
-end rigid length = 1.5cm,
-rotational spring diameter = 0.0005cm,
-rotational spring cycle number = 4,
-text = $k_\theta$},
-startx/.store in = \startx,
-starty/.store in = \starty,
-rotation/.store in = \rotn,
-start rigid length/.store in = \strl,
-end rigid length/.store in = \enrl,
-rotational spring diameter/.store in = \rsdi,
-rotational spring cycle number/.store in = \rscn,
-text/.store in = \sptext}
+  startx = 0cm,
+  starty = 0cm,
+  rotation = 0,
+  start rigid length = 2cm,
+  end rigid length = 1.5cm,
+  rotational spring diameter = 0.0005cm,
+  rotational spring cycle number = 4,
+  text = $k_\theta$,
+  text location = above,
+  text location offset = 6pt,
+  rigid thickness = 2pt,
+  spring thickness = 1.5pt},
+  startx/.store in = \startrotx,
+  starty/.store in = \startroty,
+  rotation/.store in = \rotn,
+  start rigid length/.store in = \strl,
+  end rigid length/.store in = \enrl,
+  rotational spring diameter/.store in = \rsdi,
+  rotational spring cycle number/.store in = \rscn,
+  text/.store in = \sptext,
+  text location/.store in = \textloc,
+  text location offset/.store in = \textlocoff,
+  rigid thickness/.store in = \riglinet,
+  spring thickness/.store in = \sprlinet,  
+}
 \newcommand{\rotspring}[1][]{
 \pgfkeys{/rotspring, default, #1}
 \tikzmath{
-real \startx, \starty;
+real \startrotx, \startroty;
 real \strl, \enrl, \rotn;
 real \rsdi, \rscn;
 real \rssx, \rssxx, \rstrd;
 real \rsed;
+real \riglinet, \sprlinet;
 %Conversion all units to the unit pt
-\startx = \startx;
-\starty = \starty;
+\startrotx = \startrotx;
+\startroty = \startroty;
 \strl=\strl;
 \enrl=\enrl;
 \rsdi=\rsdi;
 \rscn=\rscn;
+\riglinet = \riglinet;
+\sprlinet = \sprlinet;
 %End conversion, All values are now in pt units
 \rsed = \rscn*2*pi*\rscn*2*pi*\rsdi;
 }
-\begin{scope}[x=1pt, y=1pt, xshift = \startx, yshift=\starty, rotate=\rotn]; % Draw everything in pt units
-\draw [thick](0,0) -- node[near end, below] {\small \sptext}++(\strl,0);
-\draw [thick,domain=0:\rscn*2*pi,variable=\t,smooth,samples=75,xshift=\strl] plot ({\t r}: {\rsdi*\t*\t}) -- ++(\enrl-\rsed,0);;
+\begin{scope}[x=1pt, y=1pt, xshift = \startrotx, yshift=\startroty, rotate=\rotn]; % Draw everything in pt units
+\draw [line width=\riglinet](0,0) -- ++(\strl,0);
+\draw [line width=\sprlinet, domain=0:\rscn*2*pi,variable=\t,smooth,samples=\rscn*50,xshift=\strl] plot ({\t r}: {\rsdi*\t*\t});
+\draw [line width=\riglinet](\strl+\rsed-\sprlinet/2,0)-- node[at start, \textloc=\textlocoff] {\sptext}++(\enrl-\rsed,0);
 \end{scope}
 }
 
