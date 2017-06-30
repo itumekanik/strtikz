@@ -16,6 +16,8 @@
   rigid line thickness = 2pt,
   spring line thickness = 1pt,
   spring stiffness = $k_\theta$,
+  spring mode = 1,
+  spring coefficient = 0.75,
   stiffness location = above,
   stiff location offset = 6pt,
   },
@@ -34,6 +36,8 @@
   rigid line thickness/.store in = \rigidlinet,
   spring line thickness/.store in = \springlinet,
   spring stiffness/.store in = \springstiff,
+  spring mode/.store in =\springmode,
+  spring coefficient/.store in = \springcoefficient,
   stiffness location/.store in = \stiffloc,
   stiff location offset/.store in = \stifflocoff,
 }
@@ -51,6 +55,8 @@ real \anglx, \dotrad;
 real \startangi, \endangi, \startangj, \endangj, \radofdof;
 real \cycleno, \cycledia;
 real \stifflocoff;
+real \springcoefficient;
+int \springmode
 %Conversion all units to the unit pt
 \startx = \startx;
 \starty = \starty;
@@ -82,10 +88,13 @@ real \stifflocoff;
 \radofdof = \radratio*\lengdof;
 }
 \begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=0];    % Draw everything in pt units
+
 \rotspring[startx = 0cm, starty = 0cm, rotation = \anglrs, start rigid length = \srl, end rigid length = \erl,
 rotational spring diameter = \cycledia, rotational spring cycle number = \cycleno,
 text = \springstiff, text location = \stiffloc, text location offset = \stifflocoff,
-rigid thickness=\rigidlinet, spring thickness=\springlinet]
+rigid thickness=\rigidlinet, spring thickness=\springlinet, 
+spring direction mode = \springmode, radius coefficient = \springcoefficient]
+
 \node at (0,0)      [left=-0.05cm]{\small $i$};
 \node at (\anglrs:\leng)  [right=-0.1cm]{\small $j$};
 \draw [->] (\lengdof,0) -- node[at end, above]{$X$}++(\dx,0);

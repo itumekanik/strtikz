@@ -12,7 +12,9 @@ default/.style={
   text location = above,
   text location offset = 6pt,
   rigid thickness = 2pt,
-  spring thickness = 1.5pt},
+  spring thickness = 1.5pt,
+  spring direction mode = 1,
+  radius coefficient = 1},
   startx/.store in = \startrotx,
   starty/.store in = \startroty,
   rotation/.store in = \rotn,
@@ -24,7 +26,9 @@ default/.style={
   text location/.store in = \textloc,
   text location offset/.store in = \textlocoff,
   rigid thickness/.store in = \riglinet,
-  spring thickness/.store in = \sprlinet,  
+  spring thickness/.store in = \sprlinet,
+  spring direction mode/.store in = \sprdirmode,
+  radius coefficient/.store in = \radcoeff,
 }
 \newcommand{\rotspring}[1][]{
 \pgfkeys{/rotspring, default, #1}
@@ -34,7 +38,7 @@ real \strl, \enrl, \rotn;
 real \rsdi, \rscn;
 real \rssx, \rssxx, \rstrd;
 real \rsed;
-real \riglinet, \sprlinet;
+real \riglinet, \sprlinet, \radcoeff;
 %Conversion all units to the unit pt
 \startrotx = \startrotx;
 \startroty = \startroty;
@@ -42,15 +46,46 @@ real \riglinet, \sprlinet;
 \enrl=\enrl;
 \rsdi=\rsdi;
 \rscn=\rscn;
+\textlocoff = \textlocoff;
 \riglinet = \riglinet;
 \sprlinet = \sprlinet;
 %End conversion, All values are now in pt units
-\rsed = \rscn*2*pi*\rscn*2*pi*\rsdi;
+\rsed = \radcoeff*\rscn*2*pi*\rscn*2*pi*\rsdi;
+\springdomain = \rscn*2*pi;
+\samplepercycle = 50;
 }
 \begin{scope}[x=1pt, y=1pt, xshift = \startrotx, yshift=\startroty, rotate=\rotn]; % Draw everything in pt units
+\ifthenelse{\sprdirmode=1}{
 \draw [line width=\riglinet](0,0) -- ++(\strl,0);
-\draw [line width=\sprlinet, domain=0:\rscn*2*pi,variable=\t,smooth,samples=\rscn*50,xshift=\strl] plot ({\t r}: {\rsdi*\t*\t});
-\draw [line width=\riglinet](\strl+\rsed-\sprlinet/2,0)-- node[at start, \textloc=\textlocoff] {\sptext}++(\enrl-\rsed,0);
+\draw [line width=\sprlinet,
+domain=0:\springdomain,variable=\t,smooth,samples=\rscn*\samplepercycle,xshift=\strl]
+plot ({\t r}: {\rsdi*\t*\t*\radcoeff});
+\draw [line width=\riglinet](\strl+\rsed-\sprlinet/2,0)-- node[at start, \textloc=\textlocoff] {\sptext} (\enrl+\strl,0);
+}{};
+
+\ifthenelse{\sprdirmode=2}{
+\draw [line width=\riglinet](0,0) -- ++(\strl,0);
+\draw [line width=\sprlinet,
+domain=0:-\springdomain,variable=\t,smooth,samples=\rscn*\samplepercycle,xshift=\strl]
+plot ({\t r}: {\rsdi*\t*\t*\radcoeff});
+\draw [line width=\riglinet](\strl+\rsed-\sprlinet/2,0)-- node[at start, \textloc=\textlocoff] {\sptext} (\enrl+\strl,0);
+}{};
+
+\ifthenelse{\sprdirmode=3}{
+\draw [line width=\riglinet](0,0) -- ++(\strl-\rsed+\sprlinet/2,0);
+\draw [line width=\sprlinet,
+domain=0:\springdomain,variable=\t,smooth,samples=\rscn*\samplepercycle,xshift=\strl]
+plot ({\t r}: {-\rsdi*\t*\t*\radcoeff});
+\draw [line width=\riglinet](\strl,0)-- node[at start, \textloc=\textlocoff] {\sptext} (\enrl+\strl,0);
+}{};
+
+\ifthenelse{\sprdirmode=4}{
+\draw [line width=\riglinet](0,0) -- ++(\strl-\rsed+\sprlinet/2,0);
+\draw [line width=\sprlinet,
+domain=0:-\springdomain,variable=\t,smooth,samples=\rscn*\samplepercycle,xshift=\strl]
+plot ({\t r}: {-\rsdi*\t*\t*\radcoeff});
+\draw [line width=\riglinet](\strl,0)-- node[at start, \textloc=\textlocoff] {\sptext} (\enrl+\strl,0);
+}{};
 \end{scope}
 }
 

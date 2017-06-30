@@ -8,6 +8,7 @@
 \usepackage{amsmath}
 \usepackage{ifthen}
 \usepackage{pgfplots}
+\usepackage{pgfmath}
 \pgfplotsset{compat=1.14}
 \usepackage{titling, graphicx}
 \usepackage{tikz}
@@ -21,13 +22,38 @@
 
 \begin{document}
 \begin{tikzpicture}
-\rotspring[startx = 2cm,
-starty = 3cm,
-rotation = 30,
-start rigid length = 0.5cm,
-end rigid length = 0.5cm,
-rotational spring diameter = 0.0004cm,
-rotational spring cycle number = 3,
-text = $$]
+\def \framelinethickness {1pt}
+\def \springlinethickness {0.5pt}
+\def \springradius {0.0005cm}
+\def \springcycle {4}
+\def \springradcoeff {0.5}
+\rotspring[startx = 0cm,
+  starty = 0cm,
+  rotation = 0,
+  start rigid length = 0.5cm,
+  end rigid length = 1.5cm,
+  rotational spring diameter = \springradius,
+  rotational spring cycle number = \springcycle,
+  text = $ $,
+  text location = above,
+  text location offset = 2pt,
+  rigid thickness = \framelinethickness,
+  spring thickness = \springlinethickness,
+  spring direction mode = 2,
+  radius coefficient = \springradcoeff]
+\draw (0,0) -- (1,1);
+%\rotspring[startx = 2cm,
+%  starty = 0cm,
+%  rotation = 0,
+%  start rigid length = 1.5cm,
+%  end rigid length = 0.5cm,
+%  rotational spring diameter = \springradius,
+%  rotational spring cycle number = \springcycle,
+%  text = $k_\theta$,
+%  text location = above,
+%  text location offset = 2pt,
+%  rigid thickness = \framelinethickness,
+%  spring thickness = \springlinethickness,
+%  spring direction mode = 3]
 \end{tikzpicture}
 \end{document}
