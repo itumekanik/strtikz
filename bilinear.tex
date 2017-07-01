@@ -1,49 +1,66 @@
 \pgfkeys{
 /bilinear/.is family, /bilinear,
 default/.style={
-startx = 0cm,
-starty = 0cm,
-yield displacement = 1cm,
-yield force = 2cm,
-maximum displacement = 2cm,
-maximum force = 3cm,
-axis space = 1cm,
-mode = 1,
-x-axis label = {Disp., $(d)$},
-y-axis label = {Force, $(f)$},
-kp text = $k_\textrm{p}$,
-ks text = $k_\textrm{s}$,
-fy text = $f_\textrm{y}$,
-dy text = $d_\textrm{y}$,
-mark yield point = 1,
-fmax text = $f_\textrm{m}$,
-dmax text = $d_\textrm{m}$,
-mark max point = 1,
+	startx = 0cm,
+	starty = 0cm,
+	yield displacement = 1cm,
+	yield force = 2cm,
+	maximum displacement = 2cm,
+	maximum force = 3cm,
+	axis space = 1cm,
+	mode = 1,
+	x-axis label = {Disp., $(d)$},
+	y-axis label = {Force, $(f)$},
+	kp text = $k_\textrm{p}$,
+	ks text = $k_\textrm{s}$,
+	fy text = $f_\textrm{y}$,
+	dy text = $d_\textrm{y}$,
+	mark yield point = 1,
+	fmax text = $f_\textrm{m}$,
+	dmax text = $d_\textrm{m}$,
+	mark max point = 1,
+	axis line thickness = 1pt,
+	line thickness = 1pt,
+	show axes labels = 1,
+	show stiffness = 1,
+	show arrows = 1,
+	show line arrows = 1,
+	arrow length = 3pt,
+	arrow width = 2pt,	
 },
-startx/.store in = \startx,
-starty/.store in = \starty,
-yield displacement/.store in = \dy,
-yield force/.store in = \fy,
-maximum displacement/.store in = \dm,
-maximum force/.store in = \fm,
-axis space/.store in = \axsp,
-mode/.store in = \mode,
-x-axis label/.store in = \xlab,
-y-axis label/.store in = \ylab,
-kp text/.store in = \kpt,
-ks text/.store in = \kst,
-fy text/.store in = \fyt,
-dy text/.store in = \dyt,
-mark yield point/.store in = \myp,
-fmax text/.store in = \fmt,
-dmax text/.store in = \dmt,
-mark max point/.store in = \mmp,
+	startx/.store in = \startx,
+	starty/.store in = \starty,
+	yield displacement/.store in = \dy,
+	yield force/.store in = \fy,
+	maximum displacement/.store in = \dm,
+	maximum force/.store in = \fm,
+	axis space/.store in = \axsp,
+	mode/.store in = \mode,
+	x-axis label/.store in = \xlab,
+	y-axis label/.store in = \ylab,
+	kp text/.store in = \kpt,
+	ks text/.store in = \kst,
+	fy text/.store in = \fyt,
+	dy text/.store in = \dyt,
+	mark yield point/.store in = \myp,
+	fmax text/.store in = \fmt,
+	dmax text/.store in = \dmt,
+	mark max point/.store in = \mmp,
+	axis line thickness/.store in = \axislinet,
+	line thickness/.store in = \bilinet,
+	show axes labels/.store in = \showaxes,
+	show stiffness/.store in = \showstiff,
+	show arrows/.store in = \showarrows,
+	show line arrows/.store in = \showlinearrows,
+	arrow length/.store in = \arrlen,
+	arrow width/.store in = \arrwid,	
 }
 \newcommand{\bilinear}[1][]{
 \pgfkeys{/bilinear, default, #1}
 \tikzmath{
 real \startx, \starty;
 real \dy, \fy, \dm, \fm, \axsp;
+real \axislinet, \bilinet;
 integer \mode;
 %Conversion all units to the unit pt
 \dy = \dy;
@@ -51,13 +68,29 @@ integer \mode;
 \dm = \dm;
 \fm = \fm;
 \axsp = \axsp;
+\axislinet =\axislinet;
+\bilinet = \bilinet;
+\arrlen = \arrlen;
+\arrwid = \arrwid;
 %End conversion, All values are now in pt units
 \xmax = \dm + \axsp;
 \ymax = \fm + \axsp;
 \pyd = \dm - \dy;   %Post yield displacement
 \pyf = \fm - \fy;   %Post yield force
+\lowlevel = min(-\axsp,\fm - 2*\fy - \axsp);
+if \showaxes==0 then {\xlab={};\ylab={};} else {};
+if \showstiff==0 then {\kpt={};\kst={};} else {};
 }
 \begin{scope}[x=1pt, y=1pt, xshift = \startx, yshift=\starty, rotate=0];    % Draw everything in pt units
+
+\ifthenelse{\showlinearrows=1}{
+\tikzset{linearrow/.style = {postaction={on each segment={mid arrow=black}}}};
+}{\tikzset{linearrow/.style = {}};}
+
+\ifthenelse{\showarrows=1}{
+\tikzset{arrowbe/.style = {arrows={->[length=2pt, width=2pt]}}};
+\tikzset{arrowben/.style = {arrows={<->[length=2pt, width=2pt]}}};
+}{\tikzset{arrowbe/.style = {}};}
 
 \ifthenelse{\myp=1}{
 \draw [very thin, dashed] (\dy, 0)--node[at start, below=-1]{\dyt}(\dy, \fy);
@@ -70,18 +103,18 @@ integer \mode;
 }{}
 
 \ifthenelse{\mode=1}{
-\draw [thin, <->] (-\axsp,0) -- node[at end, below]{\xlab}(\xmax,0);
-\draw [thin, <->] (0,-\axsp) -- node[at end, left]{\ylab}(0,\ymax);
-\path [thick, draw=black, postaction={on each segment={mid arrow=black}}]
+\draw [line width=\axislinet, arrowbe] (-\axsp,0) -- node[at end, below=-2pt]{\xlab}(\xmax,0);
+\draw [line width=\axislinet, arrowbe] (0,-\axsp) -- node[at end, left=-2pt]{\ylab}(0,\ymax);
+\path [line width=\bilinet, draw=black, linearrow]
 (0,0)
 -- node[right, midway, behind path, fill=white]{\kpt}(\dy,\fy)
 -- node[below, midway]{\kst}(\dm,\fm);
 }{}
 
 \ifthenelse{\mode=2}{
-\draw [thin, <->] (-\axsp,0) -- node[at end, below]{\xlab}(\xmax,0);
-\draw [thin, <->] (0,-\axsp) -- node[at end, left]{\ylab}(0,\ymax);
-\path [thick, draw=black, postaction={on each segment={mid arrow=black}}]
+\draw [line width = \axislinet, arrowbe] (-\axsp,0) -- node[at end, below=-2pt]{\xlab}(\xmax,0);
+\draw [line width = \axislinet, arrowbe] (0,-\axsp) -- node[at end, left=-2pt]{\ylab}(0,\ymax);
+\path [line width = \bilinet, draw=black, linearrow]
 (0,0)
 -- node[right, midway, behind path, fill=white]{\kpt}(\dy,\fy)
 -- node[below, midway]{\kst}(\dm,\fm)
@@ -90,9 +123,9 @@ integer \mode;
 
 
 \ifthenelse{\mode=3}{
-\draw [thin, <->] (-\axsp,0) -- node[at end, below]{\xlab}(\xmax,0);
-\draw [thin, <->] (0,\fm - 2*\fy - \axsp) -- node[at end, left]{\ylab}(0,\ymax);
-\path [thick, draw=black, postaction={on each segment={mid arrow=black}}]
+\draw [line width = \axislinet, arrowbe] (-\axsp,0) -- node[at end, below=-2pt]{\xlab}(\xmax,0);
+\draw [line width = \axislinet, arrowbe] (0,\lowlevel) -- node[at end, left=-2pt]{\ylab}(0,\ymax);
+\path [line width = \bilinet, draw=black, linearrow]
 (0,0)
 -- node[right, midway, behind path, fill=white]{\kpt}(\dy,\fy)
 -- node[below, midway]{\kst}(\dm,\fm)
@@ -100,9 +133,9 @@ integer \mode;
 }{}
 
 \ifthenelse{\mode=4}{
-\draw [thin, <->] (\dm- 2*\dy -\pyd -\axsp,0) -- node[at end, below]{\xlab}(\xmax,0);
-\draw [thin, <->] (0,\fm -2*\fy -\pyf -\axsp) -- node[at end, left]{\ylab}(0,\ymax);
-\path [thick, draw=black, postaction={on each segment={mid arrow=black}}] 
+\draw [line width = \axislinet, arrowben] (\dm- 2*\dy -\pyd -\axsp,0) -- node[at end, below=-2pt]{\xlab}(\xmax,0);
+\draw [line width = \axislinet, arrowben] (0,\fm -2*\fy -\pyf -\axsp) -- node[at end, left=-2pt]{\ylab}(0,\ymax);
+\path [line width = \bilinet, draw=black, linearrow] 
 (0,0)
 -- node[right, midway, behind path, fill=white]{\kpt}(\dy,\fy)
 -- node[below, midway]{\kst}(\dm,\fm)
@@ -112,9 +145,9 @@ integer \mode;
 
 
 \ifthenelse{\mode=5}{
-\draw [thin, <->] (-\xmax,0) -- node[at end, below]{\xlab}(\xmax,0);
-\draw [thin, <->] (0,-\ymax) -- node[at end, left]{\ylab}(0,\ymax);
-\path [thick, draw=black, postaction={on each segment={mid arrow=black}}] 
+\draw [line width = \axislinet, arrowben] (-\xmax,0) -- node[at end, below=-2pt]{\xlab}(\xmax,0);
+\draw [line width = \axislinet, arrowben] (0,-\ymax) -- node[at end, left=-2pt]{\ylab}(0,\ymax);
+\path [line width = \bilinet, draw=black, linearrow] 
 (0,0)
 -- node[right, midway, behind path, fill=white]{\kpt}(\dy,\fy)
 -- node[below, midway]{\kst}(\dm,\fm)
@@ -123,9 +156,9 @@ integer \mode;
 }{}
 
 \ifthenelse{\mode=6}{
-\draw [thin, <->] (-\xmax,0) -- node[at end, below]{\xlab}(\xmax,0);
-\draw [thin, <->] (0,-\ymax) -- node[at end, left]{\ylab}(0,\ymax);
-\path [thick, draw=black, postaction={on each segment={mid arrow=black}}] 
+\draw [line width = \axislinet, arrowben] (-\xmax,0) -- node[at end, below=-2pt]{\xlab}(\xmax,0);
+\draw [line width = \axislinet, arrowben] (0,-\ymax) -- node[at end, left=-2pt]{\ylab}(0,\ymax);
+\path [line width = \bilinet, draw=black, linearrow] 
 (0,0)
 -- node[right, midway, behind path, fill=white]{\kpt}(\dy,\fy)
 -- node[below, midway]{\kst}(\dm,\fm)
@@ -135,9 +168,9 @@ integer \mode;
 }{}
 
 \ifthenelse{\mode=7}{
-\draw [thin, <->] (-\xmax,0) -- node[at end, below]{\xlab}(\xmax,0);
-\draw [thin, <->] (0,-\ymax) -- node[at end, left]{\ylab}(0,\ymax);
-\path [thick, draw=black, postaction={on each segment={mid arrow=black}}] 
+\draw [line width = \axislinet, arrowben] (-\xmax,0) -- node[at end, below=-2pt]{\xlab}(\xmax,0);
+\draw [line width = \axislinet, arrowben] (0,-\ymax) -- node[at end, left=-2pt]{\ylab}(0,\ymax);
+\path [line width = \bilinet, draw=black, linearrow] 
 (0,0)
 -- node[right, midway, behind path, fill=white]{\kpt}(\dy,\fy)
 -- node[below, midway]{\kst}(\dm,\fm)
@@ -147,9 +180,9 @@ integer \mode;
 }{}
 
 \ifthenelse{\mode=8}{
-\draw [thin, <->] (-\xmax,0) -- node[at end, below]{\xlab}(\xmax,0);
-\draw [thin, <->] (0,-\ymax) -- node[at end, left]{\ylab}(0,\ymax);
-\path [thick, draw=black, postaction={on each segment={mid arrow=black}}] 
+\draw [line width = \axislinet, arrowben] (-\xmax,0) -- node[at end, below=-2pt]{\xlab}(\xmax,0);
+\draw [line width = \axislinet, arrowben] (0,-\ymax) -- node[at end, left=-2pt]{\ylab}(0,\ymax);
+\path [line width = \bilinet, draw=black, linearrow] 
 (0,0)
 -- node[right, midway, behind path, fill=white]{\kpt}(\dy,\fy)
 -- node[below, midway]{\kst}(\dm,\fm)
@@ -160,4 +193,3 @@ integer \mode;
 }{}
 \end{scope}
 }
-
