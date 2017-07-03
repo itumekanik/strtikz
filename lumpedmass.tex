@@ -1,8 +1,310 @@
 \pgfkeys{
- /framedistributedload/.is family, /lumpedmass,
-  default/.style={}
-
+ /lumpedmass/.is family, /lumpedmass,
+  default/.style = {number of storys = 5,
+	story height = 1cm,
+	startX = 0cm,
+	startY = 0cm,
+	frame line thickness = 1pt,
+	support width = 0.3cm,
+	support height = 0.15cm,
+	support line thickness = 1.5pt,
+	show supports = 1,
+	isolator width = 0.3cm,
+	isolator thickness = 0.2cm,
+	isolator line thickness = 1.5pt,
+	foundation thickness = 0.5cm,
+	mass radius = 2pt,
+	show mass = 1,
+	show axes = 1,
+	base slab width=0.8cm,
+	base slab height=0.3cm,
+	foundation width=1cm,
+	x axis length=0.5cm,
+	y axis length=0.5cm,
+	drift distance=0.4cm,
+	drift curve ratio=0.65,
+	base slab drift=1.1cm,
+	foundation drift=2cm,
+	arrow tip length=3pt,
+	arrow tip width=2pt,
+	story to place superstructure dof=2,
+	text for the superstructure dof=$x_i(t)$,
+	text for the isolation dof=$x_b(t)$,
+	text for the ground dof=$x_g(t)$,
+	text for the story mass=$m_i$,
+	text for the base slab mass=$m_b$,
+	text for the story properties={$k_i,c_i$}},
+	number of storys/.store in = \nstory,
+	story height/.store in = \storyheight,
+	startX/.store in = \startx,
+	startY/.store in = \starty,
+	frame line thickness/.store in = \framelinet,
+	support width/.store in = \supw,
+	support height/.store in = \suph,
+	support line thickness/.store in = \baselinet,
+	show supports/.store in = \showss,
+	isolator width/.store in = \isow,
+	isolator thickness/.store in = \isot,
+	isolator line thickness/.store in = \isolinet,
+	foundation thickness/.store in = \foundt,
+	mass radius/.store in = \massrad,
+	show mass/.store in = \showmass,
+	show axes/.store in = \showaxes,
+	base slab width/.store in=\baseslabw,
+	base slab height/.store in=\baseslabh,
+	foundation width/.store in=\foundationw,
+	x axis length/.store in=\axeslenX,
+	y axis length/.store in=\axeslenY,
+	drift distance/.store in=\driftdist,
+	drift curve ratio/.store in=\driftcurveratio,
+	base slab drift/.store in=\basedriftdist,
+	foundation drift/.store in=\foundationdrift,
+	arrow tip length/.store in=\arrlen,
+	arrow tip width/.store in=\arrwid,
+	story to place superstructure dof/.store in=\doftextstory,
+	text for the superstructure dof/.store in=\doftext,
+	text for the isolation dof/.store in=\isodoftext,
+	text for the ground dof/.store in=\grounddoftext,
+	text for the story mass/.store in=\storymasstext,
+	text for the base slab mass/.store in=\basemasstext,
+	text for the story properties/.store in=\storyproptext,}
 \newcommand{\lumpedmass}[1][]{
 \pgfkeys{/lumpedmass, default, #1}
 \tikzmath{}
+\tikzmath{
+int \nstory, \ncol, \nlev, \nlevmo, \ncolmo, \iii, \jjj, \showss;
+real \storyheight, \startx, \starty, \xx, \y;
+real \supw, \suph, \isow, \isot, \foundt, \massrad;
+real \axissp, \framelinet, \baselinet, \isolinet;
+real \rigbasestartx, \rigbaseendx, \isoboty, \isotopy;
+real \foundboty, \foundtopy, \foundstartx, \foundendx;
+int \showmass, \showss, \iii, \jjj;
+real \arrowlenratio, \minlen, \dofxx, \dofyy, \arrlen, \arrrad;
+real \driftdist, \driftcurve, \driftcurveratio;
+real \arrlen, \arrwid;
+int \showsuperstructuredof, \doftextstory;
+%Conversion all units to the unit pt
+\storyheight = \storyheight;
+\startx = \startx;
+\starty = \starty;
+\supw = \supw;
+\suph = \suph;
+\isow = \isow;
+\isot = \isot;
+\foundt = \foundt;
+\framelinet = \framelinet;
+\baselinet = \baselinet;
+\isolinet = \isolinet;
+\massrad = \massrad;
+\baseslabw=\baseslabw;
+\baseslabh=\baseslabh;
+\foundationw=\foundationw;
+\axeslenX=\axeslenX;
+\axeslenY=\axeslenY;
+\driftdist=\driftdist;
+\driftcurveratio=\driftcurveratio;
+\basedriftdist=\basedriftdist;
+\foundationdrift=\foundationdrift;
+\arrlen=\arrlen;
+\arrwid=\arrwid;
+\doftextstory=\doftextstory;
+%End conversion, All values are now in pt units.
+\axissp = 0.2cm;
+%\framelinet = 1.0pt;
+%\baselinet = 1.5pt;
+%\isolinet = 3pt;
+%\foundt =1cm;
+\baywidth = 0;
+\nbays = 0;
+\ncol = \nbays+1; %number of columns
+\nlev = \nstory+1; %number of levels
+if \nstory>1 then {\nlevmo = \nlev-1;} else {\nlevmo=2;};
+if \nbays>1 then {\ncolmo = \ncol-1;} else {\ncolmo=2;};
+for \iii in {1,...,{\nlev}}{
+\y{\iii} = (\iii-1)*\storyheight;
+for \jjj in {1,...,{\ncol}}{
+\x{\jjj} = (\jjj-1)*\baywidth;
+};
+};
+\rigbasestartx = \x1-\baseslabw/2;
+\rigbaseendx = \x{\ncol}+\baseslabw/2;
+\isoboty = -\baseslabh-\baselinet/2-\isot;
+\isotopy = -\baseslabh-\baselinet/2;
+\foundboty = -\baseslabh-\baselinet-\isot-\foundt;
+\foundtopy = -\baseslabh-\baselinet-\isot;
+\foundstartx = \x1-\foundationw/2;
+\foundendx = \x{\ncol}+\foundationw/2;
+%%%%%Axes%%%%%
+\Xaxesstarty = \y{1};
+\Yaxesstartx = \x{1};
+\Yaxesstarty = \y{\nlev}+\axissp;
+if equal(\showss,0) then {\Xaxesstartx = \x{\ncol}+\axissp;}         else {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;};
+if equal(\showss,1) then {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;} else {\Xaxesstartx = \x{\ncol}+\axissp+\supw;};
+%%%%%%%Deflected Shape%%%%%%%%%%%%%%%%%
+\driftdist = \driftdist;
+\driftcurv = \driftcurveratio*\storyheight;
+%%%%%%%DOFs%%%%%%%%%%
+\showsuperstructuredof = 1;
+\doftextstory = \doftextstory;
+%print($\x1$);
+}
+%\def \doftext {$x_i(t)$};
+%\def \isodoftext {$x_b(t)$};
+%\def \grounddoftext {$x_g(t)$};
+\begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=0]; % Drawing everything in pt units
+%\draw (0,0)-- (0.5cm,2cm);
+
+\tikzset{arrowbe/.style = {arrows={->[length=\arrlen, width=\arrwid]}}};
+\tikzset{arrowben/.style = {arrows={<->[length=\arrlen, width=\arrwid]}}};
+
+
+%%%%%% Undeflected Shape%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Draw the line
+\foreach \iii in {2,...,{\nlev}}{
+\draw [line width = \framelinet] (\x{1},\usevar\y{\iii-1}) -- (\x{1},\usevar\y{\iii});
+}
+% Show Mass
+\ifthenelse{\showmass=1}{
+\foreach \iii in {2,...,{\nlev}}
+{\foreach \jjj in {1,...,{\ncol}}{
+\shade[ball color=black] (\x{\jjj},\y{\iii}) circle (\massrad) ;
+}}
+}{}
+
+% Add text for mass and stiffness and damping
+\path(\baseslabw/2,0) node[above=-2pt]{\basemasstext};
+\path (\x{1},\y{\useeval{\doftextstory+1}})node[xshift=\massrad-2pt, right, opaque]{\storymasstext} 
+++(0,-\storyheight/2)node[xshift=-2pt, right, opaque]{\storyproptext};
+
+
+%%% Different types of supports
+%\ifthenelse{\showss=0}{
+%}{}
+%
+%\ifthenelse{\showss=1}{
+%\foreach \jjj in {1,...,{\ncol}}
+%{
+%\fill [gray] (\x{\jjj},\y{1}) +({-\supw/2},-\suph) rectangle +({\supw/2},\y{1});
+%\draw [line width = \baselinet] (\x{\jjj},\y{1}) +({-\supw/2},\y{1}) -- +({\supw/2},\y{1});
+%}
+%}{}
+%
+%\ifthenelse{\showss=2}{
+%\foreach \jjj in {1,...,{\ncol}}
+%{
+%\fill [gray] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);
+%\draw [line width = \baselinet] (\rigbasestartx, 0) -- (\rigbaseendx,0);
+%}
+%}{}
+%
+%\ifthenelse{\showss=3}{
+%\foreach \jjj in {1,...,{\ncol}}
+%{\fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);}
+%}{}
+
+\ifthenelse{\showss=4}{
+
+\fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\baseslabh);
+
+\foreach \jjj in {1,...,{\ncol}}
+{\filldraw [fill = white!20!black, draw=black, line width=\isolinet]
+(\x{\jjj},\y{1}) +(-\isow/2,\isoboty) rectangle +(\isow/2,\isotopy);}
+
+\fill [fill=gray]
+(\foundstartx, \foundboty) rectangle (\foundendx,\foundtopy);
+\draw [line width = \baselinet] (\foundstartx, \foundtopy) -- (\foundendx, \foundtopy);
+}{}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+
+%%%%%%%%%%% Deflected Shape %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{scope}[xshift = \foundationdrift]
+
+\begin{scope}[xshift = \basedriftdist]
+
+% Show Mass
+\ifthenelse{\showmass=1}{
+\foreach \iii in {2,...,{\nlev}}
+{\foreach \jjj in {1,...,{\ncol}}{
+\shade[ball color = black, opacity = 0.35] (\x{\jjj}+\driftdist*\useeval{\iii-1},\y{\iii}) circle (\massrad);
+}}
+}{}
+
+%Deflected Shape
+\foreach \iii in {2,...,{\nlev}}{
+\draw [line width = \framelinet, gray] (\x{1}+\driftdist*\useeval{\iii-2},\usevar\y{\iii-1})
+..controls++(0,\driftcurv) and ++(0,-\driftcurv)..(\x{1}+\driftdist*\useeval{\iii-1},\usevar\y{\iii});
+}
+
+
+%\ifthenelse{\showss=0}{
+%}{}
+%
+%\ifthenelse{\showss=1}{
+%\foreach \jjj in {1,...,{\ncol}}
+%{
+%\fill [gray] (\x{\jjj},\y{1}) +({-\supw/2},-\suph) rectangle +({\supw/2},\y{1});
+%\draw [line width = \baselinet] (\x{\jjj},\y{1}) +({-\supw/2},\y{1}) -- +({\supw/2},\y{1});
+%}
+%}{}
+%
+%\ifthenelse{\showss=2}{
+%\foreach \jjj in {1,...,{\ncol}}
+%{
+%\fill [gray] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);
+%\draw [line width = \baselinet] (\rigbasestartx, 0) -- (\rigbaseendx,0);
+%}
+%}{}
+%
+%\ifthenelse{\showss=3}{
+%\foreach \jjj in {1,...,{\ncol}}
+%{\fill [fill=gray, draw=black, line width = \baselinet]
+%(\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);}
+%}{}
+
+\ifthenelse{\showss=4}{
+
+\fill [fill=gray, draw=gray, line width = \baselinet, fill opacity = 0.35]
+(\rigbasestartx, 0) rectangle (\rigbaseendx,-\baseslabh);
+
+\foreach \jjj in {1,...,{\ncol}}
+{\filldraw [fill = white!75!black, draw=gray, line width=\isolinet, opacity = 1]
+(\x{\jjj},\y{1}) ++(\isow/2,\isotopy) -- ++(-\basedriftdist,-\isot) -- ++(-\isow,0) -- ++(\basedriftdist, \isot) -- cycle;}
+}{}
+
+% Super Structure DOFs
+\ifthenelse{\showsuperstructuredof=1}{
+\foreach \iii in {2,...,{\nlev}}{
+\draw [arrowbe] (\x{1},\y{\iii}) -- (\x{1}+\driftdist*\useeval{\iii-1},\y{\iii});
+};
+
+\draw (0,0.6*\driftcurv) -- (0, \y{\nlev}+0.1*\storyheight);
+\path [line width=0] (\x{1},\y{\useeval{\doftextstory+1}}) --
+node[above=-2pt, midway]{\doftext} (\x{1}+\driftdist*\doftextstory , \y{\useeval{\doftextstory+1}});
+
+%Isolaton DOF
+\draw [arrowbe] (-\basedriftdist,-\baseslabh/2) --
+node[above=-2pt, xshift =\baseslabw/2-\basedriftdist/2, midway]{\isodoftext}(0,-\baseslabh/2);
+}{}
+
+\end{scope}
+
+%Foundation
+\fill [fill=white!75!black]
+(\foundstartx, \foundboty) rectangle (\foundendx,\foundtopy);
+\draw [line width = \baselinet, gray] (\foundstartx, \foundtopy) -- (\foundendx, \foundtopy);
+
+\draw (0,\foundboty+\foundt*0.25) -- (0,0);
+
+\end{scope}
+
+\draw (0,\foundboty+\foundt*0.25) --  ++(0,\foundt*0.5);
+\draw [arrowbe] (0,\foundboty+\foundt*0.5) -- node[above=-2pt, midway, xshift=1pt]{\grounddoftext}  ++(\foundationdrift,0);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Show axes
+\ifthenelse{\showaxes=1}{
+\draw [{->}] (\Xaxesstartx,\Xaxesstarty) -- +(\axeslenX,0) node[above]{$X$};
+\draw [{->}] (\Yaxesstartx,\Yaxesstarty) -- +(0,\axeslenY) node[right]{$Y$};
+}{}
+\end{scope}
 }

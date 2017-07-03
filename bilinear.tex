@@ -88,8 +88,8 @@ if \showstiff==0 then {\kpt={};\kst={};} else {};
 }{\tikzset{linearrow/.style = {}};}
 
 \ifthenelse{\showarrows=1}{
-\tikzset{arrowbe/.style = {arrows={->[length=2pt, width=2pt]}}};
-\tikzset{arrowben/.style = {arrows={<->[length=2pt, width=2pt]}}};
+\tikzset{arrowbe/.style = {arrows={->[length=\arrlen, width=\arrwid]}}};
+\tikzset{arrowben/.style = {arrows={<->[length=\arrlen, width=\arrwid]}}};
 }{\tikzset{arrowbe/.style = {}};}
 
 \ifthenelse{\myp=1}{

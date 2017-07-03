@@ -1,0 +1,27 @@
+\documentclass[]{standalone}
+\usepackage{tikz,strtikz}
+\usetikzlibrary{math}
+
+\begin{document}
+
+\begin{tikzpicture}
+\tikzmath{
+\x1 = 1;
+\x2 = 3;
+\x3 = 5;
+\x4 = 7;
+%Units are not given in \tikzmat. They will be evaluated as cm in tikz enviroment below
+}
+
+%\draw (\x{1},0) -- (10cm,10cm) node[at start, below]{\x{1}};             %This works
+
+%\draw (\usevar\x{2-1},0) -- (10cm,10cm) node[at start, below]{\usevar\x{2-1}};        %This does not work
+
+\foreach \ind in {2,...,4}
+\draw (\usevar\x{\ind},0) -- (10cm,10cm) node[at start, below]{\usevar\x{\ind}};      %This works
+
+%\foreach \ind in {2,...,4}
+%\draw (\x{\ind-1},0) -- (10cm,10cm) node[at start, below]{\x{\ind-1}};  %This does not work
+
+\end{tikzpicture}
+\end{document}
