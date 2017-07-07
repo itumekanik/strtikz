@@ -82,7 +82,6 @@ if \showaxes==0 then {\xlab={};\ylab={};} else {};
 if \showstiff==0 then {\kpt={};\kst={};} else {};
 }
 \begin{scope}[x=1pt, y=1pt, xshift = \startx, yshift=\starty, rotate=0];    % Draw everything in pt units
-
 \ifthenelse{\showlinearrows=1}{
 \tikzset{linearrow/.style = {postaction={on each segment={mid arrow=black}}}};
 }{\tikzset{linearrow/.style = {}};}
@@ -94,7 +93,7 @@ if \showstiff==0 then {\kpt={};\kst={};} else {};
 
 \ifthenelse{\myp=1}{
 \draw [very thin, dashed] (\dy, 0)--node[at start, below=-1]{\dyt}(\dy, \fy);
-\draw [very thin, dashed] (0, \fy)--node[at start, left=-2, yshift=0.1cm]{\fyt}(\dy, \fy);
+\draw [very thin, dashed] (0, \fy)--node[at start, left=-2, yshift=0.0cm, fill=white]{\fyt}(\dy, \fy);
 }{}
 
 \ifthenelse{\mmp=1}{

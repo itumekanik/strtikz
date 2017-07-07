@@ -132,7 +132,7 @@ if equal(\showss,1) then {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;} else {\Xaxe
 \ifthenelse{\showmass=1}{
 \foreach \iii in {2,...,{\nlev}}
 {\foreach \j in {1,...,{\ncol}}{
-\fill [black] (\x{\j},\y{\iii}) circle (\massrad);
+\shade[ball color=black] (\x{\j},\y{\iii}) circle (\massrad);
 }}
 }{}
 
