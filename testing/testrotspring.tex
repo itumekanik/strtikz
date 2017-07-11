@@ -30,30 +30,19 @@
 \rotspring[startx = 0cm,
   starty = 0cm,
   rotation = 0,
-  start rigid length = 0.5cm,
+  start rigid length = 2cm,
   end rigid length = 1.5cm,
   rotational spring diameter = \springradius,
   rotational spring cycle number = \springcycle,
-  text = $ $,
+  text = $k_\theta$,
   text location = above,
   text location offset = 2pt,
   rigid thickness = \framelinethickness,
   spring thickness = \springlinethickness,
-  spring direction mode = 2,
-  radius coefficient = \springradcoeff]
-\draw (0,0) -- (1,1);
-%\rotspring[startx = 2cm,
-%  starty = 0cm,
-%  rotation = 0,
-%  start rigid length = 1.5cm,
-%  end rigid length = 0.5cm,
-%  rotational spring diameter = \springradius,
-%  rotational spring cycle number = \springcycle,
-%  text = $k_\theta$,
-%  text location = above,
-%  text location offset = 2pt,
-%  rigid thickness = \framelinethickness,
-%  spring thickness = \springlinethickness,
-%  spring direction mode = 3]
+  spring direction mode = 1,
+  radius coefficient = \springradcoeff,
+  rigid left text = {$L_1=0$},
+  rigid right text = {$L_2=0$},
+  rigid text offset = -2pt]
 \end{tikzpicture}
 \end{document}
