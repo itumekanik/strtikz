@@ -15,6 +15,7 @@
   isolator thickness = 0.2cm,
   isolator line thickness = 1.5pt,
   foundation thickness = 0.5cm,
+  foundation side width = 1cm,
   mass radius = 2pt,
   show mass = 1,
   dof floor = 1,
@@ -38,6 +39,7 @@
   isolator thickness/.store in = \isot,
   isolator line thickness/.store in = \isolinet,
   foundation thickness/.store in = \foundt,
+  foundation side width/.store in = \foundsidew,
   mass radius/.store in = \massrad,
   show mass/.store in = \showmass,
   dof floor/.store in = \doflocfloor,
@@ -72,6 +74,7 @@ real \arrowlenratio, \minlen, \dofxx, \dofyy, \arrlen, \arrrad;
 \baselinet = \baselinet;
 \isolinet = \isolinet;
 \massrad = \massrad;
+\foundsidew = \foundsidew;
 %End conversion, All values are now in pt units.
 \axissp = 0.2cm;
 %\framelinet = 1.0pt;
@@ -94,8 +97,8 @@ for \j in {1,...,{\ncol}}{
 \isotopy = -\suph-\baselinet/2;
 \foundboty = -\suph-\baselinet-\isot-\foundt;
 \foundtopy = -\suph-\baselinet-\isot;
-\foundstartx = \x1-2*\supw;
-\foundendx = \x{\ncol}+2*\supw;
+\foundstartx = \x1-\foundsidew;
+\foundendx = \x{\ncol}+\foundsidew;
 %%%DOFs%%%%
 if greater(\doflocfloor,\ns) then {\doflocfloor=0;} else{};
 if greater(\dofloccolumn,\ncol) then {\dofloccolumn=1;} else{};

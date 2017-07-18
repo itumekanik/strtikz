@@ -33,7 +33,10 @@
 	text for the ground dof=$x_g(t)$,
 	text for the story mass=$m_i$,
 	text for the base slab mass=$m_b$,
-	text for the story properties={$k_i,c_i$}},
+	text for the story properties={$k_i,c_i$},
+	story dof arrow tick = 6pt,
+	vertical dof ref line start ratio=0.6,
+	show superstructure dofs = 1},
 	number of storys/.store in = \nstory,
 	story height/.store in = \storyheight,
 	startX/.store in = \startx,
@@ -67,22 +70,26 @@
 	text for the ground dof/.store in=\grounddoftext,
 	text for the story mass/.store in=\storymasstext,
 	text for the base slab mass/.store in=\basemasstext,
-	text for the story properties/.store in=\storyproptext,}
+	text for the story properties/.store in=\storyproptext,
+	story dof arrow tick/.store in=\storydofendtick,
+	vertical dof ref line start ratio/.store in=\vertreflineratio,
+	show superstructure dofs/.store in=\showsuperstructuredof}
 \newcommand{\lumpedmass}[1][]{
 \pgfkeys{/lumpedmass, default, #1}
-\tikzmath{}
 \tikzmath{
-int \nstory, \ncol, \nlev, \nlevmo, \ncolmo, \iii, \jjj, \showss;
+int \nstory, \ncol, \nlev, \nlevmo, \ncolmo, \iii, \jjj, \kkk, \showss;
 real \storyheight, \startx, \starty, \xx, \y;
 real \supw, \suph, \isow, \isot, \foundt, \massrad;
 real \axissp, \framelinet, \baselinet, \isolinet;
 real \rigbasestartx, \rigbaseendx, \isoboty, \isotopy;
 real \foundboty, \foundtopy, \foundstartx, \foundendx;
-int \showmass, \showss, \iii, \jjj;
+int \showmass;
 real \arrowlenratio, \minlen, \dofxx, \dofyy, \arrlen, \arrrad;
 real \driftdist, \driftcurve, \driftcurveratio;
 real \arrlen, \arrwid;
-int \showsuperstructuredof, \doftextstory;
+int \showsuperstructuredof, \doftextstory, \doftextfloor;
+real \grdofarrstartx, \grdofarrstarty, \grdofarrendx, \grdofarrendy, \grdoftickboty, \grdofticktopy;
+real \vertrefineratio;
 %Conversion all units to the unit pt
 \storyheight = \storyheight;
 \startx = \startx;
@@ -108,6 +115,7 @@ int \showsuperstructuredof, \doftextstory;
 \arrlen=\arrlen;
 \arrwid=\arrwid;
 \doftextstory=\doftextstory;
+\storydofendtick = \storydofendtick;
 %End conversion, All values are now in pt units.
 \axissp = 0.2cm;
 %\framelinet = 1.0pt;
@@ -134,6 +142,25 @@ for \jjj in {1,...,{\ncol}}{
 \foundtopy = -\baseslabh-\baselinet-\isot;
 \foundstartx = \x1-\foundationw/2;
 \foundendx = \x{\ncol}+\foundationw/2;
+if \showss==4 then {\grdofarrstartx = 0;
+\grdofarrstarty = \foundboty+\foundt*0.5;
+\grdofarrendx = \foundationdrift;
+\grdofarrendy = \foundboty+\foundt*0.5;
+\grdoftickboty = \foundboty+\foundt*0.25;
+\grdofticktopy = \foundboty+\foundt*0.25 + \foundt*0.5;}
+else{\basedriftdist=0;};
+if \showss==1 then {\grdofarrstartx = 0;
+\grdofarrstarty = -\suph/2;
+\grdofarrendx = \foundationdrift;
+\grdofarrendy = -\suph/2;
+\grdoftickboty = -\suph*0.75;
+\grdofticktopy = -\suph*0.25;} else {};
+if \showss==2 || \showss==3   then {\grdofarrstartx = 0;
+\grdofarrstarty = -\baseslabh/2;
+\grdofarrendx = \foundationdrift;
+\grdofarrendy = -\baseslabh/2;
+\grdoftickboty = -\baseslabh*0.75;
+\grdofticktopy = -\baseslabh*0.25;} else {};
 %%%%%Axes%%%%%
 \Xaxesstarty = \y{1};
 \Yaxesstartx = \x{1};
@@ -144,15 +171,12 @@ if equal(\showss,1) then {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;} else {\Xaxe
 \driftdist = \driftdist;
 \driftcurv = \driftcurveratio*\storyheight;
 %%%%%%%DOFs%%%%%%%%%%
-\showsuperstructuredof = 1;
 \doftextstory = \doftextstory;
-%print($\x1$);
+\doftextfloor = \doftextstory+1;
+\vertrefstart = \vertreflineratio*\driftcurv;
+\storydofshift = \vertrefstart;
 }
-%\def \doftext {$x_i(t)$};
-%\def \isodoftext {$x_b(t)$};
-%\def \grounddoftext {$x_g(t)$};
 \begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=0]; % Drawing everything in pt units
-%\draw (0,0)-- (0.5cm,2cm);
 
 \tikzset{arrowbe/.style = {arrows={->[length=\arrlen, width=\arrwid]}}};
 \tikzset{arrowben/.style = {arrows={<->[length=\arrlen, width=\arrwid]}}};
@@ -172,37 +196,37 @@ if equal(\showss,1) then {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;} else {\Xaxe
 }{}
 
 % Add text for mass and stiffness and damping
-\path(\baseslabw/2,0) node[above=-2pt]{\basemasstext};
 \path (\x{1},\y{\useeval{\doftextstory+1}})node[xshift=\massrad-2pt, right, opaque]{\storymasstext} 
 ++(0,-\storyheight/2)node[xshift=-2pt, right, opaque]{\storyproptext};
 
 
 %%% Different types of supports
-%\ifthenelse{\showss=0}{
-%}{}
-%
-%\ifthenelse{\showss=1}{
-%\foreach \jjj in {1,...,{\ncol}}
-%{
-%\fill [gray] (\x{\jjj},\y{1}) +({-\supw/2},-\suph) rectangle +({\supw/2},\y{1});
-%\draw [line width = \baselinet] (\x{\jjj},\y{1}) +({-\supw/2},\y{1}) -- +({\supw/2},\y{1});
-%}
-%}{}
-%
-%\ifthenelse{\showss=2}{
-%\foreach \jjj in {1,...,{\ncol}}
-%{
-%\fill [gray] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);
-%\draw [line width = \baselinet] (\rigbasestartx, 0) -- (\rigbaseendx,0);
-%}
-%}{}
-%
-%\ifthenelse{\showss=3}{
-%\foreach \jjj in {1,...,{\ncol}}
-%{\fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);}
-%}{}
+\ifthenelse{\showss=0}{
+}{}
+
+\ifthenelse{\showss=1}{
+\foreach \jjj in {1,...,{\ncol}}
+{
+\fill [gray] (\x{\jjj},\y{1}) +({-\supw/2},-\suph) rectangle +({\supw/2},\y{1});
+\draw [line width = \baselinet] (\x{\jjj},\y{1}) +({-\supw/2},\y{1}) -- +({\supw/2},\y{1});
+}
+}{}
+
+\ifthenelse{\showss=2}{
+\foreach \jjj in {1,...,{\ncol}}
+{
+\fill [gray] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\baseslabh);
+\draw [line width = \baselinet] (\rigbasestartx, 0) -- (\rigbaseendx,0);
+}
+}{}
+
+\ifthenelse{\showss=3}{
+\foreach \jjj in {1,...,{\ncol}}
+{\fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\baseslabh);}
+}{}
 
 \ifthenelse{\showss=4}{
+\path(\baseslabw/2,0) node[above=-2pt]{\basemasstext};
 
 \fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\baseslabh);
 
@@ -221,45 +245,47 @@ if equal(\showss,1) then {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;} else {\Xaxe
 
 \begin{scope}[xshift = \basedriftdist]
 
-% Show Mass
-\ifthenelse{\showmass=1}{
-\foreach \iii in {2,...,{\nlev}}
-{\foreach \jjj in {1,...,{\ncol}}{
-\shade[ball color = black, opacity = 0.35] (\x{\jjj}+\driftdist*\useeval{\iii-1},\y{\iii}) circle (\massrad);
-}}
-}{}
-
 %Deflected Shape
 \foreach \iii in {2,...,{\nlev}}{
 \draw [line width = \framelinet, gray] (\x{1}+\driftdist*\useeval{\iii-2},\usevar\y{\iii-1})
 ..controls++(0,\driftcurv) and ++(0,-\driftcurv)..(\x{1}+\driftdist*\useeval{\iii-1},\usevar\y{\iii});
 }
 
+% Show Mass
+\ifthenelse{\showmass=1}{
+\foreach \iii in {2,...,{\nlev}}
+{\foreach \jjj in {1,...,{\ncol}}{
+\shade[ball color = gray] (\x{\jjj}+\driftdist*\useeval{\iii-1},\y{\iii}) circle (\massrad);
+}}
+}{}
 
-%\ifthenelse{\showss=0}{
-%}{}
-%
-%\ifthenelse{\showss=1}{
-%\foreach \jjj in {1,...,{\ncol}}
-%{
-%\fill [gray] (\x{\jjj},\y{1}) +({-\supw/2},-\suph) rectangle +({\supw/2},\y{1});
-%\draw [line width = \baselinet] (\x{\jjj},\y{1}) +({-\supw/2},\y{1}) -- +({\supw/2},\y{1});
-%}
-%}{}
-%
-%\ifthenelse{\showss=2}{
-%\foreach \jjj in {1,...,{\ncol}}
-%{
-%\fill [gray] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);
-%\draw [line width = \baselinet] (\rigbasestartx, 0) -- (\rigbaseendx,0);
-%}
-%}{}
-%
-%\ifthenelse{\showss=3}{
-%\foreach \jjj in {1,...,{\ncol}}
-%{\fill [fill=gray, draw=black, line width = \baselinet]
-%(\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);}
-%}{}
+
+%Support Conditions
+
+\ifthenelse{\showss=0}{
+}{}
+
+\ifthenelse{\showss=1}{
+\foreach \jjj in {1,...,{\ncol}}
+{
+\fill [gray] (\x{\jjj},\y{1}) +({-\supw/2},-\suph) rectangle +({\supw/2},\y{1});
+\draw [line width = \baselinet] (\x{\jjj},\y{1}) +({-\supw/2},\y{1}) -- +({\supw/2},\y{1});
+}
+}{}
+
+\ifthenelse{\showss=2}{
+\foreach \jjj in {1,...,{\ncol}}
+{
+\fill [gray] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\baseslabh);
+\draw [line width = \baselinet] (\rigbasestartx, 0) -- (\rigbaseendx,0);
+}
+}{}
+
+\ifthenelse{\showss=3}{
+\foreach \jjj in {1,...,{\ncol}}
+{\fill [fill=gray, draw=black, line width = \baselinet]
+(\rigbasestartx, 0) rectangle (\rigbaseendx,-\baseslabh);}
+}{}
 
 \ifthenelse{\showss=4}{
 
@@ -269,36 +295,77 @@ if equal(\showss,1) then {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;} else {\Xaxe
 \foreach \jjj in {1,...,{\ncol}}
 {\filldraw [fill = white!75!black, draw=gray, line width=\isolinet, opacity = 1]
 (\x{\jjj},\y{1}) ++(\isow/2,\isotopy) -- ++(-\basedriftdist,-\isot) -- ++(-\isow,0) -- ++(\basedriftdist, \isot) -- cycle;}
-}{}
-
-% Super Structure DOFs
-\ifthenelse{\showsuperstructuredof=1}{
-\foreach \iii in {2,...,{\nlev}}{
-\draw [arrowbe] (\x{1},\y{\iii}) -- (\x{1}+\driftdist*\useeval{\iii-1},\y{\iii});
-};
-
-\draw (0,0.6*\driftcurv) -- (0, \y{\nlev}+0.1*\storyheight);
-\path [line width=0] (\x{1},\y{\useeval{\doftextstory+1}}) --
-node[above=-2pt, midway]{\doftext} (\x{1}+\driftdist*\doftextstory , \y{\useeval{\doftextstory+1}});
 
 %Isolaton DOF
 \draw [arrowbe] (-\basedriftdist,-\baseslabh/2) --
-node[above=-2pt, xshift =\baseslabw/2-\basedriftdist/2, midway]{\isodoftext}(0,-\baseslabh/2);
+node[above=-2pt, xshift =-\baseslabw/4, midway]{\isodoftext}(0,-\baseslabh/2);
 }{}
+
+% Super Structure DOF Arrows
+\ifthenelse{\showsuperstructuredof=1}{
+\foreach \iii in {2,...,{\nlev}}{
+
+\ifthenelse{\iii=\nlev}{
+	\draw [arrowbe] (\x{1},\y{\iii}+\massrad+\storydofendtick) --
+	(\x{1}+\driftdist*\useeval{\iii-1},\y{\iii}+\massrad+\storydofendtick); %story DOF arrows
+	\draw (\x{1}+\driftdist*\useeval{\iii-1},\y{\iii}+\massrad+\storydofendtick/2) --
+	(\x{1}+\driftdist*\useeval{\iii-1},\y{\iii}+\massrad+\storydofendtick*1.5); %Story DOF end tick
+	}
+	{
+	\draw [arrowbe] (\x{1},\y{\iii}+\storydofshift) -- (\x{1}+\driftdist*\useeval{\iii-1},\y{\iii}+\storydofshift); %story DOF arrows
+	\draw (\x{1}+\driftdist*\useeval{\iii-1},\y{\iii}+\storydofshift-\storydofendtick/2) --
+	(\x{1}+\driftdist*\useeval{\iii-1},\y{\iii}+\storydofshift+\storydofendtick/2); %Story DOF end tick
+	}
+	};
+	
+	\draw (0,\vertrefstart) -- (0, \y{\nlev}+\massrad+\storydofendtick*1.5);   %Vertical reference line for the DOFss
+}{}
+
+\ifthenelse{\showsuperstructuredof=2}{
+
+	\ifthenelse{\doftextfloor=\nlev}{
+		\draw [arrowbe] (\x{1},\y{\doftextfloor}+\massrad+\storydofendtick) --
+		(\x{1}+\driftdist*\doftextstory,\y{\doftextfloor}+\massrad+\storydofendtick); %story DOF arrows
+		\draw (\x{1}+\driftdist*\doftextstory,\y{\doftextfloor}+\massrad+\storydofendtick/2) --
+		(\x{1}+\driftdist*\doftextstory,\y{\doftextfloor}+\massrad+\storydofendtick*1.5); %Story DOF end tick
+		\draw (0,\vertrefstart) -- (0, \y{\doftextfloor}+\massrad+\storydofendtick*1.5);   %Vertical reference line for the DOFss
+	}
+	{
+		\draw [arrowbe] (\x{1},\y{\doftextfloor}+\storydofshift) -- (\x{1}+\driftdist*\doftextstory,\y{\doftextfloor}+\storydofshift); %story DOF arrows
+		\draw (\x{1}+\driftdist*\doftextstory,\y{\doftextfloor}+\storydofshift-\storydofendtick/2) --
+		(\x{1}+\driftdist*\doftextstory,\y{\doftextfloor}+\storydofshift+\storydofendtick/2); %Story DOF end tick
+		\draw (0,\vertrefstart) -- (0, \y{\doftextfloor}+\storydofshift+\storydofendtick/2);   %Vertical reference line for the DOFss
+	}
+}{}
+
+%Place the DOF Text to the selected story
+\ifthenelse{\doftextstory=\nstory}{
+\path [line width=0] (\x{1},\y{\useeval{\doftextstory+1}}+\massrad+\storydofendtick) --
+node[above=-2pt, midway]{\doftext} (\x{1}+\driftdist*\doftextstory , \y{\useeval{\doftextstory+1}}+\massrad+\storydofendtick);   %DOF text
+}
+{
+\path [line width=0] (\x{1},\y{\useeval{\doftextstory+1}}+\storydofshift) --
+node[above=-2pt, midway]{\doftext} (\x{1}+\driftdist*\doftextstory , \y{\useeval{\doftextstory+1}}+\storydofshift);   %DOF text
+}
+
 
 \end{scope}
 
 %Foundation
+\ifthenelse{\showss=4}{
 \fill [fill=white!75!black]
 (\foundstartx, \foundboty) rectangle (\foundendx,\foundtopy);
 \draw [line width = \baselinet, gray] (\foundstartx, \foundtopy) -- (\foundendx, \foundtopy);
-
-\draw (0,\foundboty+\foundt*0.25) -- (0,0);
+\draw (0,\foundboty+\foundt*0.25) -- (0,0); % Vertical reference line for isolator DOF
+}{}
 
 \end{scope}
 
-\draw (0,\foundboty+\foundt*0.25) --  ++(0,\foundt*0.5);
-\draw [arrowbe] (0,\foundboty+\foundt*0.5) -- node[above=-2pt, midway, xshift=1pt]{\grounddoftext}  ++(\foundationdrift,0);
+%% Ground DOF
+\draw (0,\grdoftickboty) --  (0,\grdofticktopy);  %Vertical tick line for ground DOF
+\draw [arrowbe] (\grdofarrstartx,\grdofarrstarty) --
+node[above=-2pt, midway, xshift=1pt]{\grounddoftext}  (\grdofarrendx,\grdofarrendy);  % Ground DOF arrow
+\draw (\grdofarrendx,\grdoftickboty) --  (\grdofarrendx,\grdofticktopy);  %Vertical tick line for ground DOF
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %Show axes

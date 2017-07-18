@@ -14,7 +14,10 @@ default/.style={
   rigid thickness = 2pt,
   spring thickness = 1.5pt,
   spring direction mode = 1,
-  radius coefficient = 1},
+  radius coefficient = 1,
+  rigid left text = {$L_1=0$},
+  rigid right text = {$L_2=0$},
+  rigid text offset = -2pt},
   startx/.store in = \startrotx,
   starty/.store in = \startroty,
   rotation/.store in = \rotn,
@@ -29,6 +32,9 @@ default/.style={
   spring thickness/.store in = \sprlinet,
   spring direction mode/.store in = \sprdirmode,
   radius coefficient/.store in = \radcoeff,
+  rigid left text/.store in = \rigidlefttext,
+  rigid right text/.store in = \rigidrighttext,
+  rigid text offset/.store in = \riglentextoff,
 }
 \newcommand{\rotspring}[1][]{
 \pgfkeys{/rotspring, default, #1}
@@ -49,6 +55,7 @@ real \riglinet, \sprlinet, \radcoeff;
 \textlocoff = \textlocoff;
 \riglinet = \riglinet;
 \sprlinet = \sprlinet;
+\riglentextoff = \riglentextoff;
 %End conversion, All values are now in pt units
 \rsed = \radcoeff*\rscn*2*pi*\rscn*2*pi*\rsdi;
 \springdomain = \rscn*2*pi;
@@ -56,11 +63,13 @@ real \riglinet, \sprlinet, \radcoeff;
 }
 \begin{scope}[x=1pt, y=1pt, xshift = \startrotx, yshift=\startroty, rotate=\rotn]; % Draw everything in pt units
 \ifthenelse{\sprdirmode=1}{
-\draw [line width=\riglinet](0,0) -- ++(\strl,0);
+\draw [line width=\riglinet](0,0) -- ++(\strl,0) node[midway, rotate=\rotn, above=\riglentextoff] {\rigidlefttext};
 \draw [line width=\sprlinet,
 domain=0:\springdomain,variable=\t,smooth,samples=\rscn*\samplepercycle,xshift=\strl]
 plot ({\t r}: {\rsdi*\t*\t*\radcoeff});
-\draw [line width=\riglinet](\strl+\rsed-\sprlinet/2,0)-- node[at start, \textloc=\textlocoff] {\sptext} (\enrl+\strl,0);
+\draw (\strl,0) node[above, \textloc=\textlocoff] {\sptext};
+\draw [line width=\riglinet](\strl+\rsed-\sprlinet/2,0)--(\enrl+\strl,0)
+node[midway,  rotate=\rotn, above=\riglentextoff] {\rigidrighttext};
 }{};
 
 \ifthenelse{\sprdirmode=2}{

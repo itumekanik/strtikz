@@ -21,6 +21,7 @@ default/.style={
 	mark max point = 1,
 	axis line thickness = 1pt,
 	line thickness = 1pt,
+	line color = black,
 	show axes labels = 1,
 	show stiffness = 1,
 	show arrows = 1,
@@ -48,6 +49,7 @@ default/.style={
 	mark max point/.store in = \mmp,
 	axis line thickness/.store in = \axislinet,
 	line thickness/.store in = \bilinet,
+	line color/.store in = \linecolor,
 	show axes labels/.store in = \showaxes,
 	show stiffness/.store in = \showstiff,
 	show arrows/.store in = \showarrows,
@@ -82,14 +84,15 @@ if \showaxes==0 then {\xlab={};\ylab={};} else {};
 if \showstiff==0 then {\kpt={};\kst={};} else {};
 }
 \begin{scope}[x=1pt, y=1pt, xshift = \startx, yshift=\starty, rotate=0];    % Draw everything in pt units
+
 \ifthenelse{\showlinearrows=1}{
 \tikzset{linearrow/.style = {postaction={on each segment={mid arrow=black}}}};
 }{\tikzset{linearrow/.style = {}};}
 
 \ifthenelse{\showarrows=1}{
 \tikzset{arrowbe/.style = {arrows={->[length=\arrlen, width=\arrwid]}}};
-\tikzset{arrowben/.style = {arrows={<->[length=\arrlen, width=\arrwid]}}};
-}{\tikzset{arrowbe/.style = {}};}
+\tikzset{arrowben/.style = {arrows={<[length=\arrlen, width=\arrwid]->[length=\arrlen, width=\arrwid]}}};
+}{\tikzset{arrowbe/.style = {}}; \tikzset{arrowben/.style = {}};}
 
 \ifthenelse{\myp=1}{
 \draw [very thin, dashed] (\dy, 0)--node[at start, below=-1]{\dyt}(\dy, \fy);
@@ -104,7 +107,7 @@ if \showstiff==0 then {\kpt={};\kst={};} else {};
 \ifthenelse{\mode=1}{
 \draw [line width=\axislinet, arrowbe] (-\axsp,0) -- node[at end, below=-2pt]{\xlab}(\xmax,0);
 \draw [line width=\axislinet, arrowbe] (0,-\axsp) -- node[at end, left=-2pt]{\ylab}(0,\ymax);
-\path [line width=\bilinet, draw=black, linearrow]
+\path [line width=\bilinet, draw=\linecolor, linearrow]
 (0,0)
 -- node[right, midway, behind path, fill=white]{\kpt}(\dy,\fy)
 -- node[below, midway]{\kst}(\dm,\fm);
@@ -181,7 +184,7 @@ if \showstiff==0 then {\kpt={};\kst={};} else {};
 \ifthenelse{\mode=8}{
 \draw [line width = \axislinet, arrowben] (-\xmax,0) -- node[at end, below=-2pt]{\xlab}(\xmax,0);
 \draw [line width = \axislinet, arrowben] (0,-\ymax) -- node[at end, left=-2pt]{\ylab}(0,\ymax);
-\path [line width = \bilinet, draw=black, linearrow] 
+\path [line width = \bilinet, draw=\linecolor, linearrow] 
 (0,0)
 -- node[right, midway, behind path, fill=white]{\kpt}(\dy,\fy)
 -- node[below, midway]{\kst}(\dm,\fm)

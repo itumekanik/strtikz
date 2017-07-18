@@ -20,7 +20,9 @@
   spring coefficient = 0.75,
   stiffness location = above,
   stiff location offset = 6pt,
-  },
+  rigid left text = {$L_1=0$},
+  rigid right text = {$L_2=0$},
+  rigid text offset = -2pt},
   startx/.store in =\startx,
   starty/.store in =\starty,
   start rigid length/.store in =\srl,
@@ -40,6 +42,9 @@
   spring coefficient/.store in = \springcoefficient,
   stiffness location/.store in = \stiffloc,
   stiff location offset/.store in = \stifflocoff,
+  rigid left text/.store in = \xxrigidlefttext,
+  rigid right text/.store in = \xxrigidrighttext,
+  rigid text offset/.store in = \xxriglentextoff,  
 }
 
 \newcommand{\rotspringlocal}[1][]{
@@ -93,7 +98,8 @@ int \springmode
 rotational spring diameter = \cycledia, rotational spring cycle number = \cycleno,
 text = \springstiff, text location = \stiffloc, text location offset = \stifflocoff,
 rigid thickness=\rigidlinet, spring thickness=\springlinet, 
-spring direction mode = \springmode, radius coefficient = \springcoefficient]
+spring direction mode = \springmode, radius coefficient = \springcoefficient,
+rigid left text = \xxrigidlefttext, rigid right text = \xxrigidrighttext, rigid text offset = \xxriglentextoff]
 
 \node at (0,0)      [left=-0.05cm]{\small $i$};
 \node at (\anglrs:\leng)  [right=-0.1cm]{\small $j$};
