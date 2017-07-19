@@ -14,6 +14,7 @@
 \usepackage{upgreek}
 \usepackage{amsmath,amsthm}
 \usepackage{strtikz}
+\usepackage{tikz-dimline}
 \usetikzlibrary{shapes,arrows.meta,intersections,graphs,graphs.standard,math,fit}
 \usetikzlibrary{calc,intersections,through,backgrounds}
 \usetikzlibrary{decorations.pathmorphing, decorations.markings,decorations.pathreplacing}
@@ -24,12 +25,54 @@
 \begin{tikzpicture}
 \framelocal[startx = 0cm,
   starty = 0cm,
-  dx = 6cm,
-  dy = 3cm,
-  dof offset = 0.15cm,
-  dof arrow ratio = 0.125,
+  dx = 5cm,
+  dy = -2cm,
+  start dof offset x = 0.0cm,
+  start dof offset y = 0.0cm,
+  end dof offset x = 0.0cm,
+  end dof offset y = 0.0cm,
+  dof arrow size = 0.75cm,
+  rotation dof ratio = 0.8,  
+  i rotation dof start angle=150,
+  i rotation dof end angle=300,  
+  j rotation dof start angle=150,
+  j rotation dof end angle=300,  
+  i dof nodal offset x = 0.0cm,
+  i dof nodal offset y = 0.2cm,
+  i rot nodal offset x = 0.0cm,
+  i rot nodal offset y = 0.0cm,
+  j dof nodal offset x = 0.2cm,
+  j dof nodal offset y = 0.0cm,
+  j rot nodal offset x = 0.0cm,
+  j rot nodal offset y = 0.0cm,
+  global X axis start=1.5cm,
+  global X axis end=6cm,
+  global Y axis start=0.75cm,
+  global Y axis end=3cm,
+  local x axis start offset=1.25cm,
+  local x axis length=0.75cm,
+  local y axis start offset=1.25cm,
+  local y axis length=0.75cm,
   fontsize = \tiny,
-  line thickness = 1.5pt]
+  line thickness = 1.5pt,
+  dot radius = 1.5pt,
+  joint text inner sep = 2pt,
+  joint text font size = \normalsize,
+  start joint angle = 90,
+  end joint angle = 90,
+  place the length dimension = 1,
+  length dimension offset= 0.53cm,
+  length dimension space ratio = 0.5,
+  length dimension text rotation=0,
+  length dimension line thickness=0.5pt,
+  length dimension extension thickness=0.15pt,
+  length label text inner sep = 2pt,
+  length text = {$L$},
+  properties location = below,
+  properties rotation = 0,
+  properties text = {$A,E,I$},
+  rotation text startx = 1.75cm,
+  rotation text = {$\theta$},]
 %\draw (0,0) -- (1cm,1cm);
 \end{tikzpicture}
 \end{document}

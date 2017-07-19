@@ -21,25 +21,22 @@
 
 \begin{document}
 \begin{tikzpicture}
-\dofs[startx = 2cm,
+\dofs[startx = 4cm,
   starty = 2cm,
-  length x = 0.5cm,
-  length y = 0.5cm,
-  offset = 0.0cm,
-  start angle = 110,
-  end angle = 340,  
+  length x = 1cm,
+  length y = 1cm,
+  offset x= 0.3cm,
+  offset y= 0.1cm,
+  offset rotation xdir= 0cm,
+  offset rotation ydir= -0.3cm,  
+  start angle = 90,
+  end angle = 270,  
   radius = 0.5cm,
   xstring = $x$,
   ystring = $y$,  
   rstring = $\theta$,
   font size = \scriptsize,
-  x location = above,
-  y location = right,  
-  r location = right,
-  x location offset = -0.1cm,
-  y location offset = 1cm,
-  r location offset = 1in,
-  rotation=45]
-\draw(0,0) -- (2,2);
+  rotation=30]
+\draw(0,0) -- (4,2);
 \end{tikzpicture}
 \end{document}

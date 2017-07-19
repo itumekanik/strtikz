@@ -5,7 +5,10 @@
   starty = 0cm,
   length x = 1cm,
   length y = 1cm,
-  offset = 0.1cm,
+  offset x= 0.1cm,
+  offset y= 0.1cm,
+  offset rotation xdir= 0.1cm,
+  offset rotation ydir= 0.1cm,  
   start angle = 110,
   end angle = 340,  
   radius = 0.5cm,
@@ -13,77 +16,52 @@
   ystring = $y$,  
   rstring = $z$,
   font size = \normalsize,
-  x location = below,
-  y location = right,  
-  r location = right,
-  x location offset = 0pt,
-  y location offset = 0pt,
-  r location offset = 0pt,
   rotation = 0},
-  startx/.store in = \xx,
-  starty/.store in = \yy,
-  length x/.store in = \lx,
-  length y/.store in = \ly,
-  offset/.store in = \tdof,
-  start angle/.store in = \sa,
-  end angle/.store in = \ea,
-  radius/.store in = \radi,
-  xstring/.store in = \dofx,
-  ystring/.store in = \dofy,
-  rstring/.store in = \dofr,
-  font size/.store in = \fsize,
-  x location/.store in = \xloc,
-  y location/.store in = \yloc,
-  r location/.store in = \rloc,
-  x location offset/.store in = \xlocoff,
-  y location offset/.store in = \ylocoff,
-  r location offset/.store in = \rlocoff,
-  rotation/.store in = \rot}
+  startx/.store in = \startdofx,
+  starty/.store in = \startdofy,
+  length x/.store in = \lengthdofx,
+  length y/.store in = \lengthdofy,
+  offset x/.store in = \offsetdofx,
+  offset y/.store in = \offsetdofy,
+  offset rotation xdir/.store in = \offsetrotx,  
+  offset rotation ydir/.store in = \offsetroty, 
+  start angle/.store in = \rotdofstartang,
+  end angle/.store in = \rotdofendang,
+  radius/.store in = \rotdofradius,
+  xstring/.store in = \xdoftext,
+  ystring/.store in = \ydoftext,
+  rstring/.store in = \rotdoftext,
+  font size/.store in = \doftextsize,
+  rotation/.store in = \rotationdofcenter}
 
 \newcommand{\dofs}[1][]{
 \pgfkeys{/dofs, default, #1}
 
 \tikzmath{
-real \xx, \yy, \lx, \ly;
-real \tdof, \radi;
+real \startdofx, \startdofy, \lengthdofx, \lengthdofy;
+real \rotdofradius, \rotdofendang, \rotdofstartang, \rotationdofcenter;
+real \offsetdofx, \offsetdofy, \offsetrotx, \offsetroty;
 coordinate \cjoint; % coordinate of the joint
 %Conversion all units to the unit pt
-\xx = \xx;
-\yy = \yy;
-\lx = \lx;
-\ly = \ly;
-\tdof = \tdof;
-\radi = \radi;
-\xlocoff = \xlocoff;
-\ylocoff = \ylocoff;
-\rlocoff = \rlocoff;
+\startdofx = \startdofx;
+\startdofy = \startdofy;
+\lengthdofx = \lengthdofx;
+\lengthdofy = \lengthdofy;
+\rotdofradius = \rotdofradius;
+\offsetdofx = \offsetdofx;
+\offsetdofy = \offsetdofy;
+\offsetrotx = \offsetrotx;
+\offsetroty = \offsetroty;
 %End conversion, All values are now in pt units.
-%print {$\xx -$};
-%print {$\yy -$};
 }
-\begin{scope}[x=1pt, y=1pt, xshift=\xx, yshift=\yy, rotate=\rot]; % Drawing everything in pt units
-\draw [arrows={->[scale=0.5]}] (\tdof,0) -- node[at end, \xloc=\xlocoff]{\fsize \dofx} ++(\lx,0);
-\draw [arrows={->[scale=0.5]}] (0, \tdof) -- node[at end, \yloc=\ylocoff]{\fsize \dofy}++(0,\ly);
-\draw [arrows={->[scale=0.5]}] (\sa:\radi) ++(0,0) arc [start angle=\sa, end angle=\ea, radius=\radi]
-node[very near end, \rloc=\rlocoff]{\fsize \dofr};
+\begin{scope}[x=1pt, y=1pt, xshift=\startdofx, yshift=\startdofy, rotate=\rotationdofcenter]; % Drawing everything in pt units
+\draw [arrows={<->[scale=0.5]}] (\lengthdofx+\offsetdofx,\offsetdofy) 
+-- node[at start, inner sep=1pt, outer sep=0pt, anchor=180+\rotationdofcenter]{\doftextsize \xdoftext} (\offsetdofx,\offsetdofy)
+-- node[at end, inner sep=1pt, outer sep=0pt, anchor=270+\rotationdofcenter]{\doftextsize \ydoftext}++(0,\lengthdofy);
+
+%\draw [arrows={->[scale=0.5]}] (\offsetcenter,0) -- node[at end, inner sep=1pt, outer sep=0pt, anchor=180+\rotationdofcenter]{\doftextsize \xdoftext} ++(\lengthdofx,0);
+%\draw [arrows={->[scale=0.5]}] (0, \offsetcenter) -- node[at end, inner sep=1pt, outer sep=0pt, anchor=270+\rotationdofcenter]{\doftextsize \ydoftext}++(0,\lengthdofy);
+\draw [arrows={->[scale=0.5]}] (\rotdofstartang:\rotdofradius) ++(\offsetrotx,\offsetroty) arc [start angle=\rotdofstartang, end angle=\rotdofendang, radius=\rotdofradius]
+node[at end, inner sep=1pt, outer sep=0pt, anchor=\rotdofendang+\rotationdofcenter-90]{\doftextsize \rotdoftext};
 \end{scope}
 }
-
-%\begin{tikzpicture}
-%\dofs[startx = 0cm,
-%  starty = 0cm,
-%  dx = 1in,
-%  dy = 1cm,
-%  offset = 0.0cm,
-%  start angle = 110,
-%  end angle = 340,  
-%  radius = 1cm,
-%  xstring = $x$,
-%  ystring = $y$,  
-%  rstring = $\theta$,
-%  font size = \scriptsize,
-%  x location = left,
-%  y location = right,  
-%  r location = right,
-%  rotation=45]
-%\end{tikzpicture}
