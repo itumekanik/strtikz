@@ -21,7 +21,12 @@
   dof floor = 1,
   dof column = 2,
   arrow length ratio = 0.4,
+  dof x rotation = 0,
+  dof y rotation = 0,
+  dof r rotation = 0,
   dof offset ratio = 0.075,
+  rotation dof start angle = 120,
+  rotation dof end angle = 280,
   show dof = 1,
   show axes = 1},
   number of storys/.store in = \ns,
@@ -46,6 +51,11 @@
   dof column/.store in = \dofloccolumn,
   arrow length ratio/.store in = \arrowlenratio,
   dof offset ratio/.store in = \dofoffsetratio,
+  dof x rotation/.store in = \dofxrotation,
+  dof y rotation/.store in = \dofyrotation,
+  dof r rotation/.store in = \dofrrotation,
+  rotation dof start angle/.store in = \rotdofstartangle,
+  rotation dof end angle/.store in = \rotdofendangle,
   show dof/.store in = \showdof,
   show axes/.store in = \showaxes}
 
@@ -60,6 +70,8 @@ real \rigbasestartx, \rigbaseendx, \isoboty, \isotopy;
 real \foundboty, \foundtopy, \foundstartx, \foundendx;
 int \doflocfloor, \dofloch, \dofloccolumn, \showaxes, \showdof, \showmass, \showss;
 real \arrowlenratio, \minlen, \dofxx, \dofyy, \arrlen, \arrrad;
+real \dofxrotation, \dofyrotation, \dofrrotation;
+real \rotdofstartangle, \rotdofendangle;
 %Conversion all units to the unit pt
 \sh = \sh;
 \bw = \bw;
@@ -120,6 +132,8 @@ if greater(\dofloccolumn,\ncol) then {\dofloccolumn=1;} else{};
 \Yaxesstarty = \y{\nlev}+\axissp;
 if equal(\showss,0) then {\Xaxesstartx = \x{\ncol}+\axissp;}         else {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;};
 if equal(\showss,1) then {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;} else {\Xaxesstartx = \x{\ncol}+\axissp+\supw;};
+%\rotdofstartangle = 100;
+%\rotdofendangle = 100;
 %%%%%%%%%%%%%%%%%%%%%%%%
 }
 \begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=0]; % Drawing everything in pt units
@@ -181,11 +195,13 @@ if equal(\showss,1) then {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;} else {\Xaxe
 }{}
 
 \ifthenelse{\showdof=1}{
-\dofs[startx = \dofxx, starty = \dofyy, length x = \arrlen,  length y = \arrlen, offset = 0cm, start angle = 120, end angle = 330,   
-  radius = \arrrad, xstring = $i$, ystring = $i+1$, rstring = $i+2$, font size = \tiny,
-  x location = above, y location = right,  r location = {right},
-  x location offset = -0.05cm, y location offset = -0.05cm,  r location offset = 0.03cm,
-  rotation=0]
+\dofs[startx = \dofxx, starty = \dofyy, length x = \arrlen,  length y = \arrlen,
+  offset x= 0.0cm, offset y= 0.0cm, offset rotation xdir= 0cm, offset rotation ydir= 0cm,
+  start angle = \rotdofstartangle, end angle = \rotdofendangle, radius = \arrrad, xstring = $i$, ystring = $i+1$, rstring = $i+2$, font size = \tiny,
+  rotation=0, font rotation=0,
+  font rotation for x = \dofxrotation, font rotation for y = \dofyrotation, font rotation for r = \dofrrotation,
+  arrow size ratio=0.5,
+  ]  
 }{}
 
 \end{scope}
