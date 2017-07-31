@@ -1,6 +1,7 @@
 \pgfkeys{
  /framestructure/.is family, /framestructure,
-  default/.style = {number of storys = 5,
+  default/.style = {
+  number of storys = 5,
   number of bays = 3,
   story height = 1cm,
   bay width = 2cm,
@@ -41,7 +42,13 @@
   right control distance y = 2cm,
   axis seperation = 0.2cm,
   x axis length = 0.5cm,
-  y axis length = 0.5cm,},
+  y axis length = 0.5cm,
+  show piles=1,
+  number of piles=5,
+  pile depth=4cm,
+  pile side space=0.5cm,
+  pile diameter=0.5cm,
+  pile line thickness=1pt,},
   number of storys/.store in = \storynumber,
   number of bays/.store in = \baynumber,
   story height/.store in = \storyheight,
@@ -84,12 +91,18 @@
   axis seperation/.store in = \axisseperation,
   x axis length/.store in = \axeslenX,
   y axis length/.store in = \axeslenY,
+  show piles/.store in=\showpiles,
+  number of piles/.store in=\numberofpiles,
+  pile depth/.store in=\piledepth,
+  pile side space/.store in=\pilesidespace,
+  pile diameter/.store in=\pilediameter,
+  pile line thickness/.store in=\pilelinethickness,  
 }
 
 \newcommand{\framestructure}[1][]{
 \pgfkeys{/framestructure, default, #1}
 \tikzmath{
-int \storynumber, \baynumber, \columnnumber, \levelnumber, \nlevmo, \ncolmo, \iii, \j, \showsupports;
+int \storynumber, \baynumber, \columnnumber, \levelnumber, \nlevmo, \ncolmo, \iii, \j, \pileind, \showsupports;
 real \storyheight, \baywidth, \startx, \starty, \xx, \y;
 real \supportwidth, \supportheight, \isolationwidth, \isolationdepth, \foundationdepth, \massrad;
 real \axisseperation, \framelinet, \baselinet, \isolinet;
@@ -105,6 +118,7 @@ real \leftsoildist, \rightsoildist, \leftsoildepth, \rightsoildepth;
 real \soilbelowfound, \leftcontrolx, \leftcontroly, \rightcontrolx, \rightcontroly;
 real \rightsoilx, \rightsoily;
 real \axeslenX, \axeslenY;
+real \piledepth, \pilespace, \pilecoordy, \pilesidespace, \pilespace, \pilecoordy, \pilecoordx, \pilelinethickness;
 %Conversion all units to the unit pt
 \storyheight = \storyheight;
 \baywidth = \baywidth;
@@ -131,6 +145,10 @@ real \axeslenX, \axeslenY;
 \rightcontroly = \rightcontroly;
 \axeslenX = \axeslenX;
 \axeslenY = \axeslenY;
+\piledepth=\piledepth;
+\pilesidespace=\pilesidespace;
+\pilediameter=\pilediameter;
+\pilelinethickness=\pilelinethickness;
 %End conversion, All values are now in pt units.
 \columnnumber = \baynumber+1; %number of columns
 \levelnumber = \storynumber+1; %number of levels
@@ -150,6 +168,7 @@ for \j in {1,...,{\columnnumber}}{
 \foundtopy = -\supportheight-\baselinet-\isolationdepth;
 \foundstartx = \x1-\foundsidew;
 \foundendx = \x{\columnnumber}+\foundsidew;
+%%%Basement%%%%
 \basewallstartx=-\supportwidth;
 \buildingwidth=\baynumber*\baywidth;
 \basewalldepth=\subfloors*\storyheight;
@@ -173,8 +192,12 @@ if greater(\dofloccolumn,\columnnumber) then {\dofloccolumn=1;} else{};
 \Yaxesstarty = \y{\levelnumber}+\axisseperation;
 if equal(\showsupports,0) then {\Xaxesstartx = \x{\columnnumber}+\axisseperation;} else {\Xaxesstartx = \x{\columnnumber}+\axisseperation+\supportwidth/2;};
 if equal(\showsupports,1) then {\Xaxesstartx = \x{\columnnumber}+\axisseperation+\supportwidth/2;} else {\Xaxesstartx = \x{\columnnumber}+\axisseperation+\supportwidth;};
-%\rotdofstartangle = 100;
-%\rotdofendangle = 100;
+%%%%Piles%%%%
+\pilecoordy = -\supportheight;
+\pilespace = (2*\supportwidth+\buildingwidth-2*\pilesidespace)/(\numberofpiles-1);
+for \pileind in {1,...,{\numberofpiles}}{
+\pilecoordx{\pileind} = -\supportwidth+\pilesidespace+(\pileind-1)*\pilespace;
+};
 %%%%%%%%%%%%%%%%%%%%%%%%
 }
 \begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=0]; % Drawing everything in pt units
@@ -190,6 +213,21 @@ if equal(\showsupports,1) then {\Xaxesstartx = \x{\columnnumber}+\axisseperation
 \draw(-\leftsoildist,\basewalldepth) -- (\buildingwidth+\rightsoildist,\basewalldepth);
 
 \path[fill=white](0,\basewalldepth) -- ++(\buildingwidth,0) -- ++(0,-\basewalldepth) -- ++(-\buildingwidth,0) -- cycle;
+
+\ifthenelse{\showpiles=1}{
+\foreach \pileind in {1,...,{\numberofpiles}}
+{\fill[fill=gray]
+(\pilecoordx{\pileind}-\pilediameter/2, \pilecoordy) rectangle (\pilecoordx{\pileind}+\pilediameter/2, \pilecoordy-\piledepth);
+ \draw[line width=\pilelinethickness](\pilecoordx{\pileind}-\pilediameter/2, \pilecoordy) -- ++(0,-\piledepth);
+ \draw[line width=\pilelinethickness](\pilecoordx{\pileind}+\pilediameter/2, \pilecoordy) -- ++(0,-\piledepth);
+ \filldraw[line width=\pilelinethickness, fill=white] (\pilecoordx{\pileind}-\pilediameter/4, \pilecoordy-\piledepth)
+ ellipse[x radius=\pilediameter/4, y radius=\pilediameter/8];
+ \fill[fill=gray] (\pilecoordx{\pileind}, \pilecoordy-\piledepth)
+ arc[start angle=180, end angle=360, x radius=\pilediameter/4, y radius=\pilediameter/8];
+ \draw[line width=\pilelinethickness] (\pilecoordx{\pileind}, \pilecoordy-\piledepth)
+ arc[start angle=180, end angle=360, x radius=\pilediameter/4, y radius=\pilediameter/8];
+ }
+}{}
 
 \filldraw[line width = \baselinet, fill=gray] (\basewallstartx,\basewallstarty) -- ++(\supportwidth,0) -- ++(0,-\basewalldepth)
 -- ++(\buildingwidth,0) -- ++(0,\basewalldepth) -- ++(\supportwidth,0) -- ++(0,-\basewalldepth-\supportheight)
@@ -274,23 +312,7 @@ if equal(\showsupports,1) then {\Xaxesstartx = \x{\columnnumber}+\axisseperation
   ]  
 }{}
 
+
 \end{scope}
 }
-
-%\framestructure[number of storys=5,
-%number of bays=4,
-%story height=1.25cm,
-%bay width=2cm,
-%startX=0cm,
-%startY=0cm,
-%frame line thickness = 1.2pt,
-%support width = 0.5cm,
-%support height = 0.2cm,
-%support line thickness = 1.5pt,
-%show supports = 4,
-%isolator width = 0.4cm,
-%isolator thickness = 0.2cm,
-%isolator line thickness = 1.5pt,
-%foundation thickness = 0.6cm]
-%\end{tikzpicture}
 
