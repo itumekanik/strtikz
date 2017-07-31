@@ -29,21 +29,21 @@
   rotation dof end angle = 280,
   show dof = 1,
   show axes = 1},
-  number of storys/.store in = \ns,
-  number of bays/.store in = \nb,
-  story height/.store in = \sh,
-  bay width/.store in = \bw,
+  number of storys/.store in = \storynumber,
+  number of bays/.store in = \baynumber,
+  story height/.store in = \storyheight,
+  bay width/.store in = \baywidth,
   startX/.store in = \startx,
   startY/.store in = \starty,
   frame line thickness/.store in = \framelinet,
-  support width/.store in = \supw,
-  support height/.store in = \suph,
+  support width/.store in = \supportwidth,
+  support height/.store in = \supportheight,
   support line thickness/.store in = \baselinet,
-  show supports/.store in = \showss,
-  isolator width/.store in = \isow,
-  isolator thickness/.store in = \isot,
+  show supports/.store in = \showsupports,
+  isolator width/.store in = \isolationwidth,
+  isolator thickness/.store in = \isolationdepth,
   isolator line thickness/.store in = \isolinet,
-  foundation thickness/.store in = \foundt,
+  foundation thickness/.store in = \foundationdepth,
   foundation side width/.store in = \foundsidew,
   mass radius/.store in = \massrad,
   show mass/.store in = \showmass,
@@ -62,26 +62,28 @@
 \newcommand{\framestructure}[1][]{
 \pgfkeys{/framestructure, default, #1}
 \tikzmath{
-int \ns, \nb, \ncol, \nlev, \nlevmo, \ncolmo, \iii, \j, \showss;
-real \sh, \bw, \startx, \starty, \xx, \y;
-real \supw, \suph, \isow, \isot, \foundt, \massrad;
+int \storynumber, \baynumber, \columnnumber, \levelnumber, \nlevmo, \ncolmo, \iii, \j, \showsupports;
+real \storyheight, \baywidth, \startx, \starty, \xx, \y;
+real \supportwidth, \supportheight, \isolationwidth, \isolationdepth, \foundationdepth, \massrad;
 real \axissp, \framelinet, \baselinet, \isolinet;
 real \rigbasestartx, \rigbaseendx, \isoboty, \isotopy;
 real \foundboty, \foundtopy, \foundstartx, \foundendx;
-int \doflocfloor, \dofloch, \dofloccolumn, \showaxes, \showdof, \showmass, \showss;
+int \doflocfloor, \dofloch, \dofloccolumn, \showaxes, \showdof, \showmass, \showsupports;
 real \arrowlenratio, \minlen, \dofxx, \dofyy, \arrlen, \arrrad;
 real \dofxrotation, \dofyrotation, \dofrrotation;
 real \rotdofstartangle, \rotdofendangle;
+int \subfloors;
+real \basewallstartx, \basewallstarty, \basewallendx, \basewallendy, \buildingwidth, \basewalldepth;
 %Conversion all units to the unit pt
-\sh = \sh;
-\bw = \bw;
+\storyheight = \storyheight;
+\baywidth = \baywidth;
 \startx = \startx;
 \starty = \starty;
-\supw = \supw;
-\suph = \suph;
-\isow = \isow;
-\isot = \isot;
-\foundt = \foundt;
+\supportwidth = \supportwidth;
+\supportheight = \supportheight;
+\isolationwidth = \isolationwidth;
+\isolationdepth = \isolationdepth;
+\foundationdepth = \foundationdepth;
 \framelinet = \framelinet;
 \baselinet = \baselinet;
 \isolinet = \isolinet;
@@ -92,34 +94,41 @@ real \rotdofstartangle, \rotdofendangle;
 %\framelinet = 1.0pt;
 %\baselinet = 1.5pt;
 %\isolinet = 3pt;
-%\foundt =1cm;
-\ncol = \nb+1; %number of columns
-\nlev = \ns+1; %number of levels
-if \ns>1 then {\nlevmo = \nlev-1;} else {\nlevmo=2;};
-if \nb>1 then {\ncolmo = \ncol-1;} else {\ncolmo=2;};
-for \iii in {1,...,{\nlev}}{
-\y{\iii} = (\iii-1)*\sh;
-for \j in {1,...,{\ncol}}{
-\x{\j} = (\j-1)*\bw;
+%\foundationdepth =1cm;
+\columnnumber = \baynumber+1; %number of columns
+\levelnumber = \storynumber+1; %number of levels
+if \storynumber>1 then {\nlevmo = \levelnumber-1;} else {\nlevmo=2;};
+if \baynumber>1 then {\ncolmo = \columnnumber-1;} else {\ncolmo=2;};
+for \iii in {1,...,{\levelnumber}}{
+\y{\iii} = (\iii-1)*\storyheight;
+for \j in {1,...,{\columnnumber}}{
+\x{\j} = (\j-1)*\baywidth;
 };
 };
-\rigbasestartx = \x1-\supw;
-\rigbaseendx = \x{\ncol}+\supw;
-\isoboty = -\suph-\baselinet/2-\isot;
-\isotopy = -\suph-\baselinet/2;
-\foundboty = -\suph-\baselinet-\isot-\foundt;
-\foundtopy = -\suph-\baselinet-\isot;
+\rigbasestartx = \x1-\supportwidth;
+\rigbaseendx = \x{\columnnumber}+\supportwidth;
+\isoboty = -\supportheight-\baselinet/2-\isolationdepth;
+\isotopy = -\supportheight-\baselinet/2;
+\foundboty = -\supportheight-\baselinet-\isolationdepth-\foundationdepth;
+\foundtopy = -\supportheight-\baselinet-\isolationdepth;
 \foundstartx = \x1-\foundsidew;
-\foundendx = \x{\ncol}+\foundsidew;
+\foundendx = \x{\columnnumber}+\foundsidew;
+\subfloors = 1;
+\basewallstartx=-\supportwidth;
+\buildingwidth=\baynumber*\baywidth;
+\basewalldepth=\subfloors*\storyheight;
+\basewallstarty=\basewalldepth;
+\basewallendx=\buildingwidth+\supportwidth;
+\basewallendy=\basewallstarty;
 %%%DOFs%%%%
-if greater(\doflocfloor,\ns) then {\doflocfloor=0;} else{};
-if greater(\dofloccolumn,\ncol) then {\dofloccolumn=1;} else{};
+if greater(\doflocfloor,\storynumber) then {\doflocfloor=0;} else{};
+if greater(\dofloccolumn,\columnnumber) then {\dofloccolumn=1;} else{};
 %\doflocfloor = 2;
 %\dofloccolumn = 2;
 %\arrowlenratio = 0.4;
 %\dofoffsetratio = 0.075;
 \dofloch = 1+\doflocfloor;
-\minlen = min(\sh,\bw);
+\minlen = min(\storyheight,\baywidth);
 \dofxx = \x{\dofloccolumn}+\dofoffsetratio*\minlen;
 \dofyy = \y{\dofloch}+\dofoffsetratio*\minlen;
 \arrlen = \arrowlenratio*\minlen;
@@ -129,65 +138,80 @@ if greater(\dofloccolumn,\ncol) then {\dofloccolumn=1;} else{};
 \axeslenY = 0.5cm;
 \Xaxesstarty = \y{1};
 \Yaxesstartx = \x{1};
-\Yaxesstarty = \y{\nlev}+\axissp;
-if equal(\showss,0) then {\Xaxesstartx = \x{\ncol}+\axissp;}         else {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;};
-if equal(\showss,1) then {\Xaxesstartx = \x{\ncol}+\axissp+\supw/2;} else {\Xaxesstartx = \x{\ncol}+\axissp+\supw;};
+\Yaxesstarty = \y{\levelnumber}+\axissp;
+if equal(\showsupports,0) then {\Xaxesstartx = \x{\columnnumber}+\axissp;}         else {\Xaxesstartx = \x{\columnnumber}+\axissp+\supportwidth/2;};
+if equal(\showsupports,1) then {\Xaxesstartx = \x{\columnnumber}+\axissp+\supportwidth/2;} else {\Xaxesstartx = \x{\columnnumber}+\axissp+\supportwidth;};
 %\rotdofstartangle = 100;
 %\rotdofendangle = 100;
 %%%%%%%%%%%%%%%%%%%%%%%%
 }
 \begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=0]; % Drawing everything in pt units
 %\draw (0,0)-- (0.5cm,2cm);
-\draw [line width = \framelinet] (\x{1},\y{1}) -- (\x{1}, \y{\nlev}) -- (\x{\ncol}, \y{\nlev}) -- (\x{\ncol}, \y{1});
+\draw [line width = \framelinet] (\x{1},\y{1}) -- (\x{1}, \y{\levelnumber}) -- (\x{\columnnumber}, \y{\levelnumber}) -- (\x{\columnnumber}, \y{1});
 \foreach \iii in {2,...,{\nlevmo}}
-{\draw [line width = \framelinet] (\x{1},\y{\iii}) -- (\x{\ncol},\y{\iii});}
+{\draw [line width = \framelinet] (\x{1},\y{\iii}) -- (\x{\columnnumber},\y{\iii});}
 
 \foreach \j in {2,...,{\ncolmo}}
-{\draw [line width = \framelinet] (\x{\j},\y{1}) -- (\x{\j},\y{\nlev});}
+{\draw [line width = \framelinet] (\x{\j},\y{1}) -- (\x{\j},\y{\levelnumber});}
 
 
 \ifthenelse{\showmass=1}{
-\foreach \iii in {2,...,{\nlev}}
-{\foreach \j in {1,...,{\ncol}}{
-\shade[ball color=black] (\x{\j},\y{\iii}) circle (\massrad);
-}}
-}{}
-
-\ifthenelse{\showss=0}{
-}{}
-
-\ifthenelse{\showss=1}{
-\foreach \j in {1,...,{\ncol}}
+\ifthenelse{\showsupports=5}{
+	\foreach \iii in {\useeval{2+\subfloors},...,{\levelnumber}}
+	{\foreach \j in {1,...,{\columnnumber}}{
+	\shade[ball color=black] (\x{\j},\y{\iii}) circle (\massrad);
+	}}
+	\foreach \iii in {2,...,\useeval{\subfloors+1}}
+	{\foreach \j in {2,...,\useeval{\columnnumber-1}}{
+	\shade[ball color=black] (\x{\j},\y{\iii}) circle (\massrad);
+	}}
+}
 {
-\fill [gray] (\x{\j},\y{1}) +({-\supw/2},-\suph) rectangle +({\supw/2},\y{1});
-\draw [line width = \baselinet] (\x{\j},\y{1}) +({-\supw/2},\y{1}) -- +({\supw/2},\y{1});
+	\foreach \iii in {2,...,{\levelnumber}}
+	{\foreach \j in {1,...,{\columnnumber}}{
+	\shade[ball color=black] (\x{\j},\y{\iii}) circle (\massrad);
+	}}
 }
 }{}
 
-\ifthenelse{\showss=2}{
-\foreach \j in {1,...,{\ncol}}
+\ifthenelse{\showsupports=0}{
+}{}
+
+\ifthenelse{\showsupports=1}{
+\foreach \j in {1,...,{\columnnumber}}
 {
-\fill [gray] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);
+\fill [gray] (\x{\j},\y{1}) +({-\supportwidth/2},-\supportheight) rectangle +({\supportwidth/2},\y{1});
+\draw [line width = \baselinet] (\x{\j},\y{1}) +({-\supportwidth/2},\y{1}) -- +({\supportwidth/2},\y{1});
+}
+}{}
+
+\ifthenelse{\showsupports=2}{
+\fill [gray] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\supportheight);
 \draw [line width = \baselinet] (\rigbasestartx, 0) -- (\rigbaseendx,0);
-}
 }{}
 
-\ifthenelse{\showss=3}{
-\foreach \j in {1,...,{\ncol}}
-{\fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);}
+\ifthenelse{\showsupports=3}{
+\foreach \j in {1,...,{\columnnumber}}
+{\fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\supportheight);}
 }{}
 
-\ifthenelse{\showss=4}{
-\fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\suph);
+\ifthenelse{\showsupports=4}{
+\fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\supportheight);
 
-\foreach \j in {1,...,{\ncol}}
+\foreach \j in {1,...,{\columnnumber}}
 {\filldraw [fill = white!20!black, draw=black, line width=\isolinet]
-(\x{\j},\y{1}) +(-\isow/2,\isoboty) rectangle +(\isow/2,\isotopy);}
+(\x{\j},\y{1}) +(-\isolationwidth/2,\isoboty) rectangle +(\isolationwidth/2,\isotopy);}
 
 \fill [fill=gray]
 (\foundstartx, \foundboty) rectangle (\foundendx,\foundtopy);
 \draw [line width = \baselinet] (\foundstartx, \foundtopy) -- (\foundendx, \foundtopy);
 }{}
+
+\ifthenelse{\showsupports=5}{
+\filldraw[line width = \baselinet, fill=gray] (\basewallstartx,\basewallstarty) -- ++(\supportwidth,0) -- ++(0,-\basewalldepth)
+-- ++(\buildingwidth,0) -- ++(0,\basewalldepth) -- ++(\supportwidth,0) -- ++(0,-\basewalldepth-\supportheight)
+-- (\basewallstartx,-\supportheight) -- cycle;
+}
 
 \ifthenelse{\showaxes=1}{
 \draw [{->}] (\Xaxesstartx,\Xaxesstarty) -- +(\axeslenX,0) node[above]{$X$};
