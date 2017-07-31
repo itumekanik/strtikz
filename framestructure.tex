@@ -29,7 +29,19 @@
   rotation dof end angle = 280,
   show dof = 1,
   show axes = 1,
-  subfloor number=2,},
+  subfloor number=2,
+  left soil distance = 2cm,
+  right soil distance = 4cm,
+  left soil depth = 2cm,
+  right soil depth = 2cm,
+  soil below foundation = 2cm,
+  left control distance x = 2cm,
+  left control distance y = 2cm,
+  right control distance x = 2cm,
+  right control distance y = 2cm,
+  axis seperation = 0.2cm,
+  x axis length = 0.5cm,
+  y axis length = 0.5cm,},
   number of storys/.store in = \storynumber,
   number of bays/.store in = \baynumber,
   story height/.store in = \storyheight,
@@ -59,7 +71,20 @@
   rotation dof end angle/.store in = \rotdofendangle,
   show dof/.store in = \showdof,
   show axes/.store in = \showaxes,
-  subfloor number/.store in=\subfloors,}
+  subfloor number/.store in=\subfloors,
+  left soil distance/.store in = \leftsoildist,
+  right soil distance/.store in = \rightsoildist,
+  left soil depth/.store in = \leftsoildepth,
+  right soil depth/.store in = \rightsoildepth,
+  soil below foundation/.store in = \soilbelowfound,
+  left control distance x/.store in = \leftcontrolx,
+  left control distance y/.store in = \leftcontroly,
+  right control distance x/.store in = \rightcontrolx,
+  right control distance y/.store in = \rightcontroly,
+  axis seperation/.store in = \axisseperation,
+  x axis length/.store in = \axeslenX,
+  y axis length/.store in = \axeslenY,
+}
 
 \newcommand{\framestructure}[1][]{
 \pgfkeys{/framestructure, default, #1}
@@ -67,7 +92,7 @@
 int \storynumber, \baynumber, \columnnumber, \levelnumber, \nlevmo, \ncolmo, \iii, \j, \showsupports;
 real \storyheight, \baywidth, \startx, \starty, \xx, \y;
 real \supportwidth, \supportheight, \isolationwidth, \isolationdepth, \foundationdepth, \massrad;
-real \axissp, \framelinet, \baselinet, \isolinet;
+real \axisseperation, \framelinet, \baselinet, \isolinet;
 real \rigbasestartx, \rigbaseendx, \isoboty, \isotopy;
 real \foundboty, \foundtopy, \foundstartx, \foundendx;
 int \doflocfloor, \dofloch, \dofloccolumn, \showaxes, \showdof, \showmass, \showsupports;
@@ -76,6 +101,10 @@ real \dofxrotation, \dofyrotation, \dofrrotation;
 real \rotdofstartangle, \rotdofendangle;
 int \subfloors;
 real \basewallstartx, \basewallstarty, \basewallendx, \basewallendy, \buildingwidth, \basewalldepth;
+real \leftsoildist, \rightsoildist, \leftsoildepth, \rightsoildepth;
+real \soilbelowfound, \leftcontrolx, \leftcontroly, \rightcontrolx, \rightcontroly;
+real \rightsoilx, \rightsoily;
+real \axeslenX, \axeslenY;
 %Conversion all units to the unit pt
 \storyheight = \storyheight;
 \baywidth = \baywidth;
@@ -91,12 +120,18 @@ real \basewallstartx, \basewallstarty, \basewallendx, \basewallendy, \buildingwi
 \isolinet = \isolinet;
 \massrad = \massrad;
 \foundsidew = \foundsidew;
+\leftsoildist = \leftsoildist;
+\rightsoildist = \rightsoildist;
+\leftsoildepth = \leftsoildepth;
+\rightsoildepth = \rightsoildepth;
+\soilbelowfound = \soilbelowfound;
+\leftcontrolx = \leftcontrolx;
+\leftcontroly = \leftcontroly;
+\rightcontrolx = \rightcontrolx;
+\rightcontroly = \rightcontroly;
+\axeslenX = \axeslenX;
+\axeslenY = \axeslenY;
 %End conversion, All values are now in pt units.
-\axissp = 0.2cm;
-%\framelinet = 1.0pt;
-%\baselinet = 1.5pt;
-%\isolinet = 3pt;
-%\foundationdepth =1cm;
 \columnnumber = \baynumber+1; %number of columns
 \levelnumber = \storynumber+1; %number of levels
 if \storynumber>1 then {\nlevmo = \levelnumber-1;} else {\nlevmo=2;};
@@ -121,13 +156,11 @@ for \j in {1,...,{\columnnumber}}{
 \basewallstarty=\basewalldepth;
 \basewallendx=\buildingwidth+\supportwidth;
 \basewallendy=\basewallstarty;
+\rightsoilx=\buildingwidth+\rightsoildist;
+\rightsoily=\basewalldepth-\rightsoildepth;
 %%%DOFs%%%%
 if greater(\doflocfloor,\storynumber) then {\doflocfloor=0;} else{};
 if greater(\dofloccolumn,\columnnumber) then {\dofloccolumn=1;} else{};
-%\doflocfloor = 2;
-%\dofloccolumn = 2;
-%\arrowlenratio = 0.4;
-%\dofoffsetratio = 0.075;
 \dofloch = 1+\doflocfloor;
 \minlen = min(\storyheight,\baywidth);
 \dofxx = \x{\dofloccolumn}+\dofoffsetratio*\minlen;
@@ -135,18 +168,36 @@ if greater(\dofloccolumn,\columnnumber) then {\dofloccolumn=1;} else{};
 \arrlen = \arrowlenratio*\minlen;
 \arrrad = \arrlen*0.8;
 %%%%%Axes%%%%%
-\axeslenX = 0.5cm;
-\axeslenY = 0.5cm;
 \Xaxesstarty = \y{1};
 \Yaxesstartx = \x{1};
-\Yaxesstarty = \y{\levelnumber}+\axissp;
-if equal(\showsupports,0) then {\Xaxesstartx = \x{\columnnumber}+\axissp;}         else {\Xaxesstartx = \x{\columnnumber}+\axissp+\supportwidth/2;};
-if equal(\showsupports,1) then {\Xaxesstartx = \x{\columnnumber}+\axissp+\supportwidth/2;} else {\Xaxesstartx = \x{\columnnumber}+\axissp+\supportwidth;};
+\Yaxesstarty = \y{\levelnumber}+\axisseperation;
+if equal(\showsupports,0) then {\Xaxesstartx = \x{\columnnumber}+\axisseperation;} else {\Xaxesstartx = \x{\columnnumber}+\axisseperation+\supportwidth/2;};
+if equal(\showsupports,1) then {\Xaxesstartx = \x{\columnnumber}+\axisseperation+\supportwidth/2;} else {\Xaxesstartx = \x{\columnnumber}+\axisseperation+\supportwidth;};
 %\rotdofstartangle = 100;
 %\rotdofendangle = 100;
 %%%%%%%%%%%%%%%%%%%%%%%%
 }
 \begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=0]; % Drawing everything in pt units
+
+\ifthenelse{\showsupports=5}{
+
+\path[fill=lightgray] (-\leftsoildist,\basewalldepth) -- ++(0,-\leftsoildepth)
+..controls++(0,-\leftcontroly) and ++(-\leftcontrolx,0)..(0,-\soilbelowfound)
+ -- ++(\buildingwidth,0) ..controls ++(\rightcontrolx,0) and ++(0,-\rightcontroly) .. (\rightsoilx,\rightsoily)
+ -- ++(0,\rightsoildepth)
+-- cycle;
+
+\draw(-\leftsoildist,\basewalldepth) -- (\buildingwidth+\rightsoildist,\basewalldepth);
+
+\path[fill=white](0,\basewalldepth) -- ++(\buildingwidth,0) -- ++(0,-\basewalldepth) -- ++(-\buildingwidth,0) -- cycle;
+
+\filldraw[line width = \baselinet, fill=gray] (\basewallstartx,\basewallstarty) -- ++(\supportwidth,0) -- ++(0,-\basewalldepth)
+-- ++(\buildingwidth,0) -- ++(0,\basewalldepth) -- ++(\supportwidth,0) -- ++(0,-\basewalldepth-\supportheight)
+-- (\basewallstartx,-\supportheight) -- cycle;
+
+}{}
+
+
 %\draw (0,0)-- (0.5cm,2cm);
 \draw [line width = \framelinet] (\x{1},\y{1}) -- (\x{1}, \y{\levelnumber}) -- (\x{\columnnumber}, \y{\levelnumber}) -- (\x{\columnnumber}, \y{1});
 \foreach \iii in {2,...,{\nlevmo}}
@@ -207,12 +258,6 @@ if equal(\showsupports,1) then {\Xaxesstartx = \x{\columnnumber}+\axissp+\suppor
 (\foundstartx, \foundboty) rectangle (\foundendx,\foundtopy);
 \draw [line width = \baselinet] (\foundstartx, \foundtopy) -- (\foundendx, \foundtopy);
 }{}
-
-\ifthenelse{\showsupports=5}{
-\filldraw[line width = \baselinet, fill=gray] (\basewallstartx,\basewallstarty) -- ++(\supportwidth,0) -- ++(0,-\basewalldepth)
--- ++(\buildingwidth,0) -- ++(0,\basewalldepth) -- ++(\supportwidth,0) -- ++(0,-\basewalldepth-\supportheight)
--- (\basewallstartx,-\supportheight) -- cycle;
-}
 
 \ifthenelse{\showaxes=1}{
 \draw [{->}] (\Xaxesstartx,\Xaxesstarty) -- +(\axeslenX,0) node[above]{$X$};
