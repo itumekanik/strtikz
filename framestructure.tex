@@ -118,7 +118,7 @@ real \leftsoildist, \rightsoildist, \leftsoildepth, \rightsoildepth;
 real \soilbelowfound, \leftcontrolx, \leftcontroly, \rightcontrolx, \rightcontroly;
 real \rightsoilx, \rightsoily;
 real \axeslenX, \axeslenY;
-real \piledepth, \pilespace, \pilecoordy, \pilesidespace, \pilespace, \pilecoordy, \pilecoordx, \pilelinethickness;
+real \piledepth, \pilesidespace, \pilespace, \pilecoordy, \pilecoordx, \pilelinethickness;
 %Conversion all units to the unit pt
 \storyheight = \storyheight;
 \baywidth = \baywidth;
@@ -216,17 +216,8 @@ for \pileind in {1,...,{\numberofpiles}}{
 
 \ifthenelse{\showpiles=1}{
 \foreach \pileind in {1,...,{\numberofpiles}}
-{\fill[fill=gray]
-(\pilecoordx{\pileind}-\pilediameter/2, \pilecoordy) rectangle (\pilecoordx{\pileind}+\pilediameter/2, \pilecoordy-\piledepth);
- \draw[line width=\pilelinethickness](\pilecoordx{\pileind}-\pilediameter/2, \pilecoordy) -- ++(0,-\piledepth);
- \draw[line width=\pilelinethickness](\pilecoordx{\pileind}+\pilediameter/2, \pilecoordy) -- ++(0,-\piledepth);
- \filldraw[line width=\pilelinethickness, fill=white] (\pilecoordx{\pileind}-\pilediameter/4, \pilecoordy-\piledepth)
- ellipse[x radius=\pilediameter/4, y radius=\pilediameter/8];
- \fill[fill=gray] (\pilecoordx{\pileind}, \pilecoordy-\piledepth)
- arc[start angle=180, end angle=360, x radius=\pilediameter/4, y radius=\pilediameter/8];
- \draw[line width=\pilelinethickness] (\pilecoordx{\pileind}, \pilecoordy-\piledepth)
- arc[start angle=180, end angle=360, x radius=\pilediameter/4, y radius=\pilediameter/8];
- }
+{\pilesupport[x coordinate=\pilecoordx{\pileind}, y coordinate=\pilecoordy,
+pile depth=\piledepth, pile diameter=\pilediameter, pile line thickness=\pilelinethickness, fill color=gray,]}
 }{}
 
 \filldraw[line width = \baselinet, fill=gray] (\basewallstartx,\basewallstarty) -- ++(\supportwidth,0) -- ++(0,-\basewalldepth)

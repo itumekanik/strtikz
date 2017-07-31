@@ -65,10 +65,18 @@ axis seperation = 0.2cm,
 x axis length = 0.5cm,
 y axis length = 0.5cm,
 show piles=1,
-number of piles=5,
+number of piles=6,
 pile depth=2cm,
 pile side space=0.5cm,
 pile diameter=0.5cm,
 pile line thickness=1pt,]
+\pilesupport[%
+  x coordinate=10cm,
+  y coordinate=2.9cm,  
+  pile depth=1cm,
+  pile diameter=0.3cm,
+  pile line thickness=0.5pt,
+  fill color=gray,]
+\filldraw[line width=1pt, fill=gray] (10cm,2.9cm) ++(-0.3,0) rectangle ++(0.6cm,0.2cm);
 \end{tikzpicture}
 \end{document}
