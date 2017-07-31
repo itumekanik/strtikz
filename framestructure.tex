@@ -28,7 +28,8 @@
   rotation dof start angle = 120,
   rotation dof end angle = 280,
   show dof = 1,
-  show axes = 1},
+  show axes = 1,
+  subfloor number=2,},
   number of storys/.store in = \storynumber,
   number of bays/.store in = \baynumber,
   story height/.store in = \storyheight,
@@ -57,7 +58,8 @@
   rotation dof start angle/.store in = \rotdofstartangle,
   rotation dof end angle/.store in = \rotdofendangle,
   show dof/.store in = \showdof,
-  show axes/.store in = \showaxes}
+  show axes/.store in = \showaxes,
+  subfloor number/.store in=\subfloors,}
 
 \newcommand{\framestructure}[1][]{
 \pgfkeys{/framestructure, default, #1}
@@ -113,7 +115,6 @@ for \j in {1,...,{\columnnumber}}{
 \foundtopy = -\supportheight-\baselinet-\isolationdepth;
 \foundstartx = \x1-\foundsidew;
 \foundendx = \x{\columnnumber}+\foundsidew;
-\subfloors = 1;
 \basewallstartx=-\supportwidth;
 \buildingwidth=\baynumber*\baywidth;
 \basewalldepth=\subfloors*\storyheight;
