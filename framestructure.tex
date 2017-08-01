@@ -204,10 +204,11 @@ for \pileind in {1,...,{\numberofpiles}}{
 
 \ifthenelse{\showsupports=5}{
 
-\path[fill=lightgray] (-\leftsoildist,\basewalldepth) -- ++(0,-\leftsoildepth)
+\path[fill=lightgray] decorate[decoration={random steps, segment length=0.25cm}]
+{(-\leftsoildist,\basewalldepth) -- ++(0,-\leftsoildepth)
 ..controls++(0,-\leftcontroly) and ++(-\leftcontrolx,0)..(0,-\soilbelowfound)
  -- ++(\buildingwidth,0) ..controls ++(\rightcontrolx,0) and ++(0,-\rightcontroly) .. (\rightsoilx,\rightsoily)
- -- ++(0,\rightsoildepth)
+ -- ++(0,\rightsoildepth)}
 -- cycle;
 
 \draw(-\leftsoildist,\basewalldepth) -- (\buildingwidth+\rightsoildist,\basewalldepth);
