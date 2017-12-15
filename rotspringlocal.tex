@@ -1,0 +1,118 @@
+\pgfkeys{
+ /rotspringlocal/.is family, /rotspringlocal,
+  default/.style={
+  startx = 0cm,
+  starty = 0cm,
+  start rigid length = 2cm,
+  end rigid length = 2cm,
+  dof arrow ratio = 0.2,
+  dof fontsize = \tiny,
+  rotation = 30,
+  start angle = 100,
+  end angle = 260,
+  radius ratio = 0.80,
+  cycle number = 5,
+  cycle diameter = 0.0005cm,
+  rigid line thickness = 2pt,
+  spring line thickness = 1pt,
+  spring stiffness = $k_\theta$,
+  spring mode = 1,
+  spring coefficient = 0.75,
+  stiffness location = above,
+  stiff location offset = 6pt,
+  rigid left text = {$L_1=0$},
+  rigid right text = {$L_2=0$},
+  rigid text offset = -2pt},
+  startx/.store in =\startx,
+  starty/.store in =\starty,
+  start rigid length/.store in =\srl,
+  end rigid length/.store in =\erl,
+  dof arrow ratio/.store in = \arr,
+  dof fontsize/.store in = \doffontsize,
+  rotation/.store in = \anglrs,
+  start angle/.store in =\startangrel,
+  end angle/.store in =\endangrel,
+  radius ratio/.store in =\radratio,
+  cycle number/.store in = \cycleno,
+  cycle diameter/.store in = \cycledia,
+  rigid line thickness/.store in = \rigidlinet,
+  spring line thickness/.store in = \springlinet,
+  spring stiffness/.store in = \springstiff,
+  spring mode/.store in =\springmode,
+  spring coefficient/.store in = \springcoefficient,
+  stiffness location/.store in = \stiffloc,
+  stiff location offset/.store in = \stifflocoff,
+  rigid left text/.store in = \xxrigidlefttext,
+  rigid right text/.store in = \xxrigidrighttext,
+  rigid text offset/.store in = \xxriglentextoff,  
+}
+
+\newcommand{\rotspringlocal}[1][]{
+\pgfkeys{/rotspringlocal, default, #1}
+\tikzmath{
+real \startx, \starty, \dx, \dy, \arr;
+real \anglrs, \leng, \lengdof;
+real \srl, \erl;
+real \localxx, \localxy, \localxdx, \localxdy;
+real \tempdistadd;
+real \localystart, \localyleng, \localyangl;
+real \anglx, \dotrad;
+real \startangi, \endangi, \startangj, \endangj, \radofdof;
+real \cycleno, \cycledia;
+real \stifflocoff;
+real \springcoefficient;
+int \springmode
+%Conversion all units to the unit pt
+\startx = \startx;
+\starty = \starty;
+\srl = \srl;
+\erl = \erl;
+\cycledia = \cycledia;
+\stifflocoff = \stifflocoff;
+%End conversion, All values are now in pt units
+\leng = \srl+\erl;
+\dx = cos(\anglrs)*\leng;
+\dy = sin(\anglrs)*\leng;
+\lengdof = \arr*\leng;
+\rotrad = 0.8*\lengdof;
+\localxx = (1+\arr)*\dx;
+\localxy = (1+\arr)*\dy;
+\localxdx = \lengdof*cos(\anglrs);
+\localxdy = \lengdof*sin(\anglrs);
+\tempdistadd = 0.0cm;
+\tempdistadd = \tempdistadd;
+\localystart = \lengdof + \tempdistadd;
+\localyleng = \lengdof;
+\localyangl = \anglrs+90;
+\anglx = 1.5*\lengdof;
+\dotrad = 0.75*\rigidlinet;
+\startangi = \startangrel+\anglrs;
+\endangi = \endangrel+\anglrs;
+\startangj = \startangrel+\anglrs+180;
+\endangj = \endangrel+\anglrs+180;
+\radofdof = \radratio*\lengdof;
+}
+\begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=0];    % Draw everything in pt units
+
+\rotspring[startx = 0cm, starty = 0cm, rotation = \anglrs, start rigid length = \srl, end rigid length = \erl,
+rotational spring diameter = \cycledia, rotational spring cycle number = \cycleno,
+text = \springstiff, text location = \stiffloc, text location offset = \stifflocoff,
+rigid thickness=\rigidlinet, spring thickness=\springlinet, 
+spring direction mode = \springmode, radius coefficient = \springcoefficient,
+rigid left text = \xxrigidlefttext, rigid right text = \xxrigidrighttext, rigid text offset = \xxriglentextoff]
+
+\node at (0,0)      [left=-0.05cm]{\small $i$};
+\node at (\anglrs:\leng)  [right=-0.1cm]{\small $j$};
+\draw [->] (\lengdof,0) -- node[at end, above]{$X$}++(\dx,0);
+\draw [->] (0,\lengdof) -- node[at end, right]{$Y$}++(0,\dy);
+\draw [->] (\localxx,\localxy) -- node[at end, above]{$x$}++(\localxdx,\localxdy);
+\draw [->] (\localyangl:\localystart)-- node[at end, above=-2pt]{$y$}++(\localyangl:\localyleng);
+\draw [arrows={->[]}](\anglx,0) arc [start angle=0, end angle=\anglrs, radius=\anglx] node[midway, right=-0.05cm]{$\theta$};
+\fill [black](0,0) circle[radius=\dotrad];
+\fill [black](\dx,\dy) circle[radius=\dotrad];
+\draw [arrows={->[scale=0.5]}] (\startangi:\radofdof) arc [start angle=\startangi, end angle=\endangi, radius=\radofdof]
+node[at end, right=-3pt]{\doffontsize 1};
+\draw [arrows={->[scale=0.5]}] (\anglrs:\leng) ++(\startangj:\radofdof) arc [start angle=\startangj, end angle=\endangj, radius=\radofdof]
+node[at end, left=-3pt]{\doffontsize 2};
+\end{scope}
+}

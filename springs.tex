@@ -1,71 +1,80 @@
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Newcommand: springs
-
-\newcommand{\springs}[9]
-{
-    \def\strl{#1};    %start rigid length
-    \def\rbl{#2};     %rigid bar length
-    \def\enrl{#3};    %end rigid length
-    \def\splen{#4};   %spring length
-    \def\segl{#5};    %spring zigzag segment length (pt)
-    \def\reor{#6};    %rigid end offset ratio
-    \def\vsplr{#7};  %rotational spring diameter
-    \def\rsdi{#8};    %rotational spring cycle number
-    \def\rscn{#9};    %rotational spring cycle number
-    \springsctd
+\pgfkeys{
+/springs/.is family, /springs,
+default/.style={
+startx = 0cm,
+starty = 0cm,
+start rigid length = 2cm,
+end rigid length = 1.5cm,
+rigid bar length = 1cm,
+rigid end offset ratio = 0.05,
+spring length = 2cm,
+spring zigzag segment length = 0.2cm,
+rotational spring diameter = 0.0005cm,
+rotational spring cycle number = 4,
+horizontal spring pre length = 0.2cm,
+horizontal spring end length = 0.3cm,
+vertical spring pre length ratio = 0.25,
+vertical spring tick ratio = 0.4},
+startx/.store in = \startx,
+starty/.store in = \starty,
+start rigid length/.store in = \strl,
+end rigid length/.store in = \enrl,
+rigid bar length/.store in = \rbl,
+rigid end offset ratio/.store in = \reor,
+spring length/.store in = \splen,
+spring zigzag segment length/.store in = \segl,
+rotational spring diameter/.store in = \rsdi,
+rotational spring cycle number/.store in = \rscn,
+horizontal spring pre length/.store in = \hspl,
+horizontal spring end length/.store in = \hsel,
+vertical spring pre length ratio/.store in = \vsplr,
+vertical spring tick ratio/.store in = \vstr,
 }
-
-\newcommand\springsctd[6]{
-    \def\vstr{#1};   %vertical spring tick ratio
-    \def\hspl{#2};   %horizontal spring pre length
-    \def\hsel{#3};   %horizontal spring end length
-    \def\rspl{#4};   %rotational spring pre length
-    \def\rsel{#5};   %rotational spring end length
-    \def\rssl{#6};   %rotational spring segment length
+\newcommand{\springs}[1][]{
+\pgfkeys{/springs, default, #1}
 \tikzmath{
 coordinate \c;
-real \strl, \enrl, \rbl, \splen;
-real \hspl, \vppl, \rppl;
-real \hsel, \vpel, \rpel;
-real \hssl, \vpsl, \rpsl;
-real \vstu;
-real \segl;
-%\strl = 2.5; %start rigid length
-%\rbl = 1.0;  %rigid bar length
-%\enrl = 1.5; %end rigid length
-%\splen = 2;   %spring length
-%\segl = 4;     %spring zigzag segment length (pt)
-%\reor = 0.05;   %rigid end offset ratio
-%\vsplr = 0.25;  % vertical spring pre length ratio
-%\rsdi = 0.0005; %rotational spring diameter
-%\rscn = 4;     %rotational spring cycle number
-%\vstr = 0.4;  %vertical spring tick ratio
-%\hspl = 0.5;  %horizontal spring pre length
-%\hsel = 0.5;  %horizontal spring end length
-%\rspl = 0.2;  %rotational spring pre length
-%\rsel = 0.2;  %rotational spring end length
-%\rssl = 4;    %rotational spring segment length
-\hssl = \segl;    %horizontal spring segment length
-\vstu = \vstr*\rbl;  %vertical spring tikc up
-\vspl = \vsplr*\vstu;  %vertical spring pre length
-\vsel = \vspl;  %vertical spring end length
-\vssl = \segl;    %vertical spring segment length (pt)
+real \startx, \starty;
+real \strl, \rbl, \enrl, \splen, \segl, \reor;
+real \rsdi, \rscn, \rspl, \rsel, \rssl;
+real \vsplr, \vstr, \hspl, \hsel;
+real \hssl, \vstu, \vspl, \vsel, \vssl, \rssx, \rssxx, \rstrd;
+%Conversion all units to the unit pt
+\startx = \startx;
+\starty = \starty;
+\strl=\strl;
+\rbl=\rbl;
+\enrl=\enrl;
+\splen=\splen;
+\segl=\segl;
+\reor=\reor;
+\rsdi=\rsdi;
+\rscn=\rscn;
+\hspl=\hspl;
+\hsel=\hsel;
+\vsplr=\vsplr;
+\vstr=\vstr;
+%End conversion, All values are now in pt units
+\hssl = \segl;           %horizontal spring segment length
+\vstu = \vstr*\rbl;      %vertical spring tick up
+\vspl = \vsplr*\vstu;    %vertical spring pre length
+\vsel = \vspl;           %vertical spring end length
+\vssl = \segl;           %vertical spring segment length (pt)
 \rssx = \strl+\splen/2; 
 \rssxx = \rssx + \rscn*2*pi*\rscn*2*pi*\rsdi;
 \rstrd = \strl+\splen-\rssxx; %rotational spring to right rigid bar distance
 \c1 = (0,0);
-\c2 = (\strl,0);
-\c3 = (\strl,\rbl);
-\c4 = (\strl,-\rbl);
-\c5 = (\strl+\splen,0);
-\c6 = (\strl+\splen+\enrl,0);
-\c7 = (\strl+\splen,\rbl);
-\c8 = (\strl+\splen,-\rbl);
+\c2 = (\strl pt,0 pt);
+\c3 = (\strl pt,\rbl pt);
+\c4 = (\strl pt,-\rbl pt);
+\c5 = (\strl+\splen pt,0 pt);
+\c6 = (\strl+\splen+\enrl pt,0 pt);
+\c7 = (\strl+\splen pt,\rbl pt);
+\c8 = (\strl+\splen pt,-\rbl pt);
 }
-\tikzset{hspring/.style={thick,decorate,decoration={zigzag,pre length=\hspl cm,post length=\hsel cm,segment length=\hssl pt}}}
-\tikzset{vspring/.style={thick,decorate,decoration={zigzag,pre length=\vspl cm,post length=\vsel cm,segment length=\vssl pt}}}
-\tikzset{rspring/.style={thick,decorate,decoration={zigzag,pre length=\rspl cm,post length=\rsel cm,segment length=\rssl pt}}}
+\begin{scope}[x=1pt, y=1pt, xshift = \startx, yshift=\starty]; % Draw everything in pt units
+\tikzset{hspring/.style={thick,decorate,decoration={zigzag,pre length=\hspl pt,post length=\hsel pt,segment length=\hssl pt}}}
+\tikzset{vspring/.style={thick,decorate,decoration={zigzag,pre length=\vspl pt,post length=\vsel pt,segment length=\vssl pt}}}
 \draw [line width=4pt] (\c1) -- node[anchor=south] {\small $l_1$}(\c2) ;
 \draw [line width=4pt] (\c3) -- (\c4);
 \draw [line width=4pt] (\c5) -- node[anchor=south] {\small $l_2$}(\c6);
@@ -74,25 +83,28 @@ real \segl;
 \draw [thick] (\c2) -- ++(\splen/4,0) -- ++(0,\vstu) -- ++(\splen/4,0);
 \draw [vspring] (\c2) ++(\splen/4,0) ++(0,\vstu) ++(\splen/4,0) -- node[very near end, left] {\small $k_y$}++(0,-\vstu*2);
 \draw [thick] (\c2) ++(\splen/2,-\vstu) -- ++(\splen/4,0) -- ++(0,\vstu) -- ++(\splen/4,0);
-\draw [thick,domain=0:\rscn*2*pi,variable=\t,smooth,samples=75,xshift=\rssx cm,yshift=-\rbl*0.95 cm] plot ({\t r}: {\rsdi*\t*\t});
+\draw [thick,domain=0:\rscn*2*pi,variable=\t,smooth,samples=75,xshift=\rssx,yshift=-\rbl*(1-\reor)] plot ({\t r}: {\rsdi*\t*\t});
 \draw [thick](\c4) ++(0,\rbl*\reor) -- node[near end, below] {\small $k_\theta$}++(\splen/2,0);
 \draw [thick](\rssxx,-\rbl*(1-\reor) -- ++(\rstrd,0);
-\draw [->](\strl+\splen+\enrl+1.0,0) -- +(0.8,0) node[near end, above]{\small $x$};
-\draw [->](0,1.2) -- +(0,0.8) node[near end, left]{\small $y$};
-%\dofs{0}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{1'}{2'}{3'}{above}{right}{below};
-%\dofs{\strl+\splen+\enrl}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{4'}{5'}{6'}{above}{right}{below};
+\draw [->](\strl+\splen+\enrl+1.0,0) -- +(0.8cm,0) node[near end, above]{\small $x$};
+\draw [->](0,1.2 cm) -- +(0,0.8 cm) node[near end, left]{\small $y$};
+\end{scope}
 }
 
-% end springs
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
 %\begin{tikzpicture}
-%\springs{2}{3}{4}{2}{4}{0.05}{0.25}{0.0005}{4}{0.4}{0.5}{0.5}{0.2}{0.2}{4};
-%%\dofs{0}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{1'}{2'}{3'}{above}{right}{below};
-%%\dofs{\strl+\splen+\enrl}{0.2}{0.6}{0.6}{0.1}{100}{310}{0.5}{4'}{5'}{6'}{above}{right}{below};
+%\springs[startx = 2cm,
+%starty = 3cm,
+%start rigid length = 1cm,
+%end rigid length = 1.5cm,
+%rigid bar length = 1cm,
+%rigid end offset ratio = 0.2,
+%spring length = 2cm,
+%spring zigzag segment length = 0.2cm,
+%rotational spring diameter = 0.0004cm,
+%rotational spring cycle number = 4,
+%horizontal spring pre length = 0.3cm,
+%horizontal spring end length = 0.3cm,
+%vertical spring pre length ratio = 0.5,
+%vertical spring tick ratio = 0.5]
+%\draw (0,0) -- (1cm,1cm);
 %\end{tikzpicture}
-
-
-

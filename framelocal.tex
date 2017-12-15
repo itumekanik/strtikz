@@ -1,0 +1,267 @@
+\pgfkeys{
+ /framelocal/.is family, /framelocal,
+  default/.style={
+  startx = 0cm,
+  starty = 0cm,
+  dx = 3cm,
+  dy = 3cm,
+  start dof offset x = -0.1cm,
+  start dof offset y = 0.2cm,
+  end dof offset x = 0.1cm,
+  end dof offset y = 0.2cm,
+  dof arrow size = 1cm,
+  rotation dof ratio = 0.8,
+  i rotation dof start angle=110,
+  i rotation dof end angle=260,  
+  j rotation dof start angle=110,
+  j rotation dof end angle=260,  
+  i dof nodal offset x = 0.1cm,
+  i dof nodal offset y = 0.1cm,
+  i rot nodal offset x = 0.1cm,
+  i rot nodal offset y = 0.1cm,
+  j dof nodal offset x = 0.1cm,
+  j dof nodal offset y = 0.1cm,
+  j rot nodal offset x = 0.1cm,
+  j rot nodal offset y = 0.1cm,
+  i node x dof text = $1'$,
+  i node y dof text = $2'$,
+  i node r dof text = $3'$,
+  j node x dof text = $4'$,
+  j node y dof text = $5'$,
+  j node r dof text = $6'$,
+  global X axis start=0.2cm,
+  global X axis end=3cm,
+  global Y axis start=0.4cm,
+  global Y axis end=4cm,
+  local x axis start offset=1cm,
+  local x axis length=1cm,
+  local y axis start offset=1.5cm,
+  local y axis length=1cm,
+  global axes font size=\normalsize,
+  local axes font size=\normalsize,
+  dof font size = \scriptsize,
+  dot radius = 2pt,
+  line thickness = 1.5pt,
+  joint text inner sep = 2pt,
+  joint text font size = \small,
+  start joint angle = 0,
+  end joint angle = 0,
+  length dimension offset= 0.5cm,
+  length dimension space ratio = 0.75,
+  length dimension text rotation=0,
+  length dimension line thickness=0.5pt,
+  length dimension extension thickness=0.15pt,
+  length label text inner sep = 2pt,
+  length text = {$L$},
+  properties location = below,
+  properties rotation = 0,
+  properties text = {$A,E,I$},
+  length property font size = \normalsize,
+  rotation text startx = 1.5cm,
+  rotation text = {$\theta$},
+  dof arrow size ratio=0.5,
+  place the length dimension = 1,  
+  place global axes =1,
+  place local axes =1,
+  place i dofs axes =1,
+  place j dofs axes =1,
+  place angle =1,
+  joint i text = $i$,
+  joint j text = $j$,
+  local x axis text = $x$,
+  local y axis text = $y$,
+  global x axis text = $X$,
+  global y axis text = $Y$, },
+  startx/.store in =\startx,
+  starty/.store in =\starty,
+  dx/.store in =\deltaxdir,
+  dy/.store in =\deltaydir,
+  start dof offset x/.store in = \startoffsetx,
+  start dof offset y/.store in = \startoffsety,  
+  end dof offset x/.store in = \endoffsetx,
+  end dof offset y/.store in = \endoffsety,
+  dof arrow size/.store in = \lengthdofs,
+  rotation dof ratio/.store in = \rotationdofratio,
+  i rotation dof start angle/.store in = \irotdofstartangle,
+  i rotation dof end angle/.store in = \irotdofendangle,
+  j rotation dof start angle/.store in = \jrotdofstartangle,
+  j rotation dof end angle/.store in = \jrotdofendangle, 
+  i dof nodal offset x/.store in = \idofnodaloffsetx,
+  i dof nodal offset y/.store in = \idofnodaloffsety,
+  i rot nodal offset x/.store in = \irotnodaloffsetx,
+  i rot nodal offset y/.store in = \irotnodaloffsety,
+  j dof nodal offset x/.store in = \jdofnodaloffsetx,
+  j dof nodal offset y/.store in = \jdofnodaloffsety,
+  j rot nodal offset x/.store in = \jrotnodaloffsetx,
+  j rot nodal offset y/.store in = \jrotnodaloffsety,
+  i node x dof text/.store in = \inodexdoftext,
+  i node y dof text/.store in = \inodeydoftext,
+  i node r dof text/.store in = \inoderdoftext,
+  j node x dof text/.store in = \jnodexdoftext,
+  j node y dof text/.store in = \jnodeydoftext,
+  j node r dof text/.store in = \jnoderdoftext,
+  global X axis start/.store in =\globalXstart,
+  global X axis end/.store in =\globalXend,
+  global Y axis start/.store in =\globalYstart,
+  global Y axis end/.store in =\globalYend,
+  local x axis start offset/.store in =\localxstartoffset,
+  local x axis length/.store in =\localxlength,
+  local y axis start offset/.store in =\localystartoffset,
+  local y axis length/.store in =\localylength,
+  global axes font size/.store in = \globalaxesfontsize,
+  local axes font size/.store in = \localaxesfontsize,
+  dof font size/.store in = \doffontsize,
+  line thickness/.store in = \linethickness,
+  dot radius/.store in = \dotradius,
+  joint text inner sep/.store in = \jointinnersep,
+  joint text font size/.store in = \jointtextfontsize,
+  start joint angle/.store in =\startjointangle,
+  end joint angle/.store in =\endjointangle,
+  length dimension offset/.store in = \lengthdimoffset,
+  length dimension space ratio/.store in = \lengthdimspaceratio,
+  length dimension text rotation/.store in = \lengthlabelrotation,
+  length dimension line thickness/.store in = \lengthdimlinethick,
+  length dimension extension thickness/.store in = \lengthdimextthick,
+  length label text inner sep/.store in = \lengthlabeltextinnersep,
+  length text/.store in = \lengthtext,
+  properties location/.store in = \propertyloc,
+  properties rotation/.store in =\propertyrotation,
+  properties text/.store in=\propertiestext,
+  length property font size/.store in = \lengthpropfontsize,
+  rotation text startx/.store in=\rotationanglex,
+  rotation text/.store in=\rotationtext,
+  dof arrow size ratio/.store in = \dofarrowsiz,
+  place the length dimension/.store in = \placelengthdim,
+  place global axes/.store in =\placeglobalaxes ,
+  place local axes/.store in =\placelocalaxes ,
+  place i dofs axes/.store in =\placeidofs ,
+  place j dofs axes/.store in =\placejdofs  ,
+  place angle/.store in =\placeangle,
+  joint i text/.store in = \jointitext,
+  joint j text/.store in = \jointjtext,
+  local x axis text/.store in = \localxtext,
+  local y axis text/.store in = \localytext,
+  global x axis text/.store in = \globalxtext,
+  global y axis text/.store in = \globalytext, }
+
+\newcommand{\framelocal}[1][]{
+\pgfkeys{/framelocal, default, #1}
+
+\tikzmath{
+real \startx, \starty, \deltaxdir, \deltaydir, \dofnodaloffset, \lengthdofsr;
+real \rotationangle, \lengthofelement, \startglobalx, \startglobaly;
+real \dotradius, \jointinnersep, \lengthdimoffset, \lengthdimspace, \lengthdimspaceratio;
+real \startoffsetx, \startoffsety, \endoffsetx, \endoffsety;
+real \localxstartoffset, \localystartoffset, \localxlength, \localylength;
+real \startjointangle, \endjointangle;
+real \globalXstart, \globalXend, \globalYstart, \globalYend;
+real \idofnodaloffsetx, \idofnodaloffsety, \irotnodaloffsetx, \irotnodaloffsety;
+real \jdofnodaloffsetx, \jdofnodaloffsety, \jrotnodaloffsetx, \jrotnodaloffsety;
+real \rotationanglex, \dofarrowsiz;
+real \globalaxesfontsize, \globalaxesfontsize;
+%Conversion all units to the unit pt
+\startx = \startx;
+\starty = \starty;
+\deltaxdir = \deltaxdir;
+\deltaydir = \deltaydir;
+\dotradius=\dotradius;
+\jointinnersep = \jointinnersep;
+\lengthdimoffset = \lengthdimoffset;
+\lengthdofs = \lengthdofs;
+\localxlength = \localxlength;
+\localylength = \localylength;
+\localxstartoffset = \localxstartoffset;
+\localystartoffset = \localystartoffset;
+\idofnodaloffsetx = \idofnodaloffsetx;
+\idofnodaloffsety = \idofnodaloffsety;
+\irotnodaloffsetx = \irotnodaloffsetx;
+\irotnodaloffsety = \irotnodaloffsety;
+\jdofnodaloffsetx = \jdofnodaloffsetx;
+\jdofnodaloffsety = \jdofnodaloffsety;
+\jrotnodaloffsetx = \jrotnodaloffsetx;
+\jrotnodaloffsety = \jrotnodaloffsety;
+\globalXstart=\globalXstart;
+\globalXend=\globalXend;
+\globalYstart=\globalYstart;
+\globalYend=\globalYend;
+\rotationanglex = \rotationanglex;
+%End conversion, All values are now in pt units
+\rotationangle = atan2(\deltaydir, \deltaxdir);
+\lengthofelement = veclen(\deltaxdir, \deltaydir);
+\startoffsetx = \startoffsetx;
+\startoffsety = \startoffsety;
+\endoffsetx = \endoffsetx;
+\endoffsety = \endoffsety;
+\rotationdofradius = \rotationdofratio*\lengthdofs;
+\localxstart = \localxstartoffset + \lengthofelement;
+\localystart = \localystartoffset;
+\lengthdimspace = \lengthdimspaceratio * \lengthdimoffset;
+\lengthlabelrotation = \rotationangle + \lengthlabelrotation;
+\propertyrotation = \propertyrotation + \rotationangle;
+}
+\begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=\rotationangle];    % Draw everything in pt units
+\path [line width = \linethickness, draw=black, postaction={on each segment={mid arrow=black}}]
+(0,0)      node[inner sep=\jointinnersep, outer sep=0, anchor=\rotationangle+\startjointangle]{\jointtextfontsize \jointitext} --
+(\lengthofelement,0)  node[inner sep=\jointinnersep, outer sep=0, anchor=\rotationangle+\endjointangle]{\jointtextfontsize \jointjtext}
+node[midway, \propertyloc, rotate=\propertyrotation]{\lengthpropfontsize \propertiestext};
+
+\fill [black](0,0) circle[radius=\dotradius];
+\fill [black](\lengthofelement,0) circle[radius=\dotradius];
+
+\ifthenelse{\placelocalaxes=1}{
+\draw [->] (\localxstart,0) -- node[at end, inner sep=1pt, outer sep = 0, anchor=\rotationangle+180]{\localaxesfontsize \localxtext}(\localxlength+\localxstart,0);
+\draw [->] (0,\localystart) -- node[at end, inner sep=1pt, outer sep = 0, anchor=\rotationangle-90]{\localaxesfontsize \localytext}(0, \localystart+\localylength);
+}{}
+
+\ifthenelse{\placeidofs=1}{
+\dofs[startx = \startoffsetx, starty = \startoffsety, length x = \lengthdofs,  length y = \lengthdofs,
+  offset x= \idofnodaloffsetx, offset y= \idofnodaloffsety,
+  offset rotation xdir = \irotnodaloffsetx, offset rotation ydir = \irotnodaloffsety,
+  start angle = \irotdofstartangle, end angle = \irotdofendangle,   
+  radius = \rotationdofradius, xstring = \inodexdoftext, ystring = \inodeydoftext, rstring = \inoderdoftext, font size = \doffontsize,
+  rotation=0, font rotation=\rotationangle,  arrow size ratio=\dofarrowsiz,]
+}{}  
+  
+\ifthenelse{\placejdofs=1}{
+\dofs[startx = \lengthofelement+\endoffsetx, starty = \endoffsety, length x = \lengthdofs,  length y = \lengthdofs,
+  offset x= \jdofnodaloffsetx, offset y= \jdofnodaloffsety,
+  offset rotation xdir = \jrotnodaloffsetx, offset rotation ydir = \jrotnodaloffsety,
+  start angle = \jrotdofstartangle, end angle = \jrotdofendangle,   
+  radius = \rotationdofradius, xstring = \jnodexdoftext, ystring = \jnodeydoftext, rstring = \jnoderdoftext, font size = \doffontsize,
+  rotation=0, font rotation=\rotationangle,   arrow size ratio=\dofarrowsiz,]
+}{}
+
+\ifthenelse{\placelengthdim=1}{
+\dimline[line style={line width = \lengthdimlinethick},
+         extension start length={\lengthdimspace pt}, extension start style={black, line width=0.15pt},
+         extension end length={\lengthdimspace pt}, extension end style={black, line width=0.15pt}]
+         {(0 , \lengthdimoffset)}{(\lengthofelement , \lengthdimoffset)}{\lengthpropfontsize \lengthtext}{\lengthlabelrotation}{\lengthlabeltextinnersep};
+}{}
+
+
+%\path [line width = \linethickness, draw=black, postaction={on each segment={mid arrow=black}}]
+%(0,0)node[left=-0.05cm]{\small $i$} -- (\deltaxdir,\deltaxdir)node[right=-0.1cm]{\small $j$};
+%\draw [->] (\lengthdofs,0) -- node[at end, above]{$X$}++(\deltaxdir,0);
+%\draw [->] (0,\lengthdofs) -- node[at end, right]{$Y$}++(0,\deltaxdir);
+%\draw [->] (\localxstart,\localxy) -- node[at end, above]{$x$}++(\localxdx,\localxdy);
+%\draw [->] (\localyangl:\localystart)-- node[at end, right]{$y$}++(\localyangl:\localyleng);
+%\draw [arrows={->[]}](\rotationanglex,0) arc [start angle=0, end angle=\rotationangle, radius=\rotationanglex] node[midway, right=-0.05cm]{$\theta$};
+%\fill [black](0,0) circle[radius=\dotrad];
+%\fill [black](\deltaxdir,\deltaxdir) circle[radius=\dotrad];
+%
+
+\end{scope}
+
+\ifthenelse{\placeglobalaxes=1}{
+\begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=0]; 
+\draw [->] (\globalXstart,0) -- node[at end, inner sep=1pt, outer sep = 0, right]{\globalaxesfontsize \globalxtext}(\globalXend,0);
+\draw [->] (0,\globalYstart) -- node[at end, inner sep=1pt, outer sep = 0, above]{\globalaxesfontsize \globalytext}(0,\globalYend);
+}{}
+
+
+\ifthenelse{\placeangle=1}{
+\draw [arrows={->[]}](\rotationanglex,0) arc [start angle=0, end angle=\rotationangle, radius=\rotationanglex]
+node[midway,inner sep=1pt, outer sep = 0, anchor=180+\rotationangle/2]{\globalaxesfontsize \rotationtext};
+\end{scope}
+}{}
+}

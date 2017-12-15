@@ -1,0 +1,82 @@
+\documentclass[]{standalone}
+\usepackage{mathptmx}
+%\renewcommand{\familydefault}{\rmdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{siunitx}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{ifthen}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.14}
+\usepackage{titling, graphicx}
+\usepackage{tikz}
+\usepackage{upgreek}
+\usepackage{amsmath,amsthm}
+\usepackage{strtikz}
+\usetikzlibrary{shapes,arrows.meta,intersections,graphs,graphs.standard,math,fit}
+\usetikzlibrary{calc,intersections,through,backgrounds}
+\usetikzlibrary{decorations.pathmorphing, decorations.markings,decorations.pathreplacing}
+
+
+\begin{document}
+\begin{tikzpicture}
+\framestructure[%
+number of storys=20,
+number of bays=3,
+story height=1cm,
+bay width=2cm,
+startX=0cm,
+startY=0cm,
+frame line thickness = 1.5pt,
+foundation side width = 0.75cm,
+support width = 0.5cm,
+support height = 0.5cm,
+support line thickness = 1.5pt,
+show supports = 5,
+isolator width = 0.4cm,
+isolator thickness = 0.2cm,
+isolator line thickness = 1.5pt,
+foundation thickness = 0.3cm,
+mass radius = 2pt,
+show mass = 0,
+dof floor = 1,
+dof column = 2,
+arrow length ratio = 0.4,
+dof x rotation = 90,
+dof y rotation = -80,
+dof r rotation = -30,
+rotation dof start angle = 120,
+rotation dof end angle = 300,
+dof offset ratio = 0.1,
+show dof=0,
+show axes=0,
+subfloor number=3,
+left soil distance = 3cm,
+right soil distance = 6cm,
+left soil depth = 2cm,
+right soil depth = 0.5cm,
+soil below foundation = 3cm,
+left control distance x = 2cm,
+left control distance y = 2cm,
+right control distance x = 2cm,
+right control distance y = 2cm,
+axis seperation = 0.2cm,
+x axis length = 0.5cm,
+y axis length = 0.5cm,
+show piles=1,
+number of piles=6,
+pile depth=2cm,
+pile side space=0.5cm,
+pile diameter=0.5cm,
+pile line thickness=1pt,]
+\pilesupport[%
+  x coordinate=10cm,
+  y coordinate=2.9cm,  
+  pile depth=1cm,
+  pile diameter=0.3cm,
+  pile line thickness=0.5pt,
+  fill color=gray,]
+\filldraw[line width=1pt, fill=gray] (10cm,2.9cm) ++(-0.3,0) rectangle ++(0.6cm,0.2cm);
+\end{tikzpicture}
+\end{document}

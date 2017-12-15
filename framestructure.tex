@@ -1,71 +1,310 @@
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Newcommand: framestructure
-
 \pgfkeys{
  /framestructure/.is family, /framestructure,
-  default/.style = {number of storys = 5,
+  default/.style = {
+  number of storys = 5,
   number of bays = 3,
   story height = 1cm,
   bay width = 2cm,
   startX = 0cm,
   startY = 0cm,
+  frame line thickness = 1pt,
   support width = 0.3cm,
-  support height = 0.15cm},
-  number of storys/.estore in = \ns,
-  number of bays/.estore in = \nb,
-  story height/.estore in = \sh,
-  bay width/.estore in = \bw,
-  startX/.estore in = \startx,
-  startY/.estore in = \starty,
-  support width/.estore in = \supw,
-  support height/.estore in = \suph
- }
+  support height = 0.15cm,
+  support line thickness = 1.5pt,
+  show supports = 1,
+  isolator width = 0.3cm,
+  isolator thickness = 0.2cm,
+  isolator line thickness = 1.5pt,
+  foundation thickness = 0.5cm,
+  foundation side width = 1cm,
+  mass radius = 2pt,
+  show mass = 1,
+  dof floor = 1,
+  dof column = 2,
+  arrow length ratio = 0.4,
+  dof x rotation = 0,
+  dof y rotation = 0,
+  dof r rotation = 0,
+  dof offset ratio = 0.075,
+  rotation dof start angle = 120,
+  rotation dof end angle = 280,
+  show dof = 1,
+  show axes = 1,
+  subfloor number=2,
+  left soil distance = 2cm,
+  right soil distance = 4cm,
+  left soil depth = 2cm,
+  right soil depth = 2cm,
+  soil below foundation = 2cm,
+  left control distance x = 2cm,
+  left control distance y = 2cm,
+  right control distance x = 2cm,
+  right control distance y = 2cm,
+  axis seperation = 0.2cm,
+  x axis length = 0.5cm,
+  y axis length = 0.5cm,
+  show piles=1,
+  number of piles=5,
+  pile depth=4cm,
+  pile side space=0.5cm,
+  pile diameter=0.5cm,
+  pile line thickness=1pt,},
+  number of storys/.store in = \storynumber,
+  number of bays/.store in = \baynumber,
+  story height/.store in = \storyheight,
+  bay width/.store in = \baywidth,
+  startX/.store in = \startx,
+  startY/.store in = \starty,
+  frame line thickness/.store in = \framelinet,
+  support width/.store in = \supportwidth,
+  support height/.store in = \supportheight,
+  support line thickness/.store in = \baselinet,
+  show supports/.store in = \showsupports,
+  isolator width/.store in = \isolationwidth,
+  isolator thickness/.store in = \isolationdepth,
+  isolator line thickness/.store in = \isolinet,
+  foundation thickness/.store in = \foundationdepth,
+  foundation side width/.store in = \foundsidew,
+  mass radius/.store in = \massrad,
+  show mass/.store in = \showmass,
+  dof floor/.store in = \doflocfloor,
+  dof column/.store in = \dofloccolumn,
+  arrow length ratio/.store in = \arrowlenratio,
+  dof offset ratio/.store in = \dofoffsetratio,
+  dof x rotation/.store in = \dofxrotation,
+  dof y rotation/.store in = \dofyrotation,
+  dof r rotation/.store in = \dofrrotation,
+  rotation dof start angle/.store in = \rotdofstartangle,
+  rotation dof end angle/.store in = \rotdofendangle,
+  show dof/.store in = \showdof,
+  show axes/.store in = \showaxes,
+  subfloor number/.store in=\subfloors,
+  left soil distance/.store in = \leftsoildist,
+  right soil distance/.store in = \rightsoildist,
+  left soil depth/.store in = \leftsoildepth,
+  right soil depth/.store in = \rightsoildepth,
+  soil below foundation/.store in = \soilbelowfound,
+  left control distance x/.store in = \leftcontrolx,
+  left control distance y/.store in = \leftcontroly,
+  right control distance x/.store in = \rightcontrolx,
+  right control distance y/.store in = \rightcontroly,
+  axis seperation/.store in = \axisseperation,
+  x axis length/.store in = \axeslenX,
+  y axis length/.store in = \axeslenY,
+  show piles/.store in=\showpiles,
+  number of piles/.store in=\numberofpiles,
+  pile depth/.store in=\piledepth,
+  pile side space/.store in=\pilesidespace,
+  pile diameter/.store in=\pilediameter,
+  pile line thickness/.store in=\pilelinethickness,  
+}
 
 \newcommand{\framestructure}[1][]{
 \pgfkeys{/framestructure, default, #1}
 \tikzmath{
-int \ns, \nb, \ncol, \nlev, \nlevmo, \ncolmo, \i, \j;
-real \sh, \bw, \startx, \starty, \xx, \y;
-real \supw, \suph;
-coordinate \c;
-\ncol = \nb+1; %number of columns
-\nlev = \ns+1; %number of levels
-if \ns>1 then {\nlevmo = \nlev-1;} else {\nlevmo=2;};
-if \nb>1 then {\ncolmo = \ncol-1;} else {\ncolmo=2;};
-for \i in {1,...,{\nlev}}{
-\y{\i} = \starty + (\i-1)*\sh;
-for \j in {1,...,{\ncol}}{
-\x{\j} = \startx + (\j-1)*\bw;
+int \storynumber, \baynumber, \columnnumber, \levelnumber, \nlevmo, \ncolmo, \iii, \j, \pileind, \showsupports;
+real \storyheight, \baywidth, \startx, \starty, \xx, \y;
+real \supportwidth, \supportheight, \isolationwidth, \isolationdepth, \foundationdepth, \massrad;
+real \axisseperation, \framelinet, \baselinet, \isolinet;
+real \rigbasestartx, \rigbaseendx, \isoboty, \isotopy;
+real \foundboty, \foundtopy, \foundstartx, \foundendx;
+int \doflocfloor, \dofloch, \dofloccolumn, \showaxes, \showdof, \showmass, \showsupports;
+real \arrowlenratio, \minlen, \dofxx, \dofyy, \arrlen, \arrrad;
+real \dofxrotation, \dofyrotation, \dofrrotation;
+real \rotdofstartangle, \rotdofendangle;
+int \subfloors;
+real \basewallstartx, \basewallstarty, \basewallendx, \basewallendy, \buildingwidth, \basewalldepth;
+real \leftsoildist, \rightsoildist, \leftsoildepth, \rightsoildepth;
+real \soilbelowfound, \leftcontrolx, \leftcontroly, \rightcontrolx, \rightcontroly;
+real \rightsoilx, \rightsoily;
+real \axeslenX, \axeslenY;
+real \piledepth, \pilesidespace, \pilespace, \pilecoordy, \pilecoordx, \pilelinethickness;
+%Conversion all units to the unit pt
+\storyheight = \storyheight;
+\baywidth = \baywidth;
+\startx = \startx;
+\starty = \starty;
+\supportwidth = \supportwidth;
+\supportheight = \supportheight;
+\isolationwidth = \isolationwidth;
+\isolationdepth = \isolationdepth;
+\foundationdepth = \foundationdepth;
+\framelinet = \framelinet;
+\baselinet = \baselinet;
+\isolinet = \isolinet;
+\massrad = \massrad;
+\foundsidew = \foundsidew;
+\leftsoildist = \leftsoildist;
+\rightsoildist = \rightsoildist;
+\leftsoildepth = \leftsoildepth;
+\rightsoildepth = \rightsoildepth;
+\soilbelowfound = \soilbelowfound;
+\leftcontrolx = \leftcontrolx;
+\leftcontroly = \leftcontroly;
+\rightcontrolx = \rightcontrolx;
+\rightcontroly = \rightcontroly;
+\axeslenX = \axeslenX;
+\axeslenY = \axeslenY;
+\piledepth=\piledepth;
+\pilesidespace=\pilesidespace;
+\pilediameter=\pilediameter;
+\pilelinethickness=\pilelinethickness;
+%End conversion, All values are now in pt units.
+\columnnumber = \baynumber+1; %number of columns
+\levelnumber = \storynumber+1; %number of levels
+if \storynumber>1 then {\nlevmo = \levelnumber-1;} else {\nlevmo=2;};
+if \baynumber>1 then {\ncolmo = \columnnumber-1;} else {\ncolmo=2;};
+for \iii in {1,...,{\levelnumber}}{
+\y{\iii} = (\iii-1)*\storyheight;
+for \j in {1,...,{\columnnumber}}{
+\x{\j} = (\j-1)*\baywidth;
 };
 };
-%print{\nlevmo};
+\rigbasestartx = \x1-\supportwidth;
+\rigbaseendx = \x{\columnnumber}+\supportwidth;
+\isoboty = -\supportheight-\baselinet/2-\isolationdepth;
+\isotopy = -\supportheight-\baselinet/2;
+\foundboty = -\supportheight-\baselinet-\isolationdepth-\foundationdepth;
+\foundtopy = -\supportheight-\baselinet-\isolationdepth;
+\foundstartx = \x1-\foundsidew;
+\foundendx = \x{\columnnumber}+\foundsidew;
+%%%Basement%%%%
+\basewallstartx=-\supportwidth;
+\buildingwidth=\baynumber*\baywidth;
+\basewalldepth=\subfloors*\storyheight;
+\basewallstarty=\basewalldepth;
+\basewallendx=\buildingwidth+\supportwidth;
+\basewallendy=\basewallstarty;
+\rightsoilx=\buildingwidth+\rightsoildist;
+\rightsoily=\basewalldepth-\rightsoildepth;
+%%%DOFs%%%%
+if greater(\doflocfloor,\storynumber) then {\doflocfloor=0;} else{};
+if greater(\dofloccolumn,\columnnumber) then {\dofloccolumn=1;} else{};
+\dofloch = 1+\doflocfloor;
+\minlen = min(\storyheight,\baywidth);
+\dofxx = \x{\dofloccolumn}+\dofoffsetratio*\minlen;
+\dofyy = \y{\dofloch}+\dofoffsetratio*\minlen;
+\arrlen = \arrowlenratio*\minlen;
+\arrrad = \arrlen*0.8;
+%%%%%Axes%%%%%
+\Xaxesstarty = \y{1};
+\Yaxesstartx = \x{1};
+\Yaxesstarty = \y{\levelnumber}+\axisseperation;
+if equal(\showsupports,0) then {\Xaxesstartx = \x{\columnnumber}+\axisseperation;} else {\Xaxesstartx = \x{\columnnumber}+\axisseperation+\supportwidth/2;};
+if equal(\showsupports,1) then {\Xaxesstartx = \x{\columnnumber}+\axisseperation+\supportwidth/2;} else {\Xaxesstartx = \x{\columnnumber}+\axisseperation+\supportwidth;};
+%%%%Piles%%%%
+\pilecoordy = -\supportheight;
+\pilespace = (2*\supportwidth+\buildingwidth-2*\pilesidespace)/(\numberofpiles-1);
+for \pileind in {1,...,{\numberofpiles}}{
+\pilecoordx{\pileind} = -\supportwidth+\pilesidespace+(\pileind-1)*\pilespace;
+};
+%%%%%%%%%%%%%%%%%%%%%%%%
 }
-\draw [line width=0pt, color = white] (0, \y{\nlev}+2);
-\draw [line width = 1pt] (\x{1},\y{1}) -- (\x{1}, \y{\nlev}) -- (\x{\ncol}, \y{\nlev}) -- (\x{\ncol}, \y{1});
-\foreach \i in {2,...,{\nlevmo}}
-{
-\draw [line width = 1pt] (\x{1},\y{\i}) -- (\x{\ncol},\y{\i});
-}
+\begin{scope}[x=1pt, y=1pt, xshift=\startx, yshift=\starty, rotate=0]; % Drawing everything in pt units
+
+\ifthenelse{\showsupports=5}{
+
+\path[fill=lightgray] decorate[decoration={random steps, segment length=0.25cm}]
+{(-\leftsoildist,\basewalldepth) -- ++(0,-\leftsoildepth)
+..controls++(0,-\leftcontroly) and ++(-\leftcontrolx,0)..(0,-\soilbelowfound)
+ -- ++(\buildingwidth,0) ..controls ++(\rightcontrolx,0) and ++(0,-\rightcontroly) .. (\rightsoilx,\rightsoily)
+ -- ++(0,\rightsoildepth)}
+-- cycle;
+
+\draw(-\leftsoildist,\basewalldepth) -- (\buildingwidth+\rightsoildist,\basewalldepth);
+
+\path[fill=white](0,\basewalldepth) -- ++(\buildingwidth,0) -- ++(0,-\basewalldepth) -- ++(-\buildingwidth,0) -- cycle;
+
+\ifthenelse{\showpiles=1}{
+\foreach \pileind in {1,...,{\numberofpiles}}
+{\pilesupport[x coordinate=\pilecoordx{\pileind}, y coordinate=\pilecoordy,
+pile depth=\piledepth, pile diameter=\pilediameter, pile line thickness=\pilelinethickness, fill color=gray,]}
+}{}
+
+\filldraw[line width = \baselinet, fill=gray] (\basewallstartx,\basewallstarty) -- ++(\supportwidth,0) -- ++(0,-\basewalldepth)
+-- ++(\buildingwidth,0) -- ++(0,\basewalldepth) -- ++(\supportwidth,0) -- ++(0,-\basewalldepth-\supportheight)
+-- (\basewallstartx,-\supportheight) -- cycle;
+
+}{}
+
+
+%\draw (0,0)-- (0.5cm,2cm);
+\draw [line width = \framelinet] (\x{1},\y{1}) -- (\x{1}, \y{\levelnumber}) -- (\x{\columnnumber}, \y{\levelnumber}) -- (\x{\columnnumber}, \y{1});
+\foreach \iii in {2,...,{\nlevmo}}
+{\draw [line width = \framelinet] (\x{1},\y{\iii}) -- (\x{\columnnumber},\y{\iii});}
 
 \foreach \j in {2,...,{\ncolmo}}
+{\draw [line width = \framelinet] (\x{\j},\y{1}) -- (\x{\j},\y{\levelnumber});}
+
+
+\ifthenelse{\showmass=1}{
+\ifthenelse{\showsupports=5}{
+	\foreach \iii in {\useeval{2+\subfloors},...,{\levelnumber}}
+	{\foreach \j in {1,...,{\columnnumber}}{
+	\shade[ball color=black] (\x{\j},\y{\iii}) circle (\massrad);
+	}}
+	\foreach \iii in {2,...,\useeval{\subfloors+1}}
+	{\foreach \j in {2,...,\useeval{\columnnumber-1}}{
+	\shade[ball color=black] (\x{\j},\y{\iii}) circle (\massrad);
+	}}
+}
 {
-\draw [line width = 1pt] (\x{\j},\y{1}) -- (\x{\j},\y{\nlev});
+	\foreach \iii in {2,...,{\levelnumber}}
+	{\foreach \j in {1,...,{\columnnumber}}{
+	\shade[ball color=black] (\x{\j},\y{\iii}) circle (\massrad);
+	}}
 }
+}{}
 
-\draw [{->}] (\x{\ncol}+\supw,\y{1}) -- +(1,0) node[anchor=west]{$X$};
-\draw [{->}] (\x{1},\y{\nlev}+0.5) -- +(0,1) node[anchor=east]{$Y$};
+\ifthenelse{\showsupports=0}{
+}{}
 
-\foreach \j in {1,...,{\ncol}}
+\ifthenelse{\showsupports=1}{
+\foreach \j in {1,...,{\columnnumber}}
 {
-\filldraw [gray] (\x{\j},\y{1}) +({-\supw/2},-\suph) rectangle +({\supw/2},\y{1});
-\draw [line width = 2pt] (\x{\j},\y{1}) +({-\supw/2},\y{1}) -- +({\supw/2},\y{1});
+\fill [gray] (\x{\j},\y{1}) +({-\supportwidth/2},-\supportheight) rectangle +({\supportwidth/2},\y{1});
+\draw [line width = \baselinet] (\x{\j},\y{1}) +({-\supportwidth/2},\y{1}) -- +({\supportwidth/2},\y{1});
 }
+}{}
 
+\ifthenelse{\showsupports=2}{
+\fill [gray] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\supportheight);
+\draw [line width = \baselinet] (\rigbasestartx, 0) -- (\rigbaseendx,0);
+}{}
+
+\ifthenelse{\showsupports=3}{
+\foreach \j in {1,...,{\columnnumber}}
+{\fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\supportheight);}
+}{}
+
+\ifthenelse{\showsupports=4}{
+\fill [fill=gray, draw=black, line width = \baselinet] (\rigbasestartx, 0) rectangle (\rigbaseendx,-\supportheight);
+
+\foreach \j in {1,...,{\columnnumber}}
+{\filldraw [fill = white!20!black, draw=black, line width=\isolinet]
+(\x{\j},\y{1}) +(-\isolationwidth/2,\isoboty) rectangle +(\isolationwidth/2,\isotopy);}
+
+\fill [fill=gray]
+(\foundstartx, \foundboty) rectangle (\foundendx,\foundtopy);
+\draw [line width = \baselinet] (\foundstartx, \foundtopy) -- (\foundendx, \foundtopy);
+}{}
+
+\ifthenelse{\showaxes=1}{
+\draw [{->}] (\Xaxesstartx,\Xaxesstarty) -- +(\axeslenX,0) node[above]{$X$};
+\draw [{->}] (\Yaxesstartx,\Yaxesstarty) -- +(0,\axeslenY) node[right]{$Y$};
+}{}
+
+\ifthenelse{\showdof=1}{
+\dofs[startx = \dofxx, starty = \dofyy, length x = \arrlen,  length y = \arrlen,
+  offset x= 0.0cm, offset y= 0.0cm, offset rotation xdir= 0cm, offset rotation ydir= 0cm,
+  start angle = \rotdofstartangle, end angle = \rotdofendangle, radius = \arrrad, xstring = $i$, ystring = $i+1$, rstring = $i+2$, font size = \tiny,
+  rotation=0, font rotation=0,
+  font rotation for x = \dofxrotation, font rotation for y = \dofyrotation, font rotation for r = \dofrrotation,
+  arrow size ratio=0.5,
+  ]  
+}{}
+
+
+\end{scope}
 }
-% end framestructure
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%\begin{tikzpicture}
-%\framestructure[number of storys=4, number of bays=2, story height=1, bay width=4, startX=0, startY=0, support width=0.7, support height=0.2]
-%\end{tikzpicture}
 

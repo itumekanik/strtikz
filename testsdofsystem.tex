@@ -1,0 +1,49 @@
+\documentclass[]{standalone}
+\usepackage{mathptmx}
+%\renewcommand{\familydefault}{\rmdefault}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage{siunitx}
+\usepackage{array}
+\usepackage{amsmath}
+\usepackage{ifthen}
+\usepackage{pgfplots}
+\usepackage{pgfmath}
+\pgfplotsset{compat=1.14}
+\usepackage{titling, graphicx}
+\usepackage{tikz}
+\usepackage{upgreek}
+\usepackage{amsmath,amsthm}
+\usepackage{strtikz}
+\usetikzlibrary{shapes,arrows.meta,intersections,graphs,graphs.standard,math,fit}
+\usetikzlibrary{calc,intersections,through,backgrounds}
+\usetikzlibrary{decorations.pathmorphing, decorations.markings,decorations.pathreplacing}
+
+
+\begin{document}
+\begin{tikzpicture}
+\sdofsys[vertical support line thickness = 1pt,
+  horizontal support line thickness = 1pt,  
+  spring and damper line thickness = 1pt,
+  mass line thickness = 1pt,
+  wheel line thickness = 1pt,
+  startx = 0cm,
+  starty = 0cm,
+  vertical support shade thickness = 0.3cm,
+  horizontal support shade thickness = 0.3cm,    
+  support width = 4cm,
+  support height = 2cm,
+  mass height = 1cm,
+  mass width = 2cm,
+  massx = 1.5cm,
+  wheel radius = 0.15cm,
+  spring location ratio = 0.333,
+  spring ratio = 0.15,
+  damper width ratio = 0.15,
+  damper height ratio = 0.25,
+  damper piston size ratio = 0.8,
+  damper piston position ratio = 0.4,
+  wheel location ratio = 0.25,
+  wheel size ratio = 1.1]
+\end{tikzpicture}
+\end{document}

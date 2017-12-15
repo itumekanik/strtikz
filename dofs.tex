@@ -3,9 +3,12 @@
   default/.style={
   startx = 0cm,
   starty = 0cm,
-  dx = 1cm,
-  dy = 1cm,
-  offset = 0.1cm,
+  length x = 1cm,
+  length y = 1cm,
+  offset x= 0.1cm,
+  offset y= 0.1cm,
+  offset rotation xdir= 0.1cm,
+  offset rotation ydir= 0.1cm,  
   start angle = 110,
   end angle = 340,  
   radius = 0.5cm,
@@ -13,49 +16,69 @@
   ystring = $y$,  
   rstring = $z$,
   font size = \normalsize,
-  x location = below,
-  y location = right,  
-  r location = right,
-  rotation = 0},
-  startx/.store in = \xx,
-  starty/.store in = \yy,
-  dx/.store in = \dx,
-  dy/.store in = \dy,
-  offset/.store in = \tdof,
-  start angle/.store in = \sa,
-  end angle/.store in = \ea,
-  radius/.store in = \radi,
-  xstring/.store in = \dofx,
-  ystring/.store in = \dofy,
-  rstring/.store in = \dofr,
-  font size/.store in = \fsize,
-  x location/.store in = \xloc,
-  y location/.store in = \yloc,
-  r location/.store in = \rloc,
-  rotation/.store in = \rot}
+  rotation = 0,
+  font rotation = 0,
+  font rotation for x = 0,
+  font rotation for y = 0,
+  font rotation for r = 0,
+  arrow size ratio=0.5,},
+  startx/.store in = \startdofx,
+  starty/.store in = \startdofy,
+  length x/.store in = \lengthdofx,
+  length y/.store in = \lengthdofy,
+  offset x/.store in = \offsetdofx,
+  offset y/.store in = \offsetdofy,
+  offset rotation xdir/.store in = \offsetrotx,  
+  offset rotation ydir/.store in = \offsetroty, 
+  start angle/.store in = \rotdofstartang,
+  end angle/.store in = \rotdofendang,
+  radius/.store in = \rotdofradius,
+  xstring/.store in = \xdoftext,
+  ystring/.store in = \ydoftext,
+  rstring/.store in = \rotdoftext,
+  font size/.store in = \doftextsize,
+  rotation/.store in = \rotationdofcenter,
+  font rotation/.store in=\fontrotation,
+  font rotation for x/.store in=\fontrotationx,
+  font rotation for y/.store in=\fontrotationy,
+  font rotation for r/.store in=\fontrotationr,      
+  arrow size ratio/.store in=\dofarrowsizeratio,}
 
 \newcommand{\dofs}[1][]{
 \pgfkeys{/dofs, default, #1}
 
 \tikzmath{
-real \xx, \yy, \dx, \dy;
-real \tdof, \radi;
+real \startdofx, \startdofy, \lengthdofx, \lengthdofy;
+real \rotdofradius, \rotdofendang, \rotdofstartang, \rotationdofcenter;
+real \offsetdofx, \offsetdofy, \offsetrotx, \offsetroty;
+real \fontrotation, \dofarrowsizeratio;
+real \fontrotationx, \fontrotationy, \fontrotationr;
 coordinate \cjoint; % coordinate of the joint
 %Conversion all units to the unit pt
-\xx = \xx;
-\yy = \yy;
-\dx = \dx;
-\dy = \dy;
-\tdof = \tdof;
-\radi = \radi;
+\startdofx = \startdofx;
+\startdofy = \startdofy;
+\lengthdofx = \lengthdofx;
+\lengthdofy = \lengthdofy;
+\rotdofradius = \rotdofradius;
+\offsetdofx = \offsetdofx;
+\offsetdofy = \offsetdofy;
+\offsetrotx = \offsetrotx;
+\offsetroty = \offsetroty;
 %End conversion, All values are now in pt units.
-\cjoint = (\xx,\yy);
-%print {$\dx -$};
-%print {$\dy -$};
+if \rotationdofcenter==0 then {\fontrotation=\fontrotation;} else {\fontrotation=\rotationdofcenter;};
+if \fontrotationx==0 then {\fontrotationx=\fontrotation;} else {\fontrotationx=\fontrotationx;};
+if \fontrotationy==0 then {\fontrotationy=\fontrotation;} else {\fontrotationy=\fontrotationy;};
+if \fontrotationr==0 then {\fontrotationr=\fontrotation;} else {\fontrotationr=\fontrotationr;};
 }
-\begin{scope}[x=1pt, y=1pt, rotate=\rot]; % Drawing everything in pt units
-\draw [->] (\cjoint) ++(\tdof,0) -- node[at end, \xloc]{\fsize \dofx} ++(\dx,0);
-\draw [->] (\cjoint) ++(0, \tdof) -- node[at end, \yloc]{\fsize \dofy}++(0,\dy);
-\draw [->] (\sa:\radi) ++(\cjoint) arc [start angle=\sa, end angle=\ea, radius=\radi] node[very near end, \rloc]{\fsize \dofr};
+\begin{scope}[x=1pt, y=1pt, xshift=\startdofx, yshift=\startdofy, rotate=\rotationdofcenter]; % Drawing everything in pt units
+\draw [arrows={<[scale=\dofarrowsizeratio]->[scale=\dofarrowsizeratio]}] (\lengthdofx+\offsetdofx,\offsetdofy) 
+-- node[at start, inner sep=1pt, outer sep=0pt, anchor=180+\fontrotationx]{\doftextsize \xdoftext} (\offsetdofx,\offsetdofy)
+-- node[at end, inner sep=1pt, outer sep=0pt, anchor=270+\fontrotationy]{\doftextsize \ydoftext}++(0,\lengthdofy);
+
+%\draw [arrows={->[scale=0.5]}] (\offsetcenter,0) -- node[at end, inner sep=1pt, outer sep=0pt, anchor=180+\rotationdofcenter]{\doftextsize \xdoftext} ++(\lengthdofx,0);
+%\draw [arrows={->[scale=0.5]}] (0, \offsetcenter) -- node[at end, inner sep=1pt, outer sep=0pt, anchor=270+\rotationdofcenter]{\doftextsize \ydoftext}++(0,\lengthdofy);
+\draw [arrows={->[scale=\dofarrowsizeratio]}] (\rotdofstartang:\rotdofradius) ++(\offsetrotx,\offsetroty)
+arc [start angle=\rotdofstartang, end angle=\rotdofendang, radius=\rotdofradius]
+node[at end, inner sep=1pt, outer sep=0pt, anchor=\rotdofendang+\fontrotationr-90]{\doftextsize \rotdoftext};
 \end{scope}
 }

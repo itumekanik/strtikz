@@ -21,24 +21,20 @@
 
 \begin{document}
 \begin{tikzpicture}
-\dofs[startx = 4cm,
-  starty = 2cm,
-  length x = 1cm,
-  length y = 1cm,
-  offset x= 0.3cm,
-  offset y= 0.1cm,
-  offset rotation xdir= 0cm,
-  offset rotation ydir= -0.3cm,  
-  start angle = 90,
-  end angle = 270,  
-  radius = 0.5cm,
-  xstring = $x$,
-  ystring = $y$,  
-  rstring = $\theta$,
-  font size = \scriptsize,
-  rotation=45,
-  font rotation=0,
-  arrow size ratio=0.5]
-\draw(0,0) -- (4,2);
+\springs[startx = 2cm,
+starty = 3cm,
+start rigid length = 1cm,
+end rigid length = 1.5cm,
+rigid bar length = 1cm,
+rigid end offset ratio = 0.2,
+spring length = 2cm,
+spring zigzag segment length = 0.2cm,
+rotational spring diameter = 0.0004cm,
+rotational spring cycle number = 4,
+horizontal spring pre length = 0.3cm,
+horizontal spring end length = 0.3cm,
+vertical spring pre length ratio = 0.5,
+vertical spring tick ratio = 0.5]
+\draw (0,0) -- (1cm,1cm);
 \end{tikzpicture}
 \end{document}

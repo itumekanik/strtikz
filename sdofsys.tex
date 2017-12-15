@@ -3,8 +3,8 @@
   default/.style={
   vertical support line thickness = 1pt,
   horizontal support line thickness = 1pt,  
-  spring and damper line thickness = 1pt,
-  mass line thickness = 1pt,
+  spring and damper line thickness = 0.5pt,
+  mass line thickness = 0.5pt,
   wheel line thickness = 1pt,
   startx = 0cm,
   starty = 0cm,
@@ -39,44 +39,44 @@
   force text = $f(t)$,
   display displacement = 1,
   display force = 1},
-  vertical support line thickness/.estore in = \supltv,
-  horizontal support line thickness/.estore in = \suplth,
-  spring and damper line thickness/.estore in = \spdalth,
-  mass line thickness/.estore in = \masslt,
-  wheel line thickness/.estore in = \whlt,
-  startx/.estore in = \stx,
-  starty/.estore in = \sty,
-  vertical support shade thickness/.estore in = \tx,
-  horizontal support shade thickness/.estore in = \ty,
-  support width/.estore in = \supw,
-  support height/.estore in = \suph,
-  mass height/.estore in = \massh,
-  mass width/.estore in = \massw,
-  massx/.estore in = \massx,  
-  wheel radius/.estore in = \wrad,
-  spring location ratio/.estore in = \sprlocr,
-  spring ratio/.estore in = \str,
-  damper width ratio/.estore in = \dwr,
-  damper height ratio/.estore in = \dhr,
-  damper piston size ratio/.estore in = \dr,
-  damper piston position ratio/.estore in = \dpr,
-  wheel location ratio/.estore in = \wwr,
-  wheel size ratio/.estore in = \wradr,
-  mass text/.estore in = \masstext,
-  spring text/.estore in = \springtext,
-  damper text/.estore in = \dampertext,
-  disp line location ratio/.estore in = \displr,
-  disp line/.estore in = \displ,
-  disp arrow/.estore in = \dispar,
-  disp text/.estore in = \disptext,
-  disp line thickness/.estore in = \displth,
-  forcex location ratio/.estore in = \forcexar,
-  forcey location ratio/.estore in = \forceyar , 
-  force length/.estore in = \forcel,
-  force line thickness/.estore in = \forceth,
-  force text/.estore in = \forcetext,
-  display displacement/.estore in = \dispd,
-  display force/.estore in = \dispf}
+  vertical support line thickness/.store in = \supltv,
+  horizontal support line thickness/.store in = \suplth,
+  spring and damper line thickness/.store in = \spdalth,
+  mass line thickness/.store in = \masslt,
+  wheel line thickness/.store in = \whlt,
+  startx/.store in = \stx,
+  starty/.store in = \sty,
+  vertical support shade thickness/.store in = \tx,
+  horizontal support shade thickness/.store in = \ty,
+  support width/.store in = \supw,
+  support height/.store in = \suph,
+  mass height/.store in = \massh,
+  mass width/.store in = \massw,
+  massx/.store in = \massx,  
+  wheel radius/.store in = \wrad,
+  spring location ratio/.store in = \sprlocr,
+  spring ratio/.store in = \str,
+  damper width ratio/.store in = \dwr,
+  damper height ratio/.store in = \dhr,
+  damper piston size ratio/.store in = \dr,
+  damper piston position ratio/.store in = \dpr,
+  wheel location ratio/.store in = \wwr,
+  wheel size ratio/.store in = \wradr,
+  mass text/.store in = \masstext,
+  spring text/.store in = \springtext,
+  damper text/.store in = \dampertext,
+  disp line location ratio/.store in = \displr,
+  disp line/.store in = \displ,
+  disp arrow/.store in = \dispar,
+  disp text/.store in = \disptext,
+  disp line thickness/.store in = \displth,
+  forcex location ratio/.store in = \forcexar,
+  forcey location ratio/.store in = \forceyar , 
+  force length/.store in = \forcel,
+  force line thickness/.store in = \forceth,
+  force text/.store in = \forcetext,
+  display displacement/.store in = \dispd,
+  display force/.store in = \dispf}
 
 \newcommand{\sdofsys}[1][]{
 \pgfkeys{/sdofsys, default, #1}
@@ -145,16 +145,16 @@ coordinate \c, \cs, \cd, \cde, \cmass, \cw, \cdisp, \cforce;
 % Draw Spring
 \draw [line width = \spdalth, decorate,
      decoration={zigzag,pre=lineto, pre length=\st pt, post=lineto, post length=\st*0.90 pt}]
-     (\cs1) -- node[above] {\springtext} (\cs2);
+     (\cs1) -- node[above]{\springtext} (\cs2);
 
 %Draw Damper
 \draw [line width = \spdalth] (\cd1) -- (\cd2);
 \draw [line width = \spdalth] (\cd9) -- (\cde);
-\draw [line width = \spdalth] (\cd3) -- (\cd4)  -- (\cd5)  -- node[below, yshift=0.05 cm] {\dampertext}(\cd6);
+\draw [line width = \spdalth] (\cd3) -- (\cd4)  -- (\cd5)  -- node[below, yshift=0.05 cm]{\dampertext}(\cd6);
 \draw [line width = \spdalth] (\cd7) -- (\cd8);
 
 %Draw Mass
-\draw [line width = \masslt] (\cmass1) rectangle (\cmass2) node[pos=0.5] {\masstext};
+\draw [line width = \masslt] (\cmass1) rectangle (\cmass2) node[pos=0.5]{\masstext};
 
 %Draw Wheels
 \draw [line width = \whlt](\cw1) circle [radius=\newwr pt];

@@ -1,0 +1,41 @@
+\pgfkeys{
+ /pilesupport/.is family, /pilesupport,
+  default/.style = {
+  x coordinate=0cm,
+  y coordinate=0cm,  
+  pile depth=4cm,
+  pile diameter=0.5cm,
+  pile line thickness=1pt,
+  fill color=gray,},
+  x coordinate/.store in=\coordinatex,
+  y coordinate/.store in=\coordinatey,
+  pile depth/.store in=\pdepth,
+  pile diameter/.store in=\pdiameter,
+  pile line thickness/.store in=\plinethick,  
+  fill color/.store in=\fillcolor,
+}
+
+\newcommand{\pilesupport}[1][]{
+\pgfkeys{/pilesupport, default, #1}
+\tikzmath{
+real \coordinatex, \coordinatey, \pdepth, \pdiameter, \plinethick;
+%Conversion all units to the unit pt
+\coordinatex=\coordinatex;
+\coordinatey=\coordinatey;
+\pdepth=\pdepth;
+\pdiameter=\pdiameter;
+\plinethick=\plinethick;
+%End conversion, All values are now in pt units.
+}
+\begin{scope}[x=1pt, y=1pt, xshift=\coordinatex, yshift=\coordinatey, rotate=0]; % Drawing everything in pt units
+
+\fill[fill=gray](-\pdiameter/2, 0) rectangle (+\pdiameter/2, -\pdepth);
+ \draw[line width=\plinethick](-\pdiameter/2, 0) -- ++(0,-\pdepth);
+ \draw[line width=\plinethick](+\pdiameter/2, 0) -- ++(0,-\pdepth);
+ \draw[line width=\plinethick](-\pdiameter/2, 0) -- ++(\pdiameter,0);
+ \filldraw[line width=\plinethick, fill=white] (-\pdiameter/4, -\pdepth) ellipse[x radius=\pdiameter/4, y radius=\pdiameter/8];
+ \fill[fill=gray] (0, -\pdepth) arc[start angle=180, end angle=360, x radius=\pdiameter/4, y radius=\pdiameter/8];
+ \draw[line width=\plinethick] (0, -\pdepth) arc[start angle=180, end angle=360, x radius=\pdiameter/4, y radius=\pdiameter/8];
+\end{scope}
+}
+

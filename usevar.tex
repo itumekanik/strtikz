@@ -1,0 +1,37 @@
+\newcommand{\usevar}[2]{%
+  \expandafter#1\expandafter{\the\numexpr#2\relax}%
+}
+
+\newcommand{\useeval}[1]{%
+  \the\numexpr#1\relax%
+}
+
+%\newcommand{\useeval}[1]{%
+%  \expandafter{\the\numexpr#1\relax}%
+%}
+
+
+%https://tex.stackexchange.com/a/377689/96172
+%begin{document}
+%
+%\begin{tikzpicture}
+%\tikzmath{
+%\x1 = 1;
+%\x2 = 3;
+%\x3 = 5;
+%\x4 = 7;
+%%Since units are not given in \tikzmat, they will be evaluated as cm in tikz enviroment below.
+%}
+%
+%\draw (\x{1},0) -- (10,5) node[at start, below]{\x{1}};
+%
+%\draw[red] (\usevar\x{2-1},0) -- (4,5) node[at start, below]{\usevar\x{2-1}};
+%
+%\foreach \ind in {2,...,4}
+%\draw (\x{\ind},0) -- (10,10) node[at start, below]{\x{\ind}};
+%
+%\foreach \ind in {2,...,4}
+%\draw[red] (\usevar\x{\ind-1},0) -- (5,5) node[at start, below]{\usevar\x{\ind-1}};
+%
+%\end{tikzpicture}
+%\end{document}

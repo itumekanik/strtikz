@@ -1,8 +1,8 @@
 \documentclass[]{standalone}
 %\usepackage{mathptmx}
 %\renewcommand{\familydefault}{\rmdefault}
-\usepackage[T1]{fontenc}
-\usepackage[latin9]{inputenc}
+%\usepackage[T1]{fontenc}
+%\usepackage[latin9]{inputenc}
 \usepackage{siunitx}
 \usepackage{array}
 \usepackage{amsmath}
@@ -21,24 +21,13 @@
 
 \begin{document}
 \begin{tikzpicture}
-\dofs[startx = 4cm,
-  starty = 2cm,
-  length x = 1cm,
-  length y = 1cm,
-  offset x= 0.3cm,
-  offset y= 0.1cm,
-  offset rotation xdir= 0cm,
-  offset rotation ydir= -0.3cm,  
-  start angle = 90,
-  end angle = 270,  
-  radius = 0.5cm,
-  xstring = $x$,
-  ystring = $y$,  
-  rstring = $\theta$,
-  font size = \scriptsize,
-  rotation=45,
-  font rotation=0,
-  arrow size ratio=0.5]
-\draw(0,0) -- (4,2);
+\pilesupport[%
+  x coordinate=0cm,
+  y coordinate=0cm,  
+  pile depth=4cm,
+  pile diameter=1cm,
+  pile line thickness=1pt,
+  fill color=gray,]
+%\draw(0,0) -- (4,2);
 \end{tikzpicture}
 \end{document}
