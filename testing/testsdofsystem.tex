@@ -1,6 +1,6 @@
 \documentclass[]{standalone}
 \usepackage{mathptmx}
-%\renewcommand{\familydefault}{\rmdefault}
+\renewcommand{\familydefault}{\rmdefault}
 \usepackage[T1]{fontenc}
 \usepackage[latin9]{inputenc}
 \usepackage{siunitx}
@@ -22,28 +22,46 @@
 
 \begin{document}
 \begin{tikzpicture}
-\sdofsys[vertical support line thickness = 1pt,
-  horizontal support line thickness = 1pt,  
-  spring and damper line thickness = 1pt,
-  mass line thickness = 1pt,
-  wheel line thickness = 1pt,
-  startx = 0cm,
-  starty = 0cm,
+\sdofsys[startx = 0cm, starty = 0cm,
+  support width = 4.0cm,
+  support height = 1.5cm,
+  vertical support line thickness = 1pt,
+  horizontal support line thickness = 1pt,
   vertical support shade thickness = 0.3cm,
   horizontal support shade thickness = 0.3cm,    
-  support width = 4cm,
-  support height = 2cm,
+  mass line thickness = 1pt,
   mass height = 1cm,
-  mass width = 2cm,
+  mass width = 1.5cm,
   massx = 1.5cm,
-  wheel radius = 0.15cm,
-  spring location ratio = 0.333,
+  mass text = $m$,
+  spring and damper line thickness = 0.5pt,
+  spring location ratio = 0.25,
   spring ratio = 0.15,
+  spring zigzag amplitude = 0.09cm,
+  spring zigzag segment length = 0.2cm,
+  spring text = $k$,
+  spring text side = above,
   damper width ratio = 0.15,
-  damper height ratio = 0.25,
-  damper piston size ratio = 0.8,
-  damper piston position ratio = 0.4,
+  damper height ratio = 0.3,
+  damper piston size ratio = 0.7,
+  damper piston position ratio = 0.5,
+  damper text = $c$,
+  damper text side = 2,
+  wheel line thickness = 1pt,
+  wheel radius = 0.15cm,
   wheel location ratio = 0.25,
-  wheel size ratio = 1.1]
+  wheel size ratio = 1,
+  disp line location ratio = 0.5,
+  disp line = 0.25cm,
+  disp arrow = 0.75cm,
+  disp text = $x(t)$,
+  disp line thickness = 0.5pt,
+  forcex location ratio = 1.0,
+  forcey location ratio = 0.5,  
+  force length = 0.75cm,
+  force line thickness = 0.5pt,
+  force text = $f(t)$,
+  display displacement = 1,
+  display force = 1]
 \end{tikzpicture}
 \end{document}
