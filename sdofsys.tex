@@ -1,37 +1,40 @@
 \pgfkeys{
  /sdofsys/.is family, /sdofsys,
   default/.style={
+  startx = 0cm, starty = 0cm,
+  support width = 4.0cm,
+  support height = 2cm,
   vertical support line thickness = 1pt,
-  horizontal support line thickness = 1pt,  
-  spring and damper line thickness = 0.5pt,
-  mass line thickness = 0.5pt,
-  wheel line thickness = 1pt,
-  startx = 0cm,
-  starty = 0cm,
+  horizontal support line thickness = 1pt,
   vertical support shade thickness = 0.3cm,
   horizontal support shade thickness = 0.3cm,    
-  support width = 4cm,
-  support height = 1.5cm,
-  mass height = 2cm,
+  mass line thickness = 1pt,
+  mass height = 1.5cm,
   mass width = 2cm,
-  massx = 1.5cm,  
-  wheel radius = 0.15cm,
-  spring location ratio = 0.25;
+  massx = 1.5cm,
+  mass text = $m$,
+  spring and damper line thickness = 0.5pt,
+  spring location ratio = 0.25,
   spring ratio = 0.15,
+  spring zigzag amplitude = 0.1cm,
+  spring zigzag segment length = 0.2cm,
+  spring text = $k$,
+  spring text side = above,
   damper width ratio = 0.15,
   damper height ratio = 0.15,
-  damper piston size ratio = 0.8,
-  damper piston position ratio = 0.4,
-  wheel location ratio = 0.25,
-  wheel size ratio = 0.8,
-  mass text = $m$,
-  spring text = $k$,
+  damper piston size ratio = 0.7,
+  damper piston position ratio = 0.5,
   damper text = $c$,
+  damper text side = 1,
+  wheel line thickness = 1pt,
+  wheel radius = 0.2cm,
+  wheel location ratio = 0.25,
+  wheel size ratio = 1,
   disp line location ratio = 1,
   disp line = 0.8cm,
   disp arrow = 1cm,
   disp text = $x(t)$,
-  disp line thickness = 0.5pt,
+  disp line thickness = 1pt,
   forcex location ratio = 1,
   forcey location ratio = 0.5,  
   force length = 1cm,
@@ -39,161 +42,214 @@
   force text = $f(t)$,
   display displacement = 1,
   display force = 1},
-  vertical support line thickness/.store in = \supltv,
-  horizontal support line thickness/.store in = \suplth,
-  spring and damper line thickness/.store in = \spdalth,
-  mass line thickness/.store in = \masslt,
-  wheel line thickness/.store in = \whlt,
-  startx/.store in = \stx,
-  starty/.store in = \sty,
-  vertical support shade thickness/.store in = \tx,
-  horizontal support shade thickness/.store in = \ty,
-  support width/.store in = \supw,
-  support height/.store in = \suph,
-  mass height/.store in = \massh,
-  mass width/.store in = \massw,
-  massx/.store in = \massx,  
-  wheel radius/.store in = \wrad,
-  spring location ratio/.store in = \sprlocr,
-  spring ratio/.store in = \str,
-  damper width ratio/.store in = \dwr,
-  damper height ratio/.store in = \dhr,
-  damper piston size ratio/.store in = \dr,
-  damper piston position ratio/.store in = \dpr,
-  wheel location ratio/.store in = \wwr,
-  wheel size ratio/.store in = \wradr,
-  mass text/.store in = \masstext,
-  spring text/.store in = \springtext,
-  damper text/.store in = \dampertext,
-  disp line location ratio/.store in = \displr,
-  disp line/.store in = \displ,
-  disp arrow/.store in = \dispar,
-  disp text/.store in = \disptext,
-  disp line thickness/.store in = \displth,
-  forcex location ratio/.store in = \forcexar,
-  forcey location ratio/.store in = \forceyar , 
-  force length/.store in = \forcel,
-  force line thickness/.store in = \forceth,
-  force text/.store in = \forcetext,
-  display displacement/.store in = \dispd,
-  display force/.store in = \dispf}
+  startx/.store in = \startcoordx, starty/.store in = \startcoordy,	
+  support width/.store in = \suppwidth,	
+  support height/.store in = \suppheight,	
+  vertical support line thickness/.store in = \vertsupplinethk,	
+  horizontal support line thickness/.store in = \horsupplinethk,	
+  vertical support shade thickness/.store in = \vertsuppshadethk,	
+  horizontal support shade thickness/.store in = \horsuppshadethk,	
+  mass line thickness/.store in = \masslinethk,	
+  mass height/.store in = \massheight,	
+  mass width/.store in = \masswidth,	
+  massx/.store in = \masscoordx,  	
+  mass text/.store in = \masstext,	
+  spring and damper line thickness/.store in = \springdamperlinethk,	
+  spring location ratio/.store in = \springlocratio,	
+  spring ratio/.store in = \springratio,	
+  spring text side/.store in = \springtextside,	
+  spring text/.store in = \springtext,	
+  spring zigzag amplitude/.store in = \springzigzagamplitude,
+  spring zigzag segment length/.store in = \springzigzagsegment,
+  damper width ratio/.store in = \damperwidthratio,	
+  damper height ratio/.store in = \damperheightratio,	
+  damper piston size ratio/.store in = \damperpistonsizeratio,	
+  damper piston position ratio/.store in = \damperpistonpositionratio,	
+  damper text/.store in = \dampertext,	
+  damper text side/.store in = \dampertextside,	
+  wheel line thickness/.store in = \wheellinethk,	
+  wheel radius/.store in = \wheelradius,	
+  wheel location ratio/.store in = \wheellocratio,	
+  wheel size ratio/.store in = \wheelsizeratio,	
+  disp line location ratio/.store in = \displineineloc,	
+  disp line/.store in = \displine,	
+  disp arrow/.store in = \disparrow,	
+  disp text/.store in = \disptext,	
+  disp line thickness/.store in = \displinethk,	
+  forcex location ratio/.store in = \forcelocratiox,	
+  forcey location ratio/.store in = \forcelocratioy, 	
+  force length/.store in = \forcelength,	
+  force line thickness/.store in = \forcelinethk,	
+  force text/.store in = \forcetext,	
+  display displacement/.store in = \displaydisp,	
+  display force/.store in = \displayforce,	
+}
 
 \newcommand{\sdofsys}[1][]{
 \pgfkeys{/sdofsys, default, #1}
 \tikzmath{
-real \suplth, \supltv, \spdalth, \masslt, \whlt;
-real \stx, \sty, \tx, \ty, \supw, \suph;
-real \massh, \massx, \massw, \wrad, \wwr, \wradr, \sprlocr;
-real \str, \dwr, \dhr, \dr, \dpr;
-real \displ, \displr, \forcel, \forcexar, \forceyar, \forceth;
+real \horsupplinethk, \vertsupplinethk, \springdamperlinethk, \masslinethk, \wheellinethk;
+real \startcoordx, \startcoordy, \vertsuppshadethk, \horsuppshadethk, \suppwidth, \suppheight;
+real \massheight, \masscoordx, \masswidth, \wheelradius, \wheellocratio, \wheelsizeratio, \springlocratio;
+real \springratio, \damperwidthratio, \damperheightratio, \damperpistonsizeratio, \damperpistonpositionratio;
+real \displine, \displineineloc, \forcelength, \forcelocratiox, \forcelocratioy, \forcelinethk;
 real \tempx, \tempy;
-int \dispd, \dispf;
+real \dampersidenumber;
+int \displaydisp, \displayforce;
 coordinate \c, \cs, \cd, \cde, \cmass, \cw, \cdisp, \cforce;
+%convert all units to pt
+\vertsupplinethk=\vertsupplinethk;
+\horsupplinethk=\horsupplinethk;
+\springdamperlinethk=\springdamperlinethk;
+\masslinethk=\masslinethk;
+\wheellinethk=\wheellinethk;
+\startcoordx=\startcoordx;
+\startcoordy=\startcoordy;
+\vertsuppshadethk=\vertsuppshadethk;
+\horsuppshadethk=\horsuppshadethk;
+\suppwidth=\suppwidth;
+\suppheight=\suppheight;
+\massheight=\massheight;
+\masswidth=\masswidth;
+\masscoordx=\masscoordx;
+\wheelradius=\wheelradius;
+\springlocratio=\springlocratio;
+\displine=\displine;
+\disparrow=\disparrow;
+\displinethk=\displinethk;
+\forcelength=\forcelength;
+\forcelinethk=\forcelinethk;
+\springzigzagamplitude=\springzigzagamplitude;
+\springzigzagsegment=\springzigzagsegment;
 % Support shade and line coordinates
-\tempx = \stx-\tx;     \tempy = \sty-\ty;      \c1 = (\tempx pt,\tempy pt);
-\tempx = \stx-\tx;     \tempy = \sty+\suph;    \c2 = (\tempx pt,\tempy pt);
-\tempx = \stx;         \tempy = \sty+\suph;    \c3 = (\tempx pt,\tempy pt);
-\tempx = \stx;         \tempy = \sty;          \c4 = (\tempx pt,\tempy pt);
-\tempx = \stx+\supw;   \tempy = \sty;          \c5 = (\tempx pt,\tempy pt);
-\tempx = \stx+\supw;   \tempy = \sty-\ty;      \c6 = (\tempx pt,\tempy pt);
+\tempx = \startcoordx-\vertsuppshadethk;     \tempy = \startcoordy-\horsuppshadethk;      \c1 = (\tempx pt,\tempy pt);
+\tempx = \startcoordx-\vertsuppshadethk;     \tempy = \startcoordy+\suppheight;    \c2 = (\tempx pt,\tempy pt);
+\tempx = \startcoordx;         \tempy = \startcoordy+\suppheight;    \c3 = (\tempx pt,\tempy pt);
+\tempx = \startcoordx;         \tempy = \startcoordy;          \c4 = (\tempx pt,\tempy pt);
+\tempx = \startcoordx+\suppwidth;   \tempy = \startcoordy;          \c5 = (\tempx pt,\tempy pt);
+\tempx = \startcoordx+\suppwidth;   \tempy = \startcoordy-\horsuppshadethk;      \c6 = (\tempx pt,\tempy pt);
 % Mass Coordinates
-\tempx = \stx+\massx;       \tempy = \sty+\wrad*2;       \cmass1 = (\tempx pt,\tempy pt);
-\tempx = \stx+\massx+\massw;  \tempy = \sty+\wrad*2+\massh;  \cmass2 = (\tempx pt,\tempy pt);
+\tempx = \startcoordx+\masscoordx;       \tempy = \startcoordy+\wheelradius*2;       \cmass1 = (\tempx pt,\tempy pt);
+\tempx = \startcoordx+\masscoordx+\masswidth;  \tempy = \startcoordy+\wheelradius*2+\massheight;  \cmass2 = (\tempx pt,\tempy pt);
 % Wheel Coordinates and Modified Wheel Radius
-\tempx = \stx+\massx+\massw*\wwr;        \tempy = \sty+\wrad;     \cw1 = (\tempx pt,\tempy pt);  %Center of wheel 1
-\tempx = \stx+\massx+\massw-\massw*\wwr; \tempy = \sty+\wrad;     \cw2 = (\tempx pt,\tempy pt);  %Center of wheel 2
-\tempwr = \wrad-\whlt;
-\newwr = \tempwr*\wradr;   % new radius
+\tempx = \startcoordx+\masscoordx+\masswidth*\wheellocratio;        \tempy = \startcoordy+\wheelradius;     \cw1 = (\tempx pt,\tempy pt);  %Center of wheel 1
+\tempx = \startcoordx+\masscoordx+\masswidth-\masswidth*\wheellocratio; \tempy = \startcoordy+\wheelradius;     \cw2 = (\tempx pt,\tempy pt);  %Center of wheel 2
+\tempwr = \wheelradius-\wheellinethk;
+\wheelradiusnew = \tempwr*\wheelsizeratio;   % new radius
 % Spring Coordinates
-\spry = \sty+\wrad*2+\massh*(1-\sprlocr);  %spring y-axis;
-\sf = \massx-\supltv/2-\masslt/2;          %total length of the spring
-\st = \str*\sf;     %length of spring at the beginning
-\sx1 = \stx+\supltv/2;      %spring x-coordinates;
-\sx2 = \stx+\sf+\supltv/2+\masslt/2;
-\cs1 = (\sx1 pt, \spry pt);
-\cs2 = (\sx2 pt, \spry pt);
+\springaxisy = \startcoordy+\wheelradius*2+\massheight*(1-\springlocratio);  %spring y-axis;
+\springlengthtotal = \masscoordx-\vertsupplinethk/2-\masslinethk/2;          %total length of the spring
+\springlengthbegin = \springratio*\springlengthtotal;     %length of spring at the beginning
+\springcoordx1 = \startcoordx+\vertsupplinethk/2;      %spring x-coordinates;
+\springcoordx2 = \startcoordx+\springlengthtotal+\vertsupplinethk/2+\masslinethk/2;
+\cs1 = (\springcoordx1 pt, \springaxisy pt);
+\cs2 = (\springcoordx2 pt, \springaxisy pt);
 % Damper Coordinates
-\dy = \sty+\wrad*2+\massh*\sprlocr;    %damper y-axis;
-\df = \sf;                              %total length of damper
-\dw = \dwr*\df;               %damper width;
-\dh = \dhr*\massh;           %damper height
-\dx1 = \stx+\supltv/2;
-\dx2 = \stx+\supltv/2+(\df-\dw)/2;
-\dx3 = \dx2+\dw*\dpr;
-\dx4 = \dx2+\dw;
-\dx5 = \stx+\df+\supltv/2+\masslt/2;
-\cd1 = (\dx1 pt,\dy pt);
-\cd2 = (\dx2 pt,\dy pt);
-\cd3 = (\dx4 pt,\dy+\dh/2 pt);
-\cd4 = (\dx2 pt,\dy+\dh/2 pt);
-\cd5 = (\dx2 pt,\dy-\dh/2 pt);
-\cd6 = (\dx4 pt,\dy-\dh/2 pt);
-\cd7 = (\dx3 pt,\dy+\dh*\dr/2 pt);
-\cd8 = (\dx3 pt,\dy-\dh*\dr/2 pt);
-\cd9 = (\dx3 pt,\dy pt);
-\cde = (\dx5 pt,\dy pt);
+\damperaxisy = \startcoordy+\wheelradius*2+\massheight*\springlocratio;    %damper y-axis;
+\damperlengthtotal = \springlengthtotal;                              %total length of damper
+\damperwidth = \damperwidthratio*\damperlengthtotal;               %damper width;
+\damperheight = \damperheightratio*\massheight;           %damper height
+\dx1 = \startcoordx+\vertsupplinethk/2;
+\dx2 = \startcoordx+\vertsupplinethk/2+(\damperlengthtotal-\damperwidth)/2;
+\dx3 = \dx2+\damperwidth*\damperpistonpositionratio;
+\dx4 = \dx2+\damperwidth;
+\dx5 = \startcoordx+\damperlengthtotal+\vertsupplinethk/2+\masslinethk/2;
+\cd1 = (\dx1 pt,\damperaxisy pt);
+\cd2 = (\dx2 pt,\damperaxisy pt);
+\cd3 = (\dx4 pt,\damperaxisy+\damperheight/2 pt);
+\cd4 = (\dx2 pt,\damperaxisy+\damperheight/2 pt);
+\cd5 = (\dx2 pt,\damperaxisy-\damperheight/2 pt);
+\cd6 = (\dx4 pt,\damperaxisy-\damperheight/2 pt);
+\cd7 = (\dx3 pt,\damperaxisy+\damperheight*\damperpistonsizeratio/2 pt);
+\cd8 = (\dx3 pt,\damperaxisy-\damperheight*\damperpistonsizeratio/2 pt);
+\cd9 = (\dx3 pt,\damperaxisy pt);
+\cde = (\dx5 pt,\damperaxisy pt);
 % Displacement Axis Coordinates
-\tempx = \stx+\massx+\massw*\displr;  \tempy = \sty+\wrad*2+\massh;  \cdisp = (\tempx pt,\tempy pt);
+\tempx = \startcoordx+\masscoordx+\masswidth*\displineineloc;  \tempy = \startcoordy+\wheelradius*2+\massheight;
+\cdisp = (\tempx pt,\tempy pt);
 %Force Arrow Coordinates
-\tempx = \stx+\massx+\massw*\forcexar;  \tempy = \sty+\wrad*2+\massh*\forceyar;  \cforce = (\tempx pt,\tempy pt);
+\tempx = \startcoordx+\masscoordx+\masswidth*\forcelocratiox;  \tempy = \startcoordy+\wheelradius*2+\massheight*\forcelocratioy;
+\cforce = (\tempx pt,\tempy pt);
 }
 
 % Draw support shade and lines
 \fill [gray] (\c1) -- (\c2) -- (\c3) -- (\c4) -- (\c5) -- (\c6) -- cycle;
-\draw [line width = \suplth] (\c3) -- (\c4) [line width = \supltv] -- (\c5);
+\draw [line width = \horsupplinethk] (\c3) -- (\c4) [line width = \vertsupplinethk] -- (\c5);
 
 % Draw Spring
-\draw [line width = \spdalth, decorate,
-     decoration={zigzag,pre=lineto, pre length=\st pt, post=lineto, post length=\st*0.90 pt}]
-     (\cs1) -- node[above]{\springtext} (\cs2);
+\draw [line width = \springdamperlinethk, decorate,
+     decoration={zigzag,pre=lineto, amplitude=\springzigzagamplitude pt, segment length=\springzigzagsegment pt,
+     pre length=\springlengthbegin pt, post=lineto, post length=\springlengthbegin*0.90 pt}]
+     (\cs1) -- node[\springtextside]{\springtext} (\cs2);
 
 %Draw Damper
-\draw [line width = \spdalth] (\cd1) -- (\cd2);
-\draw [line width = \spdalth] (\cd9) -- (\cde);
-\draw [line width = \spdalth] (\cd3) -- (\cd4)  -- (\cd5)  -- node[below, yshift=0.05 cm]{\dampertext}(\cd6);
-\draw [line width = \spdalth] (\cd7) -- (\cd8);
+\draw [line width = \springdamperlinethk] (\cd1) -- (\cd2);
+\draw [line width = \springdamperlinethk] (\cd9) -- (\cde);
+\ifthenelse{\dampertextside=1}{
+\draw [line width = \springdamperlinethk] (\cd3) -- node[above, inner sep=1pt]{\dampertext}(\cd4)  -- (\cd5)  -- (\cd6);
+}
+{
+\draw [line width = \springdamperlinethk] (\cd3) -- (\cd4)  -- (\cd5)  -- node[below, inner sep=1pt]{\dampertext}(\cd6);
+}
+\draw [line width = \springdamperlinethk] (\cd7) -- (\cd8);
 
 %Draw Mass
-\draw [line width = \masslt] (\cmass1) rectangle (\cmass2) node[pos=0.5]{\masstext};
+\draw [line width = \masslinethk] (\cmass1) rectangle (\cmass2) node[pos=0.5]{\masstext};
 
 %Draw Wheels
-\draw [line width = \whlt](\cw1) circle [radius=\newwr pt];
-\draw [line width = \whlt](\cw2) circle [radius=\newwr pt];
+\draw [line width = \wheellinethk](\cw1) circle [radius=\wheelradiusnew pt];
+\draw [line width = \wheellinethk](\cw2) circle [radius=\wheelradiusnew pt];
 
-\ifthenelse{\dispd=1}{
+\ifthenelse{\displaydisp=1}{
 %Draw Displacement Vector
-\draw [line width = \displth] (\cdisp) -- ++(0 cm, \displ);
-\draw [line width = \displth] (\cdisp) ++(0 cm, \displ*0.8) [->] -- node[above, yshift=-0.1 cm]{\disptext} ++(\dispar, 0 cm);
+\draw [line width = \displinethk] (\cdisp) -- ++(0 cm, \displine pt);
+\draw [line width = \displinethk] (\cdisp) ++(0 cm, \displine*0.8 pt) [->] -- node[above, yshift=-0.1 cm]{\disptext} ++(\disparrow pt, 0 cm);
 }{}
 
-\ifthenelse{\dispf=1}{
+\ifthenelse{\displayforce=1}{
 %Draw Force Vector
-\draw [line width = \forceth] (\cforce) [->] -- node[above, yshift=-0.1 cm]{\forcetext} ++(\forcel, 0 cm);
+\draw [line width = \forcelinethk] (\cforce) [->] -- node[above, yshift=-0.1 cm]{\forcetext} ++(\forcelength pt, 0 cm);
 }{}
 }
 
 %\begin{tikzpicture}
-%\sdofsys[vertical support line thickness = 1pt,
-%  horizontal support line thickness = 1pt,  
-%  spring and damper line thickness = 1pt,
-%  mass line thickness = 1pt,
-%  wheel line thickness = 1pt,
-%  startx = 0cm,
-%  starty = 0cm,
+%\sdofsys[startx = 0cm, starty = 0cm,
+%  support width = 4.0cm,
+%  support height = 1.5cm,
+%  vertical support line thickness = 1pt,
+%  horizontal support line thickness = 1pt,
 %  vertical support shade thickness = 0.3cm,
 %  horizontal support shade thickness = 0.3cm,    
-%  support width = 4cm,
-%  support height = 2cm,
+%  mass line thickness = 1pt,
 %  mass height = 1cm,
-%  mass width = 2cm,
+%  mass width = 1.5cm,
 %  massx = 1.5cm,
-%  wheel radius = 0.15cm,
-%  spring location ratio = 0.333,
+%  mass text = $m$,
+%  spring and damper line thickness = 0.5pt,
+%  spring location ratio = 0.25,
 %  spring ratio = 0.15,
+%  spring text = $k$,
+%  spring text side = above,
 %  damper width ratio = 0.15,
-%  damper height ratio = 0.25,
-%  damper piston size ratio = 0.8,
-%  damper piston position ratio = 0.4,
+%  damper height ratio = 0.3,
+%  damper piston size ratio = 0.7,
+%  damper piston position ratio = 0.5,
+%  damper text = $c$,
+%  damper text side = 2,
+%  wheel line thickness = 1pt,
+%  wheel radius = 0.15cm,
 %  wheel location ratio = 0.25,
-%  wheel size ratio = 1.1]
+%  wheel size ratio = 1,
+%  disp line location ratio = 0.5,
+%  disp line = 0.25cm,
+%  disp arrow = 0.5cm,
+%  disp text = $x(t)$,
+%  disp line thickness = 0.5pt,
+%  forcex location ratio = 1.0,
+%  forcey location ratio = 0.5,  
+%  force length = 1cm,
+%  force line thickness = 0.5pt,
+%  force text = $f(t)$,
+%  display displacement = 1,
+%  display force = 1]
 %\end{tikzpicture}
